@@ -33,7 +33,7 @@ def import_module(name, retry=True):
     return module
 
 
-def generate_tests(module, output=None):
+def generate_tests(module, output=None, include_private=False):
     """Generate a test output file for some input module, which can be:
         - a script path explitly
         - a directory path with files to be recursively discovered
@@ -42,6 +42,7 @@ def generate_tests(module, output=None):
         Arguments:
           - module (str) : a file, directory, or module name to parse
           - output (str) : a path to a yaml file to save to
+          - include_private (bool) : include "private" functions
     """
     if not re.search("[.](yml|yaml)$", output):
         sys.exit("Output file must have yml|yaml extension.")
@@ -67,7 +68,7 @@ def generate_tests(module, output=None):
     for filename in files:
         # name replaces / with .
         name = filename.replace("/", ".").strip(".py")
-        spec[name] = extract_functions(filename)
+        spec[name] = extract_functions(filename, include_private)
 
     # Write to output file
     if output:
@@ -82,11 +83,15 @@ def formulate_arg(arg, default=None):
     return {arg: default}
 
 
-def extract_functions(filename):
+def extract_functions(filename, include_private=False):
     """Given a filename, extract a module and associated functions with it
        into a grid test. This means creating a structure with function
        names and (if provided) default inputs. The user will fill in
        the rest of the file.
+
+        Arguments:
+          - filename (str) : a filename or module name to parse
+          - include_private (bool) : include "private" functions
     """
     sys.path.insert(1, os.getcwd())
 
@@ -97,6 +102,10 @@ def extract_functions(filename):
     # For each function,
     for funcname in dir(module):
         if not isinstance(getattr(module, funcname), types.FunctionType):
+            continue
+
+        # If it's a "private" function and we aren't including private
+        if funcname.startswith("_") and not include_private:
             continue
 
         key = name + "." + funcname
@@ -110,10 +119,12 @@ def extract_functions(filename):
         meta[key] = []
 
         defaults = args.defaults or []
+        argdict = {}
         for idx in range(len(args.args)):
             default = None
             if len(defaults) > idx:
                 default = defaults[idx]
-            meta[key].append(formulate_arg(args.args[idx], default))
+            argdict.update(formulate_arg(args.args[idx], default))
+        meta[key].append({"args": argdict})
 
     return meta

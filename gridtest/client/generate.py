@@ -17,4 +17,4 @@ from gridtest.main.generate import generate_tests
 def main(args, extra):
 
     # Generate the testing file
-    generate_tests(args.input, output=args.output)
+    generate_tests(args.input, output=args.output, include_private=args.include_private)

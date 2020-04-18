@@ -26,8 +26,29 @@ def recursive_find(base, pattern="*.py"):
             yield os.path.join(root, filename)
 
 
-def read_yaml(filename, mode="r", quiet=False):
+def read_file(filename, mode="r", readlines=True):
+    """write_file will open a file, "filename" and write content
+       and properly close the file.
+
+       Arguments:
+         - filename (str) : the filename to read
+         - mode (str) : the mode (defaults to r)
+         - readlines (bool) : read lines of the file (vs all raw)
+    """
+    with open(filename, mode) as filey:
+        if readlines is True:
+            content = filey.readlines()
+        else:
+            content = filey.read()
+    return content
+
+
+def read_yaml(filename, mode="r"):
     """read a yaml file, only including sections between dashes
+
+       Arguments:
+         - filename (str) : the filename to read
+         - mode (str) : the mode (defaults to r)
     """
     stream = read_file(filename, mode, readlines=False)
     return yaml.load(stream, Loader=yaml.FullLoader)
@@ -36,11 +57,10 @@ def read_yaml(filename, mode="r", quiet=False):
 def write_yaml(yaml_dict, filename, mode="w"):
     """write a dictionary to yaml file
  
-       Parameters
-       ==========
-       yaml_dict: the dict to print to yaml
-       filename: the output file to write to
-       pretty_print: if True, will use nicer formatting
+       Arguments:
+        - yaml_dict (dict) : the dict to print to yaml
+        - filename (str) : the output file to write to
+        - pretty_print (bool): if True, will use nicer formatting
     """
     with open(filename, mode) as filey:
         filey.writelines(yaml.dump(yaml_dict))

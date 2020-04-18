@@ -8,10 +8,12 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
+from gridtest.main.test import GridRunner
 import json
 import sys
 import re
 
 
 def main(args, extra):
+    print(args)
     print("Not written yet!")

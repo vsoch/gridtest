@@ -60,6 +60,14 @@ def get_parser():
         "output", help="name of output file to write grid test (.yml|.yaml)", type=str
     )
 
+    generate.add_argument(
+        "--include-private",
+        dest="include_private",
+        help="suppress additional output.",
+        default=False,
+        action="store_true",
+    )
+
     return parser
 
 

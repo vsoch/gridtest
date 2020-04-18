@@ -1,14 +1,26 @@
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/basic/script.py
   script.add:
-  - one: null
-  - two: null
+  - args:
+      one: 1
+      two: 2
+    returns: 3
+  - args:
+      one: 1
+      two: null
+    raises: TypeError
   script.add_with_type:
-  - one: null
-  - two: null
+  - args:
+      one: 1
+      two: 2
+    returns: 3
   script.hello:
-  - name: null
+  - args:
+      name: Vanessa
   script.hello_with_default:
-  - name: Dinosaur
+  - args:
+      name: Dinosaur
   script.hello_with_type:
-  - name: null
+  - args:
+      name: 1
+    raises: TypeError
