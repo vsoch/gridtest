@@ -36,30 +36,28 @@ def get_parser():
     )
 
     # print version and exit
-    subparsers.add_parser(
-        "version", help="show software version"
+    subparsers.add_parser("version", help="show software version")
+
+    # Run a grid test
+    test = subparsers.add_parser("test", help="run a grid test.")
+
+    test.add_argument("filename", help="gridtest file to run tests for", type=str)
+
+    test.add_argument(
+        "--cores", help="number of cores for multiprocessing to use", type=int
     )
 
     # Run a grid test
-    test = subparsers.add_parser(
-        "test", help="run a grid test."
-    )
+    generate = subparsers.add_parser("generate", help="generate a grid test yaml file.")
 
-    test.add_argument(
-        "filename", help='gridtest file to run tests for', type=str
-    )
-
-    test.add_argument(
-        "--cores", help='number of cores for multiprocessing to use', type=int
-    )
-
-    # Run a grid test
-    generate = subparsers.add_parser(
-        "generate", help="generate a grid test yaml file."
+    generate.add_argument(
+        "input",
+        help="name of input file, folder, or module to write tests for",
+        type=str,
     )
 
     generate.add_argument(
-        "output", help='name of output file to write grid test (.yml|.yaml)', type=str
+        "output", help="name of output file to write grid test (.yml|.yaml)", type=str
     )
 
     return parser
@@ -109,6 +107,7 @@ def main():
         return_code = 1
 
     help(return_code)
+
 
 if __name__ == "__main__":
     main()

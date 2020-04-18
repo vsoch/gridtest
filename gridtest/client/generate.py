@@ -8,10 +8,13 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-import json
 import sys
-import re
+import os
+
+from gridtest.main.generate import generate_tests
 
 
 def main(args, extra):
-    print("Not written yet!")
+
+    # Generate the testing file
+    generate_tests(args.input, output=args.output)

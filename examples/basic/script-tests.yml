@@ -1,0 +1,14 @@
+script:
+  filename: /home/vanessa/Desktop/Code/gridtest/examples/basic/script.py
+  script.add:
+  - one: null
+  - two: null
+  script.add_with_type:
+  - one: null
+  - two: null
+  script.hello:
+  - name: null
+  script.hello_with_default:
+  - name: Dinosaur
+  script.hello_with_type:
+  - name: null

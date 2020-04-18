@@ -22,7 +22,7 @@ LICENSE = "LICENSE"
 
 
 INSTALL_REQUIRES = (
-#    ("requests", {"min_version": "2.18.4"}),
+    #    ("requests", {"min_version": "2.18.4"}),
 )
 
 TESTS_REQUIRES = (("pytest", {"min_version": "4.6.2"}),)
