@@ -72,20 +72,21 @@ file as input. We might do something like:
   script.write:
     args:
     - name: "dinosaur"
-    - outfile: ${tmp_file}
-    returns: ${{outfile}}
+    - outfile: {% tmp_file %}
+    returns: {{ args.outfile }}
 ```
 
-In the above, the double `{{}}` refers to an argument name. The single `${}`
-refers to a function provided by GridTest. You could also check that the file
-exists (and it might not be returned).
+In the above, the double `{{}}` refers to a variable, in this case which is
+an argument name. The `{% %}` refers to a function that is known natively
+to grid test. This syntax is based on [jinja2](https://jinja.palletsprojects.com/en/2.11.x/).
+You could also check that the file exists (and it might not be returned).
 
 ```yaml
   script.write:
     args:
-    - name: "dinosaur"
-    - outfile: ${tmp_file}
-    exists: ${{outfile}}
+    - name: vanessa
+    - outfile: {% tmp_file %}
+    exists: {{ args.outfile }}
 ```
 
 ### Return Types
@@ -125,17 +126,73 @@ If we wanted to ensure that an exception was raised, we would do:
     raises: TypeError
 ```
 
-**exists**
+**istrue**
 
-And finally, if our function saved a file, we'd want to check for that like:
+istrue is used when we want to check if something is True.
+You usually would want to refer to an input or output variable:
 
 ```yaml
   script.add:
   - args:
       one: 1
       two: 2
-    exists: ${outfile}
+    istrue: isinstance({% returns %}, int)
 ```
+
+**isfalse**
+
+or you might want the opposite, isfalse:
+
+
+```yaml
+  script.add:
+  - args:
+      one: 1
+      two: 2
+    isfalse: not isinstance({% returns %}, float)
+```
+
+**equals**
+
+or you might want to evaluate a statement. In the example below, we want to 
+make sure an attribute of the value returned is equal to 200.
+
+```yaml
+  requests.get:
+  - args:
+      url: https://google.com
+      data: null
+      json: null
+    eval: {% returns %}.status_code == 200
+```
+
+This is different from providing an explicit value.
+
+**exists**
+
+And finally, if our function saved a file, we'd want to check for that like this.
+The following example checks that whatever filename is returned does exist:
+
+```yaml
+  script.add:
+  - args:
+      one: 1
+      two: 2
+    exists: {% returns %}
+```
+
+A previous example showed how you could reference a specific input variable,
+"outfile" existing. Since we also used the function `{% tmp_file %}` this output
+file will be cleaned up after the fact.
+
+```yaml
+  script.write:
+    args:
+    - name: vanessa
+    - outfile: {% tmp_file %}
+    exists: {{ args.outfile }}
+```
+
 
 This means that we can edit our script from this:
 

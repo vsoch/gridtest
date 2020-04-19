@@ -15,5 +15,6 @@ import re
 
 
 def main(args, extra):
-    print(args)
-    print("Not written yet!")
+
+    runner = GridRunner(args.filename)
+    runner.run(nproc=args.cores, parallel=False)

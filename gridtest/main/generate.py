@@ -21,13 +21,16 @@ import yaml
 logger = logging.getLogger(__name__)
 
 
-def import_module(name, retry=True):
+def import_module(name):
     """Import module will try import of a module based on a name. If import
        fails and there are no ., we expect that it could be a script in the
        present working directory and add .<script>
+
+       Arguments:
+        - name (str) : the name of the module to import
     """
     try:
-        module = importlib.import_module(name, package=".")
+        module = importlib.import_module(name)
     except:
         sys.exit(f"Unrecognizable file, directory, or module name {name}")
     return module
