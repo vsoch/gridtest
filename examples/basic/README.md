@@ -258,6 +258,13 @@ test. You can run tests like this:
 $ gridtest test script-example.yml
 ```
 
+And here is an (under development) snapshot of what a result currently looks like
+(and this particular shot was run in serial).
+
+![img/failed.png](img/failed.png)
+
+**under development**
+
 These are of course very simple test cases - we don't have any
 classes, custom types, or matrices of tests. These will be developed
 and discussed in other examples.

@@ -54,6 +54,7 @@ class GridTest:
         """
         value = self._substitute_args(value)
         value = self._substitute_func(value)
+        return value
 
     def _substitute_args(self, value):
         """Given a value, determine if it has variable argument substitutions
@@ -90,6 +91,20 @@ class GridTest:
         """
         # TODO write me
         return value
+
+    # Summary
+    @property
+    def summary(self):
+        """print a summary of the test, including if it is supposed to
+           return, raise, or check existance.
+        """
+        if "returns" in self.params:
+            return "returns %s" % (self.params["returns"])
+        elif "raises" in self.params:
+            return "raises %s" % (self.params["raises"])
+        elif "exists" in self.params:
+            return "exists %s" % (self.params["exists"])
+        return ""
 
     # Running
 
@@ -152,8 +167,10 @@ class GridTest:
         try:
             self.test_basic(func)
         except Exception as e:
-            print(e)
-            self.success = True
+            if type(e).__name__ == exception:
+                self.success = True
+            else:
+                self.err += [str(e)]
 
     def test_basic(self, func):
         """test basic only checks that the function runs without generating
@@ -214,9 +231,6 @@ class GridRunner:
         if parallel:
             return self._run_parallel(tests, show_progress, nproc=nproc)
 
-        # Otherwise, run in serial
-        results = {}
-
         # Progressbar
         total = len(tests)
         progress = 1
@@ -227,10 +241,12 @@ class GridRunner:
                 bot.show_progress(progress, total, length=35, prefix=prefix)
             else:
                 bot.info("Running %s" % prefix)
-            results[task.name] = task.run()
+
+            # Run the task, update results with finished object
+            task.run()
             progress += 1
 
-        return results
+        return tests
 
     def _run_parallel(self, queue, show_progress=True):
         """ run tasks in parallel using the Workers class. Returns a dictionary
@@ -239,6 +255,7 @@ class GridRunner:
             ==========
             queue: the list of task objects to run
         """
+        # TODO write this function
         # Run with multiprocessing
         funcs = {}
         tasks = {}
@@ -268,15 +285,53 @@ class GridRunner:
         tests = self.get_tests(regexp=regexp)
 
         # 2. Run tests (serial or in parallel)
-        results = self.run_tests(
+        self.run_tests(
             tests=tests,
             parallel=parallel,
             show_progress=show_progress,
             nproc=nproc or GRIDTEST_WORKERS,
         )
 
+        # Pretty print results to screen
+        self.print_results(tests)
+
+        # Exit with correct error code
+        if self.failed(tests):
+            sys.exit(1)
+
+        sys.exit(0)
+
         # TODO how to print to console results? Save to file?
         # TODO check for failed, print failed only if failed
+
+    def success(self, tests):
+        """Given a test of tests, return True if all are successful.
+        """
+        return all([test.success for name, test in tests.items()])
+
+    def failed(self, tests):
+        """Given a test of tests, return True if any are not successful.
+        """
+        return not self.success(tests)
+
+    def print_results(self, tests):
+        """print the results of the tests, meaning that success is in green,
+           and non-success is in red.
+        """
+        total = 0
+        success = 0
+        failure = 0
+
+        for name, test in tests.items():
+            total += 1
+            if test.success:
+                bot.success(f"success: {name} {test.summary}")
+                success += 1
+            else:
+                bot.failure(f"failure: {name} {test.summary}")
+                failure += 1
+
+        print(f"{success}/{total} tests passed")
 
     def get_tests(self, regexp=None):
         """get tests based on a regular expression.
@@ -293,7 +348,7 @@ class GridRunner:
 
                     # Each module can have a list of tests
                     for idx in range(len(module)):
-                        tests[name + ".%s" % idx] = GridTest(
+                        tests["%s.%s" % (name, idx)] = GridTest(
                             module=parent,
                             name=name,
                             params=module[idx],
