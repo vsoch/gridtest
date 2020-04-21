@@ -13,7 +13,7 @@ from gridtest.utils import read_yaml
 from gridtest.logger import bot
 from gridtest import __version__
 
-from .generate import import_module
+from .generate import import_module, get_function_typing
 from .workers import Capturing, Workers
 
 import logging
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 class GridTest:
-    def __init__(self, module, name, filename=None, params=None, **kwargs):
+    def __init__(self, module, name, filename=None, params=None, verbose=False):
 
         self.name = name
         self.module = module
@@ -33,16 +33,17 @@ class GridTest:
         self.params = params or {}
         self.success = False
         self.filename = filename or ""
+        self.verbose = verbose
 
         # Catching output and error
         self.out = []
         self.err = []
 
     def __repr__(self):
-        return "[task|%s]" % self.name
+        return "[test|%s]" % self.name
 
     def __str__(self):
-        return "[task|%s]" % self.name
+        return "[test|%s]" % self.name
 
     # Templating
 
@@ -98,13 +99,34 @@ class GridTest:
         """print a summary of the test, including if it is supposed to
            return, raise, or check existance.
         """
+        if self.success:
+            return self._summary_success()
+        return self._summary_failure()
+
+    def _summary_success(self):
+        """return successful summary
+        """
+        output = "".join(self.out) if self.verbose else ""
+
         if "returns" in self.params:
-            return "returns %s" % (self.params["returns"])
+            return "returns %s %s" % (self.params["returns"], output)
         elif "raises" in self.params:
-            return "raises %s" % (self.params["raises"])
+            return "raises %s %s" % (self.params["raises"], output)
         elif "exists" in self.params:
-            return "exists %s" % (self.params["exists"])
-        return ""
+            return "exists %s %s" % (self.params["exists"], output)
+        return output
+
+    def _summary_failure(self):
+        """Return a failure message, including error
+        """
+        error = " ".join(self.err)
+        if "returns" in self.params:
+            return "returns %s %s" % (self.params["returns"], error)
+        elif "raises" in self.params:
+            return "raises %s %s" % (self.params["raises"], error)
+        elif "exists" in self.params:
+            return "exists %s %s" % (self.params["exists"], error)
+        return error
 
     # Running
 
@@ -112,9 +134,6 @@ class GridTest:
         """run an isolated test, and store the return code and result with
            the tester here.
         """
-        # Add filename folder to the path
-        # TODO: the folder name (and fullpath to file) of the module needs
-        # to be stored with the test, in case run from different spot
         sys.path.insert(0, os.path.dirname(self.filename))
         module = import_module(self.module)
 
@@ -139,7 +158,13 @@ class GridTest:
 
         # Case 4: runs just without error
         else:
-            self.test_basic(func)
+            self.test_runs(func)
+
+        # If expected success or failure, and got opposite
+        if "success" in self.params:
+            if not self.params["success"] and not self.success:
+                self.out.append("success key set to false, expected failure.")
+                self.success = True
 
     # Testing
 
@@ -158,14 +183,16 @@ class GridTest:
            an error. We don't check for a return value, but we set success to
            be True.
         """
-        self.test_basic(func)
-        self.success = True
+        if self.test_basic(func):
+            self.success = True
 
     def test_raises(self, func, exception):
-        """Ensure that running a function raises a particular error.
+        """Ensure that running a function raises a particular error. If the
+           function runs successfully, this is considered a failure.
         """
         try:
-            self.test_basic(func)
+            if self.test_basic(func):
+                self.success = False
         except Exception as e:
             if type(e).__name__ == exception:
                 self.success = True
@@ -176,13 +203,45 @@ class GridTest:
         """test basic only checks that the function runs without generating
            an error. We don't check for a return value.
         """
-        # Run and capture output and error
-        with Capturing() as output:
-            self.result = func(**self.params["args"])
-            if output:
-                std = output.pop(0)
-                self.out += std.get("out")
-                self.err += std.get("err")
+        if self.test_types(func):
+
+            # Run and capture output and error
+            with Capturing() as output:
+                self.result = func(**self.params["args"])
+                if output:
+                    std = output.pop(0)
+                    self.out += std.get("out")
+                    self.err += std.get("err")
+
+            return True
+        return False
+
+    def test_types(self, func):
+        """Given a loaded function, get it's types and ensure that they are
+           correct. Returns a boolean to indicate correct/ passing (True)
+        """
+        # Check arguments first
+        types = get_function_typing(func)
+        for argname, argtype in types.items():
+            if argname in self.params["args"]:
+                value = self.params["args"][argname]
+                if not isinstance(value, argtype):
+                    self.err.append(
+                        "TypeError %s (%s) is %s, should be %s"
+                        % (argname, value, type(value), argtype)
+                    )
+                    return False
+
+        # Check return type
+        if "return" in types and "returns" in self.params:
+            if not isinstance(self.params["returns"], types["return"]):
+                self.err.append(
+                    "TypeError return value %s should be %s"
+                    % (self.params["returns"], types["return"])
+                )
+                return False
+
+        return True
 
 
 class GridRunner:
@@ -269,7 +328,9 @@ class GridRunner:
         workers = Workers(show_progress=show_progress)
         return workers.run(funcs, tasks)
 
-    def run(self, regexp=None, parallel=True, nproc=None, show_progress=True):
+    def run(
+        self, regexp=None, parallel=True, nproc=None, show_progress=True, verbose=False
+    ):
         """run the grid runner, meaning that we turn each function and set of
            tests into a single test, and then run with multiprocessing. 
            This is the function called by the user that also does filtering
@@ -280,9 +341,10 @@ class GridRunner:
               - parallel (bool) : use multiprocessing to run tasks (default True)
               - show_progress (bool) : show progress instead of task information
               - nproc (int) : number of processes to use for parallel testing
+              - verbose (bool) : print success output too
         """
         # 1. Get filtered list of tests
-        tests = self.get_tests(regexp=regexp)
+        tests = self.get_tests(regexp=regexp, verbose=verbose)
 
         # 2. Run tests (serial or in parallel)
         self.run_tests(
@@ -333,7 +395,7 @@ class GridRunner:
 
         print(f"{success}/{total} tests passed")
 
-    def get_tests(self, regexp=None):
+    def get_tests(self, regexp=None, verbose=False):
         """get tests based on a regular expression.
 
            Arguments:
@@ -344,14 +406,15 @@ class GridRunner:
             for name, module in section.items():
                 if regexp and not re.search(regexp, name):
                     continue
-                if name.startswith(parent):
 
-                    # Each module can have a list of tests
+                # Each module can have a list of tests
+                if name.startswith(parent):
                     for idx in range(len(module)):
                         tests["%s.%s" % (name, idx)] = GridTest(
                             module=parent,
                             name=name,
                             params=module[idx],
+                            verbose=verbose,
                             filename=section.get("filename"),
                         )
 

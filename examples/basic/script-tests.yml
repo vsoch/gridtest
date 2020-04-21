@@ -23,4 +23,4 @@ script:
   script.hello_with_type:
   - args:
       name: 1
-    raises: TypeError
+    success: false

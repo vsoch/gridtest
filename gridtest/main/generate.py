@@ -21,6 +21,20 @@ import yaml
 logger = logging.getLogger(__name__)
 
 
+def get_function_typing(func):
+    """Given a function that is inspected or otherwise present, return
+       a lookup of arguments with any expected default types. This is
+       done at runtime and done as a check, and done here so we don't need
+       to install mypy.
+
+       Arguments:
+        - func (function) : loaded function to return types for
+       Returns: lookup dictionary of variable names and types. Return
+         is in the lookup and corresponds to the value of the return.
+    """
+    return inspect.getfullargspec(func).annotations
+
+
 def import_module(name):
     """Import module will try import of a module based on a name. If import
        fails and there are no ., we expect that it could be a script in the

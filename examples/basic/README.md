@@ -168,6 +168,42 @@ make sure an attribute of the value returned is equal to 200.
 
 This is different from providing an explicit value.
 
+**success**
+
+You might just want to run something, and be sure that the success status is False.
+For example, if you give the wrong type as input to a function, it will by default
+exit with an error:
+
+```bash
+$ gridtest test examples/basic/script-tests.yml 
+[script.hello_with_type:6/6] |===================================| 100.0% 3% 
+success: script.add.0 returns 3 
+success: script.add.1 raises TypeError 
+success: script.add_with_type.0 returns 3 
+success: script.hello.0 
+success: script.hello_with_default.0 
+failure: script.hello_with_type.0 TypeError name (1) is <class 'int'>, should be <class 'str'>
+```
+
+However, if we update the test config from this:
+
+```yaml
+  script.hello_with_type:
+  - args:
+      name: 1
+```
+
+to this (to indicate that we expect failure):
+
+```yaml
+  script.hello_with_type:
+  - args:
+      name: 1
+  success: false
+```
+
+the tests will pass!
+
 **exists**
 
 And finally, if our function saved a file, we'd want to check for that like this.
@@ -246,8 +282,10 @@ script:
   script.hello_with_type:
   - args:
       name: 1
-    raises: TypeError
 ```
+
+For typing, given that a function uses typing, that will be tested. For example,
+the last function "hello_with_type" will not be successful.
 
 ## Test
 
@@ -262,6 +300,39 @@ And here is an (under development) snapshot of what a result currently looks lik
 (and this particular shot was run in serial).
 
 ![img/failed.png](img/failed.png)
+
+And here is an example of when all tests pass:
+
+![img/success.png](img/success.png)
+
+
+### Verbose
+
+You can print a little more output about successes or failures with `--verbose`
+
+```bash
+$ gridtest test --verbose examples/basic/script-tests.yml 
+[script.hello_with_type:6/6] |===================================| 100.0% 3% 
+success: script.add.0 returns 3 
+success: script.add.1 raises TypeError 
+success: script.add_with_type.0 returns 3 
+success: script.hello.0 
+success: script.hello_with_default.0 
+success: script.hello_with_type.0 success key set to false, expected failure.
+6/6 tests passed
+```
+
+Or you can filter to a regular expression (pattern) to only run a subset of
+tests:
+
+```bash
+$ gridtest test --pattern script.add examples/basic/script-tests.yml 
+[script.add_with_type:3/3] |===================================| 100.0% 
+success: script.add.0 returns 3 
+success: script.add.1 raises TypeError 
+success: script.add_with_type.0 returns 3 
+3/3 tests passed
+```
 
 **under development**
 

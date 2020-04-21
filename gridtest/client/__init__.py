@@ -47,6 +47,19 @@ def get_parser():
         "--cores", help="number of cores for multiprocessing to use", type=int
     )
 
+    test.add_argument(
+        "-v",
+        "--verbose",
+        dest="verbose",
+        help="also print output for success",
+        default=False,
+        action="store_true",
+    )
+
+    test.add_argument(
+        "--pattern", help="match a pattern to filter testing", type=str, default=None,
+    )
+
     # Run a grid test
     generate = subparsers.add_parser("generate", help="generate a grid test yaml file.")
 
