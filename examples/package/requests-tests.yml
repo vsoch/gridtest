@@ -1,15 +1,9 @@
 requests:
   filename: /home/vanessa/anaconda3/lib/python3.7/site-packages/requests/sessions.py
-  requests._check_cryptography:
-  - args:
-      cryptography_version: null
   requests.check_compatibility:
   - args:
       chardet_version: null
       urllib3_version: null
-  requests.delete:
-  - args:
-      url: null
   requests.get:
   - args:
       params: null
@@ -19,23 +13,6 @@ requests:
       url: null
   requests.options:
   - args:
-      url: null
-  requests.patch:
-  - args:
-      data: null
-      url: null
-  requests.post:
-  - args:
-      data: null
-      json: null
-      url: null
-  requests.put:
-  - args:
-      data: null
-      url: null
-  requests.request:
-  - args:
-      method: null
       url: null
   requests.session:
   - args: {}

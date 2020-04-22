@@ -1,5 +1,5 @@
 script:
-  filename: /home/vanessa/Desktop/Code/gridtest/examples/basic/script.py
+  filename: script.py
   script.add:
   - args:
       one: 1

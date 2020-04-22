@@ -18,5 +18,8 @@ def main(args, extra):
 
     runner = GridRunner(args.filename)
     runner.run(
-        nproc=args.cores, parallel=False, verbose=args.verbose, regexp=args.pattern
+        nproc=args.nproc,
+        parallel=not args.serial,
+        verbose=args.verbose,
+        regexp=args.pattern,
     )

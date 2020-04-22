@@ -13,7 +13,7 @@ from gridtest.utils import read_yaml
 from gridtest.logger import bot
 from gridtest import __version__
 
-from .generate import import_module, get_function_typing
+from .generate import import_module, get_function_typing, extract_modulename
 from .workers import Capturing, Workers
 
 import logging
@@ -34,6 +34,8 @@ class GridTest:
         self.success = False
         self.filename = filename or ""
         self.verbose = verbose
+        self.result = None
+        self.raises = None
 
         # Catching output and error
         self.out = []
@@ -130,35 +132,68 @@ class GridTest:
 
     # Running
 
+    def get_func(self):
+        """Get the function name, meaning we get the module first.
+        """
+        sys.path.insert(0, os.path.dirname(self.filename))
+        module = import_module(self.module)
+        func = getattr(module, self.get_funcname())
+        if func is None:
+            bot.error("Cannot find function.")
+        return func
+
+    def get_funcname(self):
+        """Get the function name, meaning we get the module first.
+        """
+        # The function name is the name absent the module
+        return re.sub("^%s[.]" % self.module, "", self.name)
+
     def run(self):
         """run an isolated test, and store the return code and result with
            the tester here.
         """
-        sys.path.insert(0, os.path.dirname(self.filename))
-        module = import_module(self.module)
+        func = self.get_func()
 
-        # The function name is the name absent the module
-        funcname = re.sub("^%s[.]" % self.module, "", self.name)
-        func = getattr(module, funcname)
+        # Run basic testing, or raises
+        if "raises" in self.params:
+            self.test_raises(func)
+        else:
+            self.test_basic(func)
 
-        if func is None:
-            bot.error("Cannot find function.")
+        # Finish by checking output
+        self.check_output()
 
+    def test_raises(self, func):
+        """Ensure that running a function raises a particular error. If the
+           function runs successfully, this is considered a failure.
+        """
+        try:
+            self.test_basic(func)
+            if self.success:
+                self.success = False
+        except Exception as e:
+            self.raises = type(e).__name__
+
+    # Checking Results
+
+    def check_output(self):
+        """Given that self.result is defined, check final output for the test.
+           This works (and is called) after self.run(), OR by the multiprocessing
+           worker that has updated self.result. Each of the actions below
+           does additional parsing of the result, and the client will update
+           self.success to be False if there is an issue.
+        """
         # Case 1: test for returns
         if "returns" in self.params:
-            self.test_returns(func, self.params["returns"])
+            self.check_returns(self.params["returns"])
 
         # Case 2: test raises
         elif "raises" in self.params:
-            self.test_raises(func, self.params["raises"])
+            self.check_raises(self.params["raises"])
 
         # Case 3: test exists
         elif "exists" in self.params:
-            self.test_exists(func, self.params["exists"])
-
-        # Case 4: runs just without error
-        else:
-            self.test_runs(func)
+            self.check_exists(self.params["exists"])
 
         # If expected success or failure, and got opposite
         if "success" in self.params:
@@ -166,38 +201,31 @@ class GridTest:
                 self.out.append("success key set to false, expected failure.")
                 self.success = True
 
-    # Testing
-
-    def test_returns(self, func, value):
+    def check_returns(self, value):
         """test that a function returns a particular value. The value might
            reference an input variable, so we use the args dictionary to
            substitute
         """
-        self.test_basic(func)
         value = self.substitute(value)
         if value == self.result:
             self.success = True
 
-    def test_runs(self, func):
-        """test runs only checks that the function runs without generating
-           an error. We don't check for a return value, but we set success to
-           be True.
-        """
-        if self.test_basic(func):
-            self.success = True
-
-    def test_raises(self, func, exception):
+    def check_raises(self, exception):
         """Ensure that running a function raises a particular error. If the
            function runs successfully, this is considered a failure.
         """
-        try:
-            if self.test_basic(func):
-                self.success = False
-        except Exception as e:
-            if type(e).__name__ == exception:
-                self.success = True
-            else:
-                self.err += [str(e)]
+        # Case 1: no exception thrown
+        if not self.raises:
+            self.success = False
+            self.err.append(f"Expected exception {exception} not raised")
+
+        # Case 2: correct exception thrown
+        elif self.raises == exception:
+            self.success = True
+        else:
+            self.err.append(
+                f"Expected exception {exception}, instead raised {self.raises}"
+            )
 
     def test_basic(self, func):
         """test basic only checks that the function runs without generating
@@ -213,8 +241,10 @@ class GridTest:
                     self.out += std.get("out")
                     self.err += std.get("err")
 
-            return True
-        return False
+            self.success = True
+            return
+
+        self.success = False
 
     def test_types(self, func):
         """Given a loaded function, get it's types and ensure that they are
@@ -267,6 +297,7 @@ class GridRunner:
             sys.exit(f"Cannot find gridtest file {input_file}")
         self.config = read_yaml(input_file)
         self.input_file = input_file
+        self.input_dir = os.path.dirname(input_file)
 
     def set_name(self, name=None):
         """set a custom name. If the user provides a name to the GridRunner,
@@ -288,45 +319,40 @@ class GridRunner:
             - nproc (int) : number of processes to run
         """
         if parallel:
-            return self._run_parallel(tests, show_progress, nproc=nproc)
+            self._run_parallel(tests, show_progress, nproc=nproc)
 
-        # Progressbar
-        total = len(tests)
-        progress = 1
+        else:
+            total = len(tests)
+            progress = 1
 
-        for name, task in tests.items():
-            prefix = "[%s:%s/%s]" % (task.name, progress, total)
-            if show_progress:
-                bot.show_progress(progress, total, length=35, prefix=prefix)
-            else:
-                bot.info("Running %s" % prefix)
+            for name, task in tests.items():
+                prefix = "[%s:%s/%s]" % (task.name, progress, total)
+                if show_progress:
+                    bot.show_progress(progress, total, length=35, prefix=prefix)
+                else:
+                    bot.info("Running %s" % prefix)
 
-            # Run the task, update results with finished object
-            task.run()
-            progress += 1
+                # Run the task, update results with finished object
+                task.run()
+                progress += 1
 
         return tests
 
-    def _run_parallel(self, queue, show_progress=True):
-        """ run tasks in parallel using the Workers class. Returns a dictionary
-            (lookup) wit results, with the key being the task name
-            Parameters
-            ==========
-            queue: the list of task objects to run
+    def _run_parallel(self, tests, show_progress=True, nproc=GRIDTEST_WORKERS):
+        """run tasks in parallel using the Workers class. Returns the same
+           tests results, but after running.
+
+           Arguments:
+              - queue: the list of task objects to run
         """
-        # TODO write this function
-        # Run with multiprocessing
-        funcs = {}
-        tasks = {}
+        workers = Workers(show_progress=show_progress, workers=nproc)
+        workers.run(tests)
 
-        for task in queue:
+        # Run final checks
+        for name, test in tests.items():
+            test.check_output()
 
-            # Export parameters and functions
-            funcs[task.name] = task.export_func()
-            tasks[task.name] = task.export_params()
-
-        workers = Workers(show_progress=show_progress)
-        return workers.run(funcs, tasks)
+        return tests
 
     def run(
         self, regexp=None, parallel=True, nproc=None, show_progress=True, verbose=False
@@ -361,10 +387,8 @@ class GridRunner:
         if self.failed(tests):
             sys.exit(1)
 
+        # TODO add param to save to file
         sys.exit(0)
-
-        # TODO how to print to console results? Save to file?
-        # TODO check for failed, print failed only if failed
 
     def success(self, tests):
         """Given a test of tests, return True if all are successful.
@@ -409,13 +433,19 @@ class GridRunner:
 
                 # Each module can have a list of tests
                 if name.startswith(parent):
+
+                    # Get either the file path, module name, or relative path
+                    filename = extract_modulename(
+                        section.get("filename"), self.input_dir
+                    )
+
                     for idx in range(len(module)):
                         tests["%s.%s" % (name, idx)] = GridTest(
                             module=parent,
                             name=name,
                             params=module[idx],
                             verbose=verbose,
-                            filename=section.get("filename"),
+                            filename=filename,
                         )
 
         return tests

@@ -100,13 +100,38 @@ def formulate_arg(arg, default=None):
     return {arg: default}
 
 
+def extract_modulename(filename, input_dir=None):
+    """Extract a module, file, or relative path for a filename. First
+
+       Arguments:
+          - filename (str) : a filename or module name to parse
+          - input_dir (str) : an input directory with the recipe, in case
+                              of a local file.
+    """
+    input_dir = input_dir or ""
+
+    # Case 1: the filename already exists
+    if os.path.exists(filename):
+        return filename
+
+    # Case 2: It's a module installed, return module name
+    if "site-packages" in filename:
+        return [x for x in filename.split("site-packages")[-1].split("/") if x][0]
+
+    # Case 3: It's a local file in some input directory
+    filename = os.path.join(input_dir, os.path.basename(filename))
+    if not os.path.exists(filename):
+        sys.exit(f"Cannot find module {filename}")
+    return filename
+
+
 def extract_functions(filename, include_private=False):
     """Given a filename, extract a module and associated functions with it
        into a grid test. This means creating a structure with function
        names and (if provided) default inputs. The user will fill in
        the rest of the file.
 
-        Arguments:
+       Arguments:
           - filename (str) : a filename or module name to parse
           - include_private (bool) : include "private" functions
     """

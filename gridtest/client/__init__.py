@@ -44,7 +44,9 @@ def get_parser():
     test.add_argument("filename", help="gridtest file to run tests for", type=str)
 
     test.add_argument(
-        "--cores", help="number of cores for multiprocessing to use", type=int
+        "--nproc",
+        help="number of processes for running tests (defaults to 2*ncores + 1)",
+        type=int,
     )
 
     test.add_argument(
@@ -52,6 +54,14 @@ def get_parser():
         "--verbose",
         dest="verbose",
         help="also print output for success",
+        default=False,
+        action="store_true",
+    )
+
+    test.add_argument(
+        "--serial",
+        dest="serial",
+        help="run tests in serial (instead of parallel), uses --nproc",
         default=False,
         action="store_true",
     )
