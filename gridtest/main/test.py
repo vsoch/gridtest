@@ -14,7 +14,8 @@ from gridtest.logger import bot
 from gridtest import __version__
 
 from .generate import import_module, get_function_typing, extract_modulename
-from .workers import Capturing, Workers
+from .workers import Workers
+from .helpers import test_basic
 
 import logging
 import re
@@ -25,7 +26,15 @@ logger = logging.getLogger(__name__)
 
 
 class GridTest:
-    def __init__(self, module, name, filename=None, params=None, verbose=False):
+    def __init__(
+        self,
+        module,
+        name,
+        filename=None,
+        params=None,
+        verbose=False,
+        show_progress=True,
+    ):
 
         self.name = name
         self.module = module
@@ -34,6 +43,7 @@ class GridTest:
         self.success = False
         self.filename = filename or ""
         self.verbose = verbose
+        self.show_progress = show_progress
         self.result = None
         self.raises = None
 
@@ -152,27 +162,27 @@ class GridTest:
         """run an isolated test, and store the return code and result with
            the tester here.
         """
-        func = self.get_func()
+        if not self.show_progress:
+            bot.info(f"Running test {name}")
 
-        # Run basic testing, or raises
-        if "raises" in self.params:
-            self.test_raises(func)
-        else:
-            self.test_basic(func)
+        # [passe, result, out, err, raises]
+        passed, result, out, err, raises = test_basic(
+            funcname=self.get_funcname(),
+            module=self.module,
+            filename=self.filename,
+            args=self.params.get("args", {}),
+            returns=self.params.get("returns"),
+        )
+
+        self.success = passed
+        self.result = result
+        self.out = out
+        self.err = err
+        self.raises = raises
 
         # Finish by checking output
         self.check_output()
 
-    def test_raises(self, func):
-        """Ensure that running a function raises a particular error. If the
-           function runs successfully, this is considered a failure.
-        """
-        try:
-            self.test_basic(func)
-            if self.success:
-                self.success = False
-        except Exception as e:
-            self.raises = type(e).__name__
 
     # Checking Results
 
@@ -227,51 +237,6 @@ class GridTest:
                 f"Expected exception {exception}, instead raised {self.raises}"
             )
 
-    def test_basic(self, func):
-        """test basic only checks that the function runs without generating
-           an error. We don't check for a return value.
-        """
-        if self.test_types(func):
-
-            # Run and capture output and error
-            with Capturing() as output:
-                self.result = func(**self.params["args"])
-                if output:
-                    std = output.pop(0)
-                    self.out += std.get("out")
-                    self.err += std.get("err")
-
-            self.success = True
-            return
-
-        self.success = False
-
-    def test_types(self, func):
-        """Given a loaded function, get it's types and ensure that they are
-           correct. Returns a boolean to indicate correct/ passing (True)
-        """
-        # Check arguments first
-        types = get_function_typing(func)
-        for argname, argtype in types.items():
-            if argname in self.params["args"]:
-                value = self.params["args"][argname]
-                if not isinstance(value, argtype):
-                    self.err.append(
-                        "TypeError %s (%s) is %s, should be %s"
-                        % (argname, value, type(value), argtype)
-                    )
-                    return False
-
-        # Check return type
-        if "return" in types and "returns" in self.params:
-            if not isinstance(self.params["returns"], types["return"]):
-                self.err.append(
-                    "TypeError return value %s should be %s"
-                    % (self.params["returns"], types["return"])
-                )
-                return False
-
-        return True
 
 
 class GridRunner:
@@ -288,6 +253,7 @@ class GridRunner:
         self._version = __version__
         self.load(input_file)
         self.set_name(kwargs.get("name"))
+        self.show_progress = True
 
     def load(self, input_file):
         """load a testing gridtest file.
@@ -309,17 +275,16 @@ class GridRunner:
         """
         self.name = name or os.path.basename(self.input_file)
 
-    def run_tests(self, tests, nproc=9, parallel=True, show_progress=True):
+    def run_tests(self, tests, nproc=9, parallel=True):
         """run tests. By default, we run them in parallel, unless serial
            is selected.
 
            Arguments:
             - parallel (bool) : run tasks in parallel (default is True)
-            - show_progress (bool) : show progress for tasks
             - nproc (int) : number of processes to run
         """
         if parallel:
-            self._run_parallel(tests, show_progress, nproc=nproc)
+            self._run_parallel(tests, nproc=nproc)
 
         else:
             total = len(tests)
@@ -327,7 +292,7 @@ class GridRunner:
 
             for name, task in tests.items():
                 prefix = "[%s:%s/%s]" % (task.name, progress, total)
-                if show_progress:
+                if self.show_progress:
                     bot.show_progress(progress, total, length=35, prefix=prefix)
                 else:
                     bot.info("Running %s" % prefix)
@@ -338,14 +303,14 @@ class GridRunner:
 
         return tests
 
-    def _run_parallel(self, tests, show_progress=True, nproc=GRIDTEST_WORKERS):
+    def _run_parallel(self, tests, nproc=GRIDTEST_WORKERS):
         """run tasks in parallel using the Workers class. Returns the same
            tests results, but after running.
 
            Arguments:
               - queue: the list of task objects to run
         """
-        workers = Workers(show_progress=show_progress, workers=nproc)
+        workers = Workers(show_progress=self.show_progress, workers=nproc)
         workers.run(tests)
 
         # Run final checks
@@ -371,13 +336,11 @@ class GridRunner:
         """
         # 1. Get filtered list of tests
         tests = self.get_tests(regexp=regexp, verbose=verbose)
+        self.show_progress = show_progress
 
         # 2. Run tests (serial or in parallel)
         self.run_tests(
-            tests=tests,
-            parallel=parallel,
-            show_progress=show_progress,
-            nproc=nproc or GRIDTEST_WORKERS,
+            tests=tests, parallel=parallel, nproc=nproc or GRIDTEST_WORKERS,
         )
 
         # Pretty print results to screen
@@ -446,6 +409,7 @@ class GridRunner:
                             params=module[idx],
                             verbose=verbose,
                             filename=filename,
+                            show_progress=self.show_progress,
                         )
 
         return tests
