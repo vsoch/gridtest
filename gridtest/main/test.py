@@ -219,6 +219,13 @@ class GridTest:
                 self.out.append("success key set to false, expected failure.")
                 self.success = True
 
+    def check_exists(self, filename):
+        """check if a filename exists.
+        """
+        self.success = False
+        if os.path.exists(filename):
+            self.success = True
+
     def check_returns(self, value):
         """test that a function returns a particular value. The value might
            reference an input variable, so we use the args dictionary to

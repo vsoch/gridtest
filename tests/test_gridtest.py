@@ -146,3 +146,23 @@ def test_raises():
     assert test.raises == "Exception"
     assert len(test.err) == 0
     assert len(test.out) == 1
+
+
+def test_exists(tmp_path):
+    """test that a file is generated (exists)
+    """
+    from gridtest.main.test import GridTestFunc
+
+    def write_file(output_file):
+        with open(output_file, 'w') as filey:
+            filey.writelines("cheezypasta")
+ 
+    output_file = os.path.join(str(tmp_path), 'pasta.txt')
+    test = GridTestFunc(write_file, params={"args": {"output_file": output_file}, "exists": output_file})
+    assert not test.success
+    assert not os.path.exists(output_file)
+
+    # After run, it should fail and have the error output
+    test.run()
+    assert test.success
+    assert os.path.exists(output_file)
