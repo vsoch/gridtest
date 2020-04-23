@@ -13,16 +13,17 @@ from gridtest.utils import read_yaml
 from gridtest.logger import bot
 from gridtest import __version__
 
-from .generate import import_module, get_function_typing, extract_modulename
-from .workers import Workers
-from .helpers import test_basic
+from gridtest.main.generate import (
+    import_module,
+    get_function_typing,
+    extract_modulename,
+)
+from gridtest.main.workers import Workers
+from gridtest.main.helpers import test_basic
 
-import logging
 import re
 import sys
 import os
-
-logger = logging.getLogger(__name__)
 
 
 class GridTest:
@@ -30,6 +31,7 @@ class GridTest:
         self,
         module,
         name,
+        func=None,
         filename=None,
         params=None,
         verbose=False,
@@ -37,6 +39,7 @@ class GridTest:
     ):
 
         self.name = name
+        self.func = func
         self.module = module
         self.valid = False
         self.params = params or {}
@@ -169,6 +172,7 @@ class GridTest:
         passed, result, out, err, raises = test_basic(
             funcname=self.get_funcname(),
             module=self.module,
+            func=self.func,
             filename=self.filename,
             args=self.params.get("args", {}),
             returns=self.params.get("returns"),
@@ -204,6 +208,11 @@ class GridTest:
         elif "exists" in self.params:
             self.check_exists(self.params["exists"])
 
+        # Case 4: An error was raised (not expected)
+        if self.raises and "raises" not in self.params:
+            self.err.append(f"Unexpected Exception: {self.raises}.")
+            self.success = False
+
         # If expected success or failure, and got opposite
         if "success" in self.params:
             if not self.params["success"] and not self.success:
@@ -215,6 +224,7 @@ class GridTest:
            reference an input variable, so we use the args dictionary to
            substitute
         """
+        self.success = False
         value = self.substitute(value)
         if value == self.result:
             self.success = True
@@ -223,6 +233,8 @@ class GridTest:
         """Ensure that running a function raises a particular error. If the
            function runs successfully, this is considered a failure.
         """
+        self.success = False
+
         # Case 1: no exception thrown
         if not self.raises:
             self.success = False
@@ -231,10 +243,28 @@ class GridTest:
         # Case 2: correct exception thrown
         elif self.raises == exception:
             self.success = True
+            self.out.append(f"Exception: {self.raises} raised as desired.")
         else:
             self.err.append(
                 f"Expected exception {exception}, instead raised {self.raises}"
             )
+
+
+class GridTestFunc(GridTest):
+    """a function can be loaded from within Python with GridTestFunc.
+    """
+
+    def __init__(
+        self, func, params=None, verbose=False, show_progress=True,
+    ):
+        super().__init__(
+            module=func.__module__,
+            func=func,
+            name=func.__name__,
+            params=params,
+            verbose=verbose,
+            show_progress=show_progress,
+        )
 
 
 class GridRunner:
@@ -344,12 +374,10 @@ class GridRunner:
         # Pretty print results to screen
         self.print_results(tests)
 
-        # Exit with correct error code
+        # return correct error code
         if self.failed(tests):
-            sys.exit(1)
-
-        # TODO add param to save to file
-        sys.exit(0)
+            return 1
+        return 0
 
     def success(self, tests):
         """Given a test of tests, return True if all are successful.
