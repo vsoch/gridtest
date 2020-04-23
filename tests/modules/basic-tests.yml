@@ -1,0 +1,26 @@
+basic:
+  filename: basic.py
+  basic.add:
+  - args:
+      one: 1
+      two: 2
+    returns: 3
+  - args:
+      one: 1
+      two: null
+    raises: TypeError
+  basic.add_with_type:
+  - args:
+      one: 1
+      two: 2
+    returns: 3
+  basic.hello:
+  - args:
+      name: Vanessa
+  basic.hello_with_default:
+  - args:
+      name: Dinosaur
+  basic.hello_with_type:
+  - args:
+      name: 1
+    success: false

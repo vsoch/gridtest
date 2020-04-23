@@ -73,6 +73,7 @@ class Workers(object):
                     "args": task.params.get("args", {}),
                     "returns": task.params.get("returns"),
                 }
+
                 if not self.show_progress:
                     bot.info(f"Running test {name}")
                 result = pool.apply_async(

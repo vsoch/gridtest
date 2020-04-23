@@ -17,9 +17,10 @@ import re
 def main(args, extra):
 
     runner = GridRunner(args.filename)
-    runner.run(
+    return_code = runner.run(
         nproc=args.nproc,
         parallel=not args.serial,
         verbose=args.verbose,
         regexp=args.pattern,
     )
+    sys.exit(return_code)

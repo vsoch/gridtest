@@ -47,15 +47,19 @@ class Capturing(list):
 
 
 def test_basic(
-    funcname, module, filename, args=None, returns=None,
+    funcname, module, filename, func=None, args=None, returns=None,
 ):
     """test basic is a worker version of the task.test_basic function.
+       If a function is not provided, funcname, module, and filename are
+       required to retrieve it. A function can only be provided directly
+       if it is pickle serializable (multiprocessing would require this).
        It works equivalently but is not attached to a class, and returns
        a list of values for [passed, result, out, err, raises]
     """
-    sys.path.insert(0, os.path.dirname(filename))
-    module = import_module(module)
-    func = getattr(module, funcname)
+    if not func:
+        sys.path.insert(0, os.path.dirname(filename))
+        module = import_module(module)
+        func = getattr(module, funcname)
 
     passed = False
     result = None
@@ -70,9 +74,11 @@ def test_basic(
         passed, error = test_types(func, args, returns)
         err += error
 
-        # if type checking passes
-        if passed:
+        # if type doesn't pass, TypeError, otherwise continue
+        if not passed:
+            raises = "TypeError"
 
+        else:
             # Run and capture output and error
             with Capturing() as output:
                 try:
