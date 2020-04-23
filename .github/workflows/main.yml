@@ -34,4 +34,5 @@ jobs:
         run: |
           export PATH="/usr/share/miniconda/bin:$PATH"
           source activate testing
+          pip install -e .
           pytest -sv tests/*.py
