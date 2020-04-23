@@ -183,7 +183,6 @@ class GridTest:
         # Finish by checking output
         self.check_output()
 
-
     # Checking Results
 
     def check_output(self):
@@ -236,7 +235,6 @@ class GridTest:
             self.err.append(
                 f"Expected exception {exception}, instead raised {self.raises}"
             )
-
 
 
 class GridRunner:
