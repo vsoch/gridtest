@@ -21,8 +21,6 @@ LICENSE = "LICENSE"
 # Global requirements
 
 
-INSTALL_REQUIRES = (
-    ("pyaml", {"min_version": "20.3.1"}),
-)
+INSTALL_REQUIRES = (("pyaml", {"min_version": "20.3.1"}),)
 
 TESTS_REQUIRES = (("pytest", {"min_version": "4.6.2"}),)
