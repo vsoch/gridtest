@@ -78,6 +78,9 @@ class GridTest:
            in the format of {{ args.<name> }} and if so, if the argument is present
            return the value with the substitution.
         """
+        if not isinstance(value, str):
+            return value
+
         # We allow for namespacing of args, right now only supports args
         if not value.startswith("args"):
             sys.exit(

@@ -55,4 +55,8 @@ def test_substitute_func_custom(tmp_path):
     from gridtest.main.substitute import substitute_func
 
     # TODO: need some actual use cases for this
+    # STOPPED HERE - write example recipes that use these for tmpfile testing
+    # Add ability to inspect an attribute for a result
+    # Then finish requests use case
+    # start on documentation
     pass
