@@ -122,3 +122,74 @@ def test_types(func, args=None, returns=None):
             return False, err
 
     return True, err
+
+
+# Substitution
+
+
+def substitute_func(value):
+    """Given a value, determine if it contains a function substitution,
+       and if it's one an important function (e.g., one from gridtest.helpers)
+       return the value with the function applied. 
+
+       Arguments:
+         - value (str) : the value to do the substitution for.
+
+       Notes: 
+         A function should be in the format: {% tempfile.mkdtemp %} 
+         (global import) or a function in gridtest.func in the format 
+         {% tmp_path %}. If arguments are supplied, they should be in 
+         the format {% tmp_path arg1=1 arg2=2 %}
+    """
+    # Numbers cannot have replacement
+    if not isinstance(value, str):
+        return value
+
+    # First do substitutions of variables
+    for template in re.findall("{%.+%}", value):
+        varname = re.sub("({%|%})", "", template)
+        params = [x.strip() for x in varname.split(" ") if x]
+        modulename = params.pop(0).split(".", 1)
+        funcpath = modulename[1:]
+
+        try:
+            module = import_module(modulename[0])
+        except:
+
+            # The module is gridtest.func
+            module = import_module("gridtest.func")
+            funcpath = modulename[0]
+
+        if not funcpath:
+            sys.exit(f"A function name must be provided for {varname}")
+        func = getattr(module, funcpath)
+
+        # If function is found, get value
+        if func:
+            kwargs = {}
+            params = {x.split("=")[0]: x.split("=")[1] for x in params}
+
+            # Clean up parameters based on intuited types
+            for paramname, paramvalue in params.items():
+                if paramvalue == "None":
+                    paramvalue = None
+
+                # No quotes and all numeric, probably int
+                elif re.search("^[0-9]+$", paramvalue):
+                    paramvalue = int(paramvalue)
+
+                # One decimal, all numbers, probably float
+                elif re.search("^[0-9]+[.]([0-9]+)?$", paramvalue):
+                    paramvalue = float(paramvalue)
+
+                # Explicitly a string with quotes
+                elif re.search('^(".+")$', paramvalue):
+                    paramvalue = paramvalue.strip('"')
+                elif re.search("^('.+')$", paramvalue):
+                    paramvalue = paramvalue.strip("'")
+                kwargs[paramname] = paramvalue
+
+            new_value = func(**kwargs)
+            value = re.sub(template, value, new_value)
+
+    return value

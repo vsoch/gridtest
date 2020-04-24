@@ -20,6 +20,7 @@ from gridtest.main.generate import (
 )
 from gridtest.main.workers import Workers
 from gridtest.main.helpers import test_basic
+from gridtest.main.substitute import substitute_func, substitute_args
 
 import re
 import sys
@@ -77,36 +78,20 @@ class GridTest:
            in the format of {{ args.<name> }} and if so, if the argument is present
            return the value with the substitution.
         """
-        # Valid indices into self.params to substitute
-        valid_subs = "^(%s)[.]" % "|".join(["args"])
-
-        # Numbers cannot have replacement
-        if not isinstance(value, str):
-            return value
-
-        # First do substitutions of variables
-        for template in re.findall("{{.+}}", value):
-            varname = re.sub("({|}| )", "", template)
-
-            # Varname needs to be in valid namespace (args)
-            if not re.search(valid_subs, varname):
-                continue
-
-            varname = re.sub(valid_subs, "", varname)
-
-            # Variable name must be in args
-            if varname in self.params:
-                value = re.sub(template, self.params[varname], value)
-
-        return value
+        # We allow for namespacing of args, right now only supports args
+        if not value.startswith("args"):
+            sys.exit(
+                "Invalid: %s. Currently only supported substitutions are from args (e.g., {{ args.name }}"
+                % value
+            )
+        value = re.sub("args[.]", "", value, 1)
+        return substitute_args(value, params=self.params["args"])
 
     def _substitute_func(self, value):
         """Given a value, determine if it contains a function substitution,
-           and if it's one from gridtest.helpers, return the value with
-           the function applied.
+           and do it. See gridtest.main.helpers.substitute_func. for details.
         """
-        # TODO write me
-        return value
+        return substitute_func(value)
 
     # Summary
     @property

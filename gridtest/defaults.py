@@ -8,6 +8,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
+
 import multiprocessing
 import os
 import sys
@@ -36,3 +37,6 @@ def getenv(variable_key, default=None, required=False, silent=True):
 
 GRIDTEST_NPROC = multiprocessing.cpu_count()
 GRIDTEST_WORKERS = int(getenv("GRIDTEST_WORKERS", GRIDTEST_NPROC * 2 + 1))
+
+# Known default functions
+GRIDTEST_FUNCS = ["tmp_dir", "tmp_path"]
