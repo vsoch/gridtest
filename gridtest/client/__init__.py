@@ -67,6 +67,23 @@ def get_parser():
     )
 
     test.add_argument(
+        "--no-cleanup",
+        dest="no_cleanup",
+        help="Do not clean up paths generated with tmp_path or tmp_dir",
+        default=False,
+        action="store_true",
+    )
+
+    test.add_argument(
+        "-i",
+        "--interactive",
+        dest="interactive",
+        help="interactively debug a test with code.interact or IPython.embed",
+        default=False,
+        action="store_true",
+    )
+
+    test.add_argument(
         "--pattern", help="match a pattern to filter testing", type=str, default=None,
     )
 
@@ -77,10 +94,15 @@ def get_parser():
         "input",
         help="name of input file, folder, or module to write tests for",
         type=str,
+        nargs="*",
     )
 
     generate.add_argument(
-        "output", help="name of output file to write grid test (.yml|.yaml)", type=str
+        "--check",
+        dest="check_only",
+        help="only print new (to be generated) section names to the screen.",
+        default=False,
+        action="store_true",
     )
 
     generate.add_argument(

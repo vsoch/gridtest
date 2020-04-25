@@ -8,7 +8,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-from gridtest.utils import recursive_find, write_yaml
+from gridtest.utils import recursive_find, write_yaml, read_yaml
 import importlib
 import inspect
 import os
@@ -50,8 +50,15 @@ def import_module(name):
     return module
 
 
-def generate_tests(module, output=None, include_private=False):
-    """Generate a test output file for some input module, which can be:
+def generate_tests(module, output=None, include_private=False, check_only=False):
+    """Generate a test output file for some input module. If an output file 
+       is specified and already has existing content, in the case that check is 
+       used, we only print section names that have not been written. If check
+       is used and the file doesn't exist, we print the tests to create to the
+       screen. If an existing file is found and check isn't used, we only
+       update it with tests not yet written. This functionality is provided
+       so that the user can easily update a testing file without erasing old
+       tests. A "module" input variable can be:
         - a script path explitly
         - a directory path with files to be recursively discovered
         - a module name
@@ -60,8 +67,9 @@ def generate_tests(module, output=None, include_private=False):
           - module (str) : a file, directory, or module name to parse
           - output (str) : a path to a yaml file to save to
           - include_private (bool) : include "private" functions
+          - check_only (bool) : 
     """
-    if not re.search("[.](yml|yaml)$", output):
+    if output and not re.search("[.](yml|yaml)$", output):
         sys.exit("Output file must have yml|yaml extension.")
 
     files = []
@@ -78,17 +86,35 @@ def generate_tests(module, output=None, include_private=False):
     else:
         files = [module]
 
-    # We will build up a test specification
+    # We will build up a test specification (or read in existing)
     spec = {}
+    if output and os.path.exists(output):
+        spec = read_yaml(output)
+
+    # Keep track of new sections seen
+    sections = []
 
     # Import each file as a module, or a module name, exit on error
     for filename in files:
-        # name replaces / with .
-        name = filename.replace("/", ".").strip(".py")
-        spec[name] = extract_functions(filename, include_private)
+        name = re.sub("[.]py$", "", filename.replace("/", "."))
+        functions = extract_functions(filename, include_private)
+        if name not in spec:
+            spec[name] = {}
+
+        sections += [
+            k for k, v in functions.items() if k not in spec[name] and k != "filename"
+        ]
+        # We would want to update filename if done again differently
+        for key, params in functions.items():
+            if key not in spec[name] or key != "filename":
+                spec[name][key] = params
+
+    # Case 1: A check only shows new fields added
+    if check_only and sections or not output:
+        print("\nNew sections to add:\n%s" % "\n".join(sections))
 
     # Write to output file
-    if output:
+    if output and not check_only:
         write_yaml(spec, output)
     return spec
 

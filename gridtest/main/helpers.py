@@ -46,8 +46,23 @@ class Capturing(list):
         sys.stderr = self._stderr
 
 
+def print_interactive(**kwargs):
+    """A helper function to print locals that are relevant to test_basic for 
+       the user.
+    """
+    print(f"\n\nGridtest interactive mode! Press Control+D to cycle to next test.")
+    print("\n\033[1mVariables\033[0m")
+    print(f"   func: {kwargs['func']}")
+    print(f" module: {kwargs['module']}")
+    print(f"   args: {kwargs['args']}")
+    print(f"returns: {kwargs['returns']}")
+    print("\n\033[1mHow to test\033[0m")
+    print("passed, error = test_types(func, args, returns)")
+    print("result = func(**args)\n")
+
+
 def test_basic(
-    funcname, module, filename, func=None, args=None, returns=None,
+    funcname, module, filename, func=None, args=None, returns=None, interactive=False
 ):
     """test basic is a worker version of the task.test_basic function.
        If a function is not provided, funcname, module, and filename are
@@ -55,7 +70,11 @@ def test_basic(
        if it is pickle serializable (multiprocessing would require this).
        It works equivalently but is not attached to a class, and returns
        a list of values for [passed, result, out, err, raises]
+
+       Arguments:
+         - interactive (bool) : run in interactive mode (giving user shell)
     """
+
     if not func:
         sys.path.insert(0, os.path.dirname(filename))
         module = import_module(module)
@@ -66,6 +85,18 @@ def test_basic(
     raises = None
     out = []
     err = []
+
+    # Interactive mode means giving the user console control
+    if interactive:
+        print_interactive(**locals())
+        try:
+            import IPython
+
+            IPython.embed()
+        except:
+            import code
+
+            code.interact(local=locals())
 
     if not func:
         err = [f"Cannot find function {gridtest_funcname}"]

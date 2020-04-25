@@ -16,5 +16,19 @@ from gridtest.main.generate import generate_tests
 
 def main(args, extra):
 
+    if not args.input:
+        sys.exit("Please provide an input file, folder, or module to parse.")
+
+    # The output file is optional, input file is not
+    outputfile = None
+    input_file = args.input.pop(0)
+    if args.input:
+        outputfile = args.input.pop(0)
+
     # Generate the testing file
-    generate_tests(args.input, output=args.output, include_private=args.include_private)
+    generate_tests(
+        input_file,
+        output=outputfile,
+        include_private=args.include_private,
+        check_only=args.check_only,
+    )

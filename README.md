@@ -27,3 +27,10 @@ wants something. I considered calling it crappytest, but the name was too long :
 
  * Free software: MPL 2.0 License
 
+## TODO
+
+ - write example recipes that use substitutes for tmpfile testing
+ - there should be a function to  --check if a recipe includes all functions (or not) and edit current generate to NOT write over existing functions in file.
+ - Add ability to inspect an attribute for a result
+ - Then finish requests use case
+ - beautiful documentation

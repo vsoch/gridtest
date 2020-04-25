@@ -39,13 +39,14 @@ def substitute_args(value, params=None):
     return value
 
 
-def substitute_func(value):
+def substitute_func(value, funcs=None):
     """Given a value, determine if it contains a function substitution,
        and if it's one an important function (e.g., one from gridtest.helpers)
        return the value with the function applied. 
 
        Arguments:
          - value (str) : the value to do the substitution for.
+         - funcs (dict) : lookup dictionary of functions to be used
 
        Notes: 
          A function should be in the format: {% tempfile.mkdtemp %} 
@@ -65,25 +66,32 @@ def substitute_func(value):
         # Split module.name.func into module.name func
         modulename = params.pop(0).rsplit(".", 1)[0]
         funcpath = modulename[1:]
+        func = None
 
         # Case 1: we have a known gridtest function
         if modulename in GRIDTEST_FUNCS:
             funcpath = modulename
             modulename = "gridtest.func"
 
-        # Case 2: Custom module provided by the user
+        # Case 2: a function is supplied directly in the lookup
+        elif modulename in funcs:
+            func = funcs.get(modulename)
+
+        # Case 3: Custom module provided by the user
         else:
             funcpath = funcpath[0]
 
         # The function path needs to be provided
-        if not funcpath:
+        if not funcpath and not func:
             sys.exit(f"A function name must be provided for {varname}")
 
-        try:
-            module = import_module(modulename)
-            func = getattr(module, funcpath)
-        except:
-            sys.exit(f"Cannot import module {modulename}")
+        # If used from within Python, the function might be supplied
+        if not func:
+            try:
+                module = import_module(modulename)
+                func = getattr(module, funcpath)
+            except:
+                sys.exit(f"Cannot import module {modulename}")
 
         # If function is found, get value
         if not func:

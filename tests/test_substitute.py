@@ -54,9 +54,16 @@ def test_substitute_func_custom(tmp_path):
     """Test that any module (and function) substitution works"""
     from gridtest.main.substitute import substitute_func
 
-    # TODO: need some actual use cases for this
-    # STOPPED HERE - write example recipes that use these for tmpfile testing
-    # Add ability to inspect an attribute for a result
-    # Then finish requests use case
-    # start on documentation
-    pass
+    def get_name(name="dinosauria"):
+        return name
+
+    # Test supplying function "get_name" without any arguments
+    with pytest.raises(SystemExit):
+        assert substitute_func("{% get_name %}")
+
+    # Provide the function
+    assert substitute_func("{% get_name %}", {"get_name": get_name}) == "dinosauria"
+    assert (
+        substitute_func("{% get_name name=weeble %}", {"get_name": get_name})
+        == "weeble"
+    )

@@ -22,5 +22,7 @@ def main(args, extra):
         parallel=not args.serial,
         verbose=args.verbose,
         regexp=args.pattern,
+        interactive=args.interactive,
+        cleanup=not args.no_cleanup,
     )
     sys.exit(return_code)
