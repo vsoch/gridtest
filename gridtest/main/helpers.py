@@ -121,6 +121,9 @@ def test_basic(
                     passed = True
                 except Exception as e:
                     raises = type(e).__name__
+                    message = str(e)
+                    if message:
+                        err.append(message)
 
     return [passed, result, out, err, raises]
 

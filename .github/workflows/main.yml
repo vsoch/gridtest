@@ -36,3 +36,4 @@ jobs:
           source activate testing
           pip install -e .
           pytest -sv tests/*.py
+          /bin/bash tests/test_client.sh

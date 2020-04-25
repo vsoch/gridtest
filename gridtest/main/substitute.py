@@ -74,7 +74,7 @@ def substitute_func(value, funcs=None):
             modulename = "gridtest.func"
 
         # Case 2: a function is supplied directly in the lookup
-        elif modulename in funcs:
+        elif funcs and modulename in funcs:
             func = funcs.get(modulename)
 
         # Case 3: Custom module provided by the user

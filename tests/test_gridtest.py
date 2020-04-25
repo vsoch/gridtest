@@ -31,6 +31,16 @@ def test_gridrunner(runner):
     assert runner.run() == 0
     assert runner.run(parallel=False) == 0
 
+    # Test gridrunner with temporary substitutes
+    from gridtest.main.test import GridRunner
+
+    test_file = os.path.join(here, "modules", "temp-tests.yml")
+    runner = GridRunner(test_file)
+    assert "temp" in runner.config
+    assert len(runner.config["temp"]) >= 2
+    assert runner.run() == 0
+    assert runner.run(parallel=False) == 0
+
 
 def test_returns(runner):
     """Run a test that checks for a return value"""
@@ -78,7 +88,7 @@ def test_broken_func():
     test.run()
     assert not test.success
     assert test.raises == "TypeError"
-    assert len(test.err) == 1
+    assert len(test.err) >= 1
 
 
 def test_broken_func():
@@ -92,7 +102,7 @@ def test_broken_func():
     assert not test.success
     test.run()
     assert not test.success
-    assert len(test.err) == 1
+    assert len(test.err) >= 1
 
 
 def test_return_type():

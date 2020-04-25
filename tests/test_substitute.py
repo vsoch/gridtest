@@ -13,6 +13,8 @@ import os
 import pytest
 import tempfile
 
+here = os.path.abspath(os.path.dirname(__file__))
+
 
 def test_substitute_args():
     """Test that argument substitution works
@@ -67,3 +69,50 @@ def test_substitute_func_custom(tmp_path):
         substitute_func("{% get_name name=weeble %}", {"get_name": get_name})
         == "weeble"
     )
+
+
+def test_substitute_gridtest():
+    """Test that the gridtest (test instantiation) performs the substitution.
+    """
+    from gridtest.main.test import GridRunner
+
+    test_file = os.path.join(here, "modules", "temp-tests.yml")
+    runner = GridRunner(test_file)
+
+    # Before running anything, the runner config should have tmp_path, tmp_dir
+    assert (
+        "{% tmp_dir %}"
+        in runner.config["temp"]["temp.create_directory"][0]["args"]["dirname"]
+    )
+    assert (
+        "{% tmp_path %}"
+        in runner.config["temp"]["temp.write_file"][0]["args"]["filename"]
+    )
+
+    tests = runner.get_tests()
+
+    # After we create the tests, we have variable substitution
+    assert (
+        "{% tmp_dir %}"
+        not in runner.config["temp"]["temp.create_directory"][0]["args"]["dirname"]
+    )
+    assert (
+        "{% tmp_path %}"
+        not in runner.config["temp"]["temp.write_file"][0]["args"]["filename"]
+    )
+
+    # The directory should exist (tmp_dir creates for the test) but not filename
+    assert os.path.exists(tests["temp.create_directory.0"].params["args"]["dirname"])
+    assert not os.path.exists(tests["temp.write_file.0"].params["args"]["filename"])
+
+    # Run the tests
+    for name, test in tests.items():
+        test.run(cleanup=False)
+
+    # Assert that the output files are not cleaned up
+    assert os.path.exists(tests["temp.create_directory.0"].params["args"]["dirname"])
+    assert os.path.exists(tests["temp.write_file.0"].params["args"]["filename"])
+
+    # Run again with cleanup
+    for name, test in tests.items():
+        test.run(cleanup=True)

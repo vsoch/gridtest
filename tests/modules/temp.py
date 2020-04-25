@@ -1,5 +1,7 @@
 # Basic functions for testing custom functions in format {% tmp_path %}
 
+import os
+
 
 def write_file(filename):
     """write a file with some random nonsense"""

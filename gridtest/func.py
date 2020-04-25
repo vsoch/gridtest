@@ -19,19 +19,28 @@ import sys
 import os
 
 
-def tmp_path(requested_tmpdir=None, prefix=""):
+def tmp_path(requested_tmpdir=None, prefix="", create=False, ext=""):
     """get a temporary file with an optional prefix. By default will be
        created in /tmp, and the file is closed (and just a name returned).
 
        Arguments:
          - requested_tmpdir (str) : an optional requested temporary directory
          - prefix (str) : prefix the filename with this string.
+         - create (bool) : create the file (empty) defaults to False
+         - ext (str) : the extension to use, should include .
     """
     tmpdir = requested_tmpdir or tempfile.gettempdir()
-    prefix = prefix or "gridtest-"
+    prefix = prefix or "gridtest-file-"
     prefix = os.path.join(tmpdir, os.path.basename(prefix))
-    fd, tmp_file = tempfile.mkstemp(prefix=prefix)
+
+    # If an extension is provided but without a .
+    if ext and not ext.startswith("."):
+        ext = ".%s" % ext
+
+    fd, tmp_file = tempfile.mkstemp(prefix=prefix, suffix=ext)
     os.close(fd)
+    if not create:
+        os.remove(tmp_file)
     return tmp_file
 
 
@@ -44,7 +53,7 @@ def tmp_dir(requested_tmpdir=None, prefix="", create=True):
          - create (bool) : create the temporary directory
     """
     tmpdir = requested_tmpdir or tempfile.gettempdir()
-    prefix = prefix or "gridtest-"
+    prefix = prefix or "gridtest-dir"
     prefix = "%s.%s" % (prefix, next(tempfile._get_candidate_names()))
     tmpdir = os.path.join(tmpdir, prefix)
 

@@ -38,7 +38,7 @@ class Workers(object):
         self.runtime = self.runtime = self.end_time - self.start_time
         bot.debug("Ending multiprocess, runtime: %s sec" % (self.runtime))
 
-    def run(self, tests):
+    def run(self, tests, cleanup=True):
         """run will execute a test for each entry in the list of tests.
            the result of the test, and error codes, are saved with the test.
         
@@ -55,6 +55,7 @@ class Workers(object):
             return
 
         results = []
+        to_cleanup = []
 
         try:
             prefix = "[%s/%s]" % (progress, total)
