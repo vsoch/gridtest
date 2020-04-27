@@ -1,8 +1,6 @@
 # GridTest
 
-![https://img.shields.io/pypi/v/gridtest.svg](https://pypi.python.org/pypi/gridtest)
-![https://img.shields.io/travis/vsoch/gridtest.svg](https://travis-ci.com/vsoch/gridtest)
-![https://pyup.io/repos/github/vsoch/gridtest/shield.svg](https://pyup.io/repos/github/vsoch/gridtest/)
+[![PyPI version](https://badge.fury.io/py/gridtest.svg)](https://badge.fury.io/py/gridtest)
 
 Simple grid testing setup for Python functions and modules.
 
@@ -12,8 +10,8 @@ Simple grid testing setup for Python functions and modules.
 
 GridTest is a small python library that will read in one or more python
 scripts or modules, and generate a testing file that can be used to run grid
-tests. Take a look at the [examples](examples) folder 
-for getting started.
+tests. Take a look at the [examples](examples) folder or the 
+[documentation](https://vsoch.github.io/gridtest) for getting started.
 
 ## Who is this software for?
 

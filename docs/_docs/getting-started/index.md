@@ -108,7 +108,8 @@ Or a specific indexed text for the module:
 $ gridtest test examples/basic/script-tests.yml --interactive --name script.add.0
 ```
 
-For a more detailed debugging example, see the [debugging tutorial]({{ site.baseurl }}/docs/tutorials/debugging/).
+For a more detailed debugging example, see the [debugging]({{ site.baseurl }}/getting-started/debugging/)
+documentation.
 
 ## Licenses
 
