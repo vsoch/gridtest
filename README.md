@@ -6,6 +6,8 @@
 
 Simple grid testing setup for Python functions and modules.
 
+![docs/assets/img/logo/gridtest.gif](docs/assets/img/logo/gridtest.gif)
+
 ## Overview 
 
 GridTest is a small python library that will read in one or more python

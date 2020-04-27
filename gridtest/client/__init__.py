@@ -84,6 +84,14 @@ def get_parser():
     )
 
     test.add_argument(
+        "-n",
+        "--name",
+        dest="name",
+        help="the name of the test to interactive with",
+        default=None,
+    )
+
+    test.add_argument(
         "--pattern", help="match a pattern to filter testing", type=str, default=None,
     )
 

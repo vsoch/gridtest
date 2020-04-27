@@ -22,6 +22,7 @@ def main(args, extra):
         parallel=not args.serial,
         verbose=args.verbose,
         regexp=args.pattern,
+        name=args.name,
         interactive=args.interactive,
         cleanup=not args.no_cleanup,
     )

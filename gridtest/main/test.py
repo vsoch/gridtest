@@ -343,7 +343,7 @@ class GridRunner:
         """
         self.name = name or os.path.basename(self.input_file)
 
-    def run_tests(self, tests, nproc=9, parallel=True, interactive=False):
+    def run_tests(self, tests, nproc=9, parallel=True, interactive=False, name=None):
         """run tests. By default, we run them in parallel, unless serial
            is selected.
 
@@ -351,6 +351,7 @@ class GridRunner:
             - parallel (bool) : run tasks in parallel that are able (default is True)
             - nproc (int) : number of processes to run
             - cleanup (bool) : clean up files/dir generated with tmp_path, tmp_dir
+            - name (str) : the name of a test to interact with
             - interactive (bool) : run jobs interactively (for debugging)
               not available for parallel jobs.
         """
@@ -362,15 +363,22 @@ class GridRunner:
             total = len(tests)
             progress = 1
 
-            for name, task in tests.items():
+            for _, task in tests.items():
                 prefix = "[%s:%s/%s]" % (task.name, progress, total)
                 if self.show_progress:
                     bot.show_progress(progress, total, length=35, prefix=prefix)
                 else:
                     bot.info("Running %s" % prefix)
 
+                # Should this be interactive?
+                is_interactive = interactive
+                if name is not None and interactive:
+                    if not task.name.startswith(name):
+                        is_interactive = False
+                print(is_interactive)
+
                 # Run the task, update results with finished object
-                task.run(interactive=interactive)
+                task.run(interactive=is_interactive)
                 progress += 1
 
         return tests
@@ -401,6 +409,7 @@ class GridRunner:
         show_progress=True,
         verbose=False,
         interactive=False,
+        name=None,
         cleanup=True,
     ):
         """run the grid runner, meaning that we turn each function and set of
@@ -415,6 +424,7 @@ class GridRunner:
               - nproc (int) : number of processes to use for parallel testing
               - verbose (bool) : print success output too
               - interactive (bool) : interactively debug functions
+              - name (str) : if specified, a name of a test to interact with
               - cleanup (bool) : cleanup files/directories generated with tmp_path tmp_dir
         """
         # 1. Get filtered list of tests
@@ -427,6 +437,7 @@ class GridRunner:
             parallel=parallel,
             nproc=nproc or GRIDTEST_WORKERS,
             interactive=interactive,
+            name=name,
         )
 
         # Pretty print results to screen
