@@ -86,10 +86,6 @@ class GridTest:
                 "tmp_path",
             ]:
                 self.to_cleanup.add(new_value)
-        # Run substitution for custom sections
-        for section in GRIDTEST_RETURNTYPES:
-            if section in self.params:
-                self.params[section] = self.substitute(self.params[section])
 
     def substitute(self, value):
         """Given an input value, return the appropriate substituted string for
@@ -101,6 +97,14 @@ class GridTest:
         value = self._substitute_func(value)
         return value
 
+    def post_substitute(self):
+        """After a run, sometimes we want to check the result (whatever it is)
+        """
+        # Run substitution for custom sections
+        for section in GRIDTEST_RETURNTYPES:
+            if section in self.params:
+                self.params[section] = self.substitute(self.params[section])
+
     def _substitute_args(self, value):
         """Given a value, determine if it has variable argument substitutions
            in the format of {{ args.<name> }} and if so, if the argument is present
@@ -108,6 +112,14 @@ class GridTest:
         """
         if not isinstance(value, str):
             return value
+
+        # Returns is a special case, this checks for returns param
+        if re.search("{{(\s+)?returns(\s)?}}", value) and "returns" in self.params:
+            value = substitute_args(value, params=self.params)
+
+        # Result is a special case that works after a test is run
+        if re.search("{{(\s+)?result(\s)?}}", value) and self.result:
+            value = substitute_args(value, params={"result": self.result})
 
         # We allow for namespacing of args, right now only supports args
         value = re.sub("args[.]", "", value, 1)
@@ -140,6 +152,12 @@ class GridTest:
             return "raises %s %s" % (self.params["raises"], output)
         elif "exists" in self.params:
             return "exists %s %s" % (self.params["exists"], output)
+        elif "istrue" in self.params:
+            return "istrue %s %s" % (self.params["istrue"], output)
+        elif "isfalse" in self.params:
+            return "isfalse %s %s" % (self.params["isfalse"], output)
+        elif "equals" in self.params:
+            return "equals %s %s" % (self.params["equals"], output)
         return output
 
     def _summary_failure(self):
@@ -152,6 +170,12 @@ class GridTest:
             return "raises %s %s" % (self.params["raises"], error)
         elif "exists" in self.params:
             return "exists %s %s" % (self.params["exists"], error)
+        elif "istrue" in self.params:
+            return "istrue %s %s" % (self.params["istrue"], error)
+        elif "isfalse" in self.params:
+            return "isfalse %s %s" % (self.params["isfalse"], error)
+        elif "equals" in self.params:
+            return "equals %s %s" % (self.params["equals"], error)
         return error
 
     # Running
@@ -218,6 +242,9 @@ class GridTest:
            does additional parsing of the result, and the client will update
            self.success to be False if there is an issue.
         """
+        # Do final substitution
+        self.post_substitute()
+
         # Case 1: test for returns
         if "returns" in self.params:
             self.check_returns(self.params["returns"])
@@ -230,7 +257,15 @@ class GridTest:
         elif "exists" in self.params:
             self.check_exists(self.params["exists"])
 
-        # Case 4: An error was raised (not expected)
+        # Case 4: Determine if a statement is true or false
+        elif "istrue" in self.params:
+            self.check_istrue(self.params["istrue"])
+        elif "isfalse" in self.params:
+            self.check_isfalse(self.params["isfalse"])
+        elif "equals" in self.params:
+            self.check_equals(self.params["equals"])
+
+        # Case 5: An error was raised (not expected)
         if self.raises and "raises" not in self.params:
             self.err.append(f"Unexpected Exception: {self.raises}.")
             self.success = False
@@ -292,6 +327,21 @@ class GridTest:
             self.err.append(
                 f"Expected exception {exception}, instead raised {self.raises}"
             )
+
+    def check_istrue(self, statement):
+        """check if a statement is true.
+        """
+        return eval(str(statement)) == True
+
+    def check_isfalse(self, statement):
+        """check if a statement is false
+        """
+        return not self.check_istrue(str(statement))
+
+    def check_equals(self, statement):
+        """check if a result equals some statement.
+        """
+        return eval(str(statement)) == self.result
 
 
 class GridTestFunc(GridTest):

@@ -45,6 +45,7 @@ file as input. We might do something like:
     - outfile: {% raw %}{% tmp_path %}{% endraw %}
     returns: {% raw %}{{ args.outfile }}{% endraw %}
 ```
+
 In the above, the double `{% raw %}{{}}{% endraw %}` refers to a variable, in this case which is
 an argument name. The `{% raw %}{% %}{% endraw %}` refers to a function that is known natively
 to grid test. This syntax is based on [jinja2](https://jinja.palletsprojects.com/en/2.11.x/).
@@ -58,6 +59,32 @@ You could also check that the file exists (and it might not be returned).
     exists: {% raw %}{{ args.outfile }}{% endraw %}
 ```
 
+### Input Variables
+
+An input variable is distinguished by being in the format `{% raw %}{{ <name> }}{% endraw %}`
+where `<name>` would be some named variable, referenced below.
+
+| Name        | Description | Syntax | Example |
+|-------------|-------------|--------|---------|
+| args.<name> | Refer to a named argument under args. |`{% raw %}{{ args.<name> }}{% endraw %}` | `{% raw %}{{ args.name }}{% endraw %}` |
+| returns | Refer to the returns value you defined. |`{% raw %}{{ returns }}{% endraw %}` | `{% raw %}{{ returns }}{% endraw %}` |
+| result | Refer to the result returned by the function. |`{% raw %}{{ result }}{% endraw %}` | `{% raw %}{{ result }}{% endraw %}` |
+
+
+### Function Variables
+
+In addition to input variables, gridtest provides a few functions to make testing easier. Functions
+are distinguished based on being in the format `{% raw %}{% <func> %}{% endraw %}`,
+where "func" refers to the name of the function. Gridtest currently supports the following functions:
+
+| Name        | Description | Syntax |
+|-------------|-------------|--------|
+| tmp_dir | Create (and cleanup) a temporary directory for testing. |`{% raw %}{% tmp_dir %}{% endraw %}` |
+| tmp_path | Create (and cleanup) a temporary filename for testing. |`{% raw %}{% tmp_path %}{% endraw %}`|
+
+For specifics about tmp_dir and tmp_path, see the [temp tutorial]({{ site.baseurl }}/tutorials/temp/).
+
+
 ### Return Types
 
 For basic testing, there are typically a few obvious cases we want to test for:
@@ -66,6 +93,9 @@ For basic testing, there are typically a few obvious cases we want to test for:
  - raises: meaning that the function raises an error
  - exists: meaning that some output file is deemed to exist.
  - success: boolean to indicate if success (no error) is desired.
+ - istrue: determine if a custom evaluated statement is true
+ - isfalse: determine if a custom evaluated statement is false
+ - equals: determine if a custom evaluated statement is equal to the result
 
 If you see another simple testing case that you want added, please 
 [open an issue](https://github.com/vsoch/gridtest/issues). Highly complex testing needs

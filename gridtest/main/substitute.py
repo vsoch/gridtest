@@ -34,7 +34,7 @@ def substitute_args(value, params=None):
         if varname not in params:
             value = re.sub(template, "", value)
         else:
-            value = re.sub(template, params[varname], value)
+            value = re.sub(template, str(params[varname]), str(value))
 
     return value
 

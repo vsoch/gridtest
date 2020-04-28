@@ -84,6 +84,18 @@ the input "filename" will have a randomly generated temporary file created
 for it with `{% raw %}{% tmp_path %}{% endraw %}`, and we will test that it exists by referencing it
 with `{% raw %}{{ args.filename }}{% endraw %}`. Both will also be cleaned up at the completion of the test.
 
+### Temp Variables
+
+For each of `tmp_path` and `tmp_dir`, you can optionally define a boolean to cleanup,
+or a prefix. That might look like this:
+
+```yaml
+"{% raw %}{% tmp_dir cleanup=False %}{% endraw %}"
+"{% raw %}{% tmp_path prefix=mytest %}{% endraw %}"
+```
+
+See the [function helpers](/gridtest/api/source/gridtest.html#module-gridtest.func) module
+for more details.
 
 ## Test
 
