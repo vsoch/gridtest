@@ -111,7 +111,7 @@ class GridTest:
 
         # We allow for namespacing of args, right now only supports args
         value = re.sub("args[.]", "", value, 1)
-        return substitute_args(value, params=self.params["args"])
+        return substitute_args(value, params=self.params.get('args', {}))
 
     def _substitute_func(self, value):
         """Given a value, determine if it contains a function substitution,
