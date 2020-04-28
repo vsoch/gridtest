@@ -37,6 +37,7 @@ def getenv(variable_key, default=None, required=False, silent=True):
 
 GRIDTEST_NPROC = multiprocessing.cpu_count()
 GRIDTEST_WORKERS = int(getenv("GRIDTEST_WORKERS", GRIDTEST_NPROC * 2 + 1))
+GRIDTEST_RETURNTYPES = ["raises", "returns", "exists", "istrue", "isfalse"]
 
 # Known default functions
 GRIDTEST_FUNCS = ["tmp_dir", "tmp_path"]

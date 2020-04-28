@@ -334,8 +334,6 @@ success: script.add_with_type.0 returns 3
 3/3 tests passed
 ```
 
-**under development**
-
 These are of course very simple test cases - we don't have any
 classes, custom types, or matrices of tests. These will be developed
 and discussed in other examples.

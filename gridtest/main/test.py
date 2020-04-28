@@ -8,7 +8,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-from gridtest.defaults import GRIDTEST_WORKERS
+from gridtest.defaults import GRIDTEST_WORKERS, GRIDTEST_RETURNTYPES
 from gridtest.utils import read_yaml
 from gridtest.logger import bot
 from gridtest import __version__
@@ -86,6 +86,10 @@ class GridTest:
                 "tmp_path",
             ]:
                 self.to_cleanup.add(new_value)
+        # Run substitution for custom sections
+        for section in GRIDTEST_RETURNTYPES:
+            if section in self.params:
+                self.params[section] = self.substitute(self.params[section])
 
     def substitute(self, value):
         """Given an input value, return the appropriate substituted string for

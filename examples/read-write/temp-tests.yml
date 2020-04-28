@@ -1,0 +1,10 @@
+temp:
+  filename: temp.py
+  temp.create_directory:
+  - args:
+      dirname: "{% tmp_dir %}"
+    returns: "{{ args.dirname }}"
+  temp.write_file:
+  - args:
+      filename: "{% tmp_path %}"
+    exists: "{{ args.filename }}"

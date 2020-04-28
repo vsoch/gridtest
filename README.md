@@ -29,6 +29,8 @@ wants something. I considered calling it crappytest, but the name was too long :
 
 ## TODO
 
+ - develop gridtest matrix input and documentation
+ - add istrue, isfalse, equals, and other input params (and tests)
  - write example recipes that use substitutes for tmpfile testing
  - there should be a function to  --check if a recipe includes all functions (or not) and edit current generate to NOT write over existing functions in file.
  - Add ability to inspect an attribute for a result
