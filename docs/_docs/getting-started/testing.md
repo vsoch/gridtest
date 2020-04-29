@@ -12,7 +12,7 @@ You likely want to integrate GridTest into your favorite continuous integration
 
 If you add a new function to your testing library, you probably
 want to ensure that you've written a test for it. Akin to black for code
-formatting, gridtest provides a gridtest generate --check command
+formatting, gridtest provides a gridtest check command
 to check if a file has all tests written. In the case that all functions
 are represented, the return code is 0 (and the CI will pass):
 
