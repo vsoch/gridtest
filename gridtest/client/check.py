@@ -11,24 +11,17 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 import sys
 import os
 
-from gridtest.main.generate import generate_tests
+from gridtest.main.check import check_tests
 
 
 def main(args, extra):
 
     if not args.input:
-        sys.exit("Please provide an input file, folder, or module to parse.")
-
-    # The output file is optional, input file is not
-    outputfile = None
-    input_file = args.input.pop(0)
-    if args.input:
-        outputfile = args.input.pop(0)
+        sys.exit("Please provide a yaml test file to check")
 
     # Generate the testing file
-    generate_tests(
-        input_file,
-        output=outputfile,
+    check_tests(
+        args.input,
         include_private=args.include_private,
-        update=not args.reset,
+        skip_patterns=args.skip_patterns,
     )

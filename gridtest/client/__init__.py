@@ -107,6 +107,23 @@ def get_parser():
         default=None,
     )
 
+    # Check (lint) a gridtest
+    check = subparsers.add_parser(
+        "check", help="check a gridtest yaml file to ensure all tests written."
+    )
+    check.add_argument(
+        "input", help="name of test yaml file to check.", type=str, nargs="?",
+    )
+
+    check.add_argument(
+        "--skip-patterns",
+        help="skip patterns for tests names",
+        type=str,
+        default=None,
+        nargs="*",
+        dest="skip_patterns",
+    )
+
     # Run a grid test
     generate = subparsers.add_parser("generate", help="generate a grid test yaml file.")
 
@@ -118,20 +135,22 @@ def get_parser():
     )
 
     generate.add_argument(
-        "--check",
-        dest="check_only",
-        help="only print new (to be generated) section names to the screen.",
+        "--reset",
+        dest="reset",
+        help="if the output yaml exists, force overwrite with new test templates",
         default=False,
         action="store_true",
     )
 
-    generate.add_argument(
-        "--include-private",
-        dest="include_private",
-        help="suppress additional output.",
-        default=False,
-        action="store_true",
-    )
+    # Both generate and check groups have --include-private
+    for group in [generate, check]:
+        group.add_argument(
+            "--include-private",
+            dest="include_private",
+            help="suppress additional output.",
+            default=False,
+            action="store_true",
+        )
 
     return parser
 
@@ -172,6 +191,8 @@ def main():
         from .generate import main
     elif args.command == "shell":
         from .shell import main
+    elif args.command == "check":
+        from .check import main
 
     # Pass on to the correct parser
     return_code = 0

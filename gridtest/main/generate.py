@@ -50,7 +50,7 @@ def import_module(name):
     return module
 
 
-def generate_tests(module, output=None, include_private=False, check_only=False):
+def generate_tests(module, output=None, include_private=False):
     """Generate a test output file for some input module. If an output file 
        is specified and already has existing content, in the case that check is 
        used, we only print section names that have not been written. If check
@@ -62,12 +62,15 @@ def generate_tests(module, output=None, include_private=False, check_only=False)
         - a script path explitly
         - a directory path with files to be recursively discovered
         - a module name
+       By default, if a testing file is provided that already has sections defined,
+       they will not be overwritten (but new sections will be added). If the
+       user wants to produce a new (reset) template, the file should be deleted
+       and generate run freshly.
 
-        Arguments:
+       Arguments:
           - module (str) : a file, directory, or module name to parse
           - output (str) : a path to a yaml file to save to
           - include_private (bool) : include "private" functions
-          - check_only (bool) : 
     """
     if output and not re.search("[.](yml|yaml)$", output):
         sys.exit("Output file must have yml|yaml extension.")
@@ -109,8 +112,8 @@ def generate_tests(module, output=None, include_private=False, check_only=False)
             if key not in spec[name] or key != "filename":
                 spec[name][key] = params
 
-    # Case 1: A check only shows new fields added
-    if check_only and sections or not output:
+    # Alert about new sections added
+    if sections:
         print("\nNew sections to add:\n%s" % "\n".join(sections))
 
     # Write to output file
@@ -151,7 +154,7 @@ def extract_modulename(filename, input_dir=None):
     return filename
 
 
-def extract_functions(filename, include_private=False):
+def extract_functions(filename, include_private=False, quiet=False):
     """Given a filename, extract a module and associated functions with it
        into a grid test. This means creating a structure with function
        names and (if provided) default inputs. The user will fill in
@@ -165,7 +168,13 @@ def extract_functions(filename, include_private=False):
 
     meta = {}
     name = re.sub(".py$", "", filename).replace("/", ".")
-    module = import_module(name)
+
+    # Try importing the module, fall back to relative path
+    try:
+        module = import_module(name)
+    except:
+        name = re.sub(".py$", "", os.path.relpath(filename)).replace("/", ".")
+        module = import_module(name)
 
     # For each function,
     for funcname in dir(module):
@@ -177,8 +186,9 @@ def extract_functions(filename, include_private=False):
             continue
 
         key = name + "." + funcname
-        logger.info(f"Extracting {funcname} from {name}")
-        print(f"Extracting {funcname} from {name}")
+        if not quiet:
+            logger.info(f"Extracting {funcname} from {name}")
+            print(f"Extracting {funcname} from {name}")
 
         # Extract arguments for function, add to matrix
         func = getattr(module, funcname)
