@@ -95,6 +95,18 @@ def get_parser():
         "--pattern", help="match a pattern to filter testing", type=str, default=None,
     )
 
+    # Shell into interactive environment to run tests
+    shell = subparsers.add_parser(
+        "shell", help="shell into an interactive console with gridtest"
+    )
+    shell.add_argument(
+        "input",
+        help="name of input file, folder, or module to write tests for",
+        type=str,
+        nargs="?",
+        default=None,
+    )
+
     # Run a grid test
     generate = subparsers.add_parser("generate", help="generate a grid test yaml file.")
 
@@ -158,14 +170,16 @@ def main():
         from .test import main
     elif args.command == "generate":
         from .generate import main
+    elif args.command == "shell":
+        from .shell import main
 
     # Pass on to the correct parser
     return_code = 0
-    try:
-        main(args=args, extra=extra)
-        sys.exit(return_code)
-    except UnboundLocalError:
-        return_code = 1
+    # try:
+    main(args=args, extra=extra)
+    sys.exit(return_code)
+    # except UnboundLocalError:
+    #    return_code = 1
 
     help(return_code)
 

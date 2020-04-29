@@ -1,0 +1,21 @@
+truefalse:
+  filename: truefalse.py
+  truefalse.add:
+  - args:
+      one: 1.0
+      two: 2
+    istrue: "isinstance({{ result }}, float)"
+    isfalse: "isinstance({{ result }}, int)"
+  - args:
+      one: 1.0
+      two: 2
+    equals: 1+2
+  truefalse.add_with_type:
+  - args:
+      one: 1
+      two: 2
+    returns: 3
+  - args:
+      one: 1.0
+      two: 2
+    raises: TypeError

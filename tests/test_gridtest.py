@@ -178,3 +178,28 @@ def test_exists(tmp_path):
     test.run()
     assert test.success
     assert os.path.exists(output_file)
+
+
+def test_istrue_isfalse():
+    """Test that the gridtest istrue, isfalse, exists, works as expected.
+    """
+    from gridtest.main.test import GridRunner
+
+    test_file = os.path.join(here, "modules", "truefalse-tests.yml")
+    runner = GridRunner(test_file)
+    tests = runner.get_tests()
+
+    # This test should have istrue and isfalse statements
+    test = tests["truefalse.add.0"]
+    for result in ["istrue", "isfalse"]:
+        assert result in test.params
+
+    # Before run, not parsed
+    assert test.params["istrue"] == "isinstance({{ result }}, float)"
+    assert test.params["isfalse"] == "isinstance({{ result }}, int)"
+
+    # Run the test!
+    test.run()
+    assert test.result == 3.0
+    assert test.params["istrue"] == "isinstance(3.0, float)"
+    assert test.params["isfalse"] == "isinstance(3.0, int)"

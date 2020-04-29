@@ -1,0 +1,787 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gridtest.main.test &mdash; GridTest Python 11 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../assets/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../assets/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../assets/jquery.js"></script>
+        <script type="text/javascript" src="../../../assets/underscore.js"></script>
+        <script type="text/javascript" src="../../../assets/doctools.js"></script>
+        <script type="text/javascript" src="../../../assets/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../assets/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../assets/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../assets/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> GridTest Python
+          
+
+          
+            
+            <img src="../../../assets/logo.gif" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/gridtest.html">gridtest package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">CHANGELOG</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GridTest Python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>gridtest.main.test</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gridtest.main.test</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">Copyright (C) 2020 Vanessa Sochat.</span>
+
+<span class="sd">This Source Code Form is subject to the terms of the</span>
+<span class="sd">Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed</span>
+<span class="sd">with this file, You can obtain one at http://mozilla.org/MPL/2.0/.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">gridtest.defaults</span> <span class="k">import</span> <span class="n">GRIDTEST_WORKERS</span><span class="p">,</span> <span class="n">GRIDTEST_RETURNTYPES</span>
+<span class="kn">from</span> <span class="nn">gridtest.utils</span> <span class="k">import</span> <span class="n">read_yaml</span>
+<span class="kn">from</span> <span class="nn">gridtest.logger</span> <span class="k">import</span> <span class="n">bot</span>
+<span class="kn">from</span> <span class="nn">gridtest</span> <span class="k">import</span> <span class="n">__version__</span>
+
+<span class="kn">from</span> <span class="nn">gridtest.main.generate</span> <span class="k">import</span> <span class="p">(</span>
+    <span class="n">import_module</span><span class="p">,</span>
+    <span class="n">get_function_typing</span><span class="p">,</span>
+    <span class="n">extract_modulename</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">gridtest.main.workers</span> <span class="k">import</span> <span class="n">Workers</span>
+<span class="kn">from</span> <span class="nn">gridtest.main.helpers</span> <span class="k">import</span> <span class="n">test_basic</span>
+<span class="kn">from</span> <span class="nn">gridtest.main.substitute</span> <span class="k">import</span> <span class="n">substitute_func</span><span class="p">,</span> <span class="n">substitute_args</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="k">import</span> <span class="n">deepcopy</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="GridTest"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest">[docs]</a><span class="k">class</span> <span class="nc">GridTest</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">module</span><span class="p">,</span>
+        <span class="n">name</span><span class="p">,</span>
+        <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">cleanup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">func</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">module</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cleanup_temp</span> <span class="o">=</span> <span class="n">cleanup</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_cleanup</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_progress</span> <span class="o">=</span> <span class="n">show_progress</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raises</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Catching output and error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">err</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c1"># Parse input arguments</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_params</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;[test|</span><span class="si">%s</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;[test|</span><span class="si">%s</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="c1"># Templating</span>
+
+<div class="viewcode-block" id="GridTest.set_params"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.set_params">[docs]</a>    <span class="k">def</span> <span class="nf">set_params</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given params with args that are loaded, making substitutions</span>
+<span class="sd">           at the onset of generating the test. Also keep track of</span>
+<span class="sd">           any directories / files defined by tmp_path and tmp_dir</span>
+<span class="sd">           to clean up after the test is run.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span> <span class="ow">or</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="p">{})</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
+
+            <span class="c1"># If the action is a gridtest function, handle cleanup</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;({%|%}| )&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span>
+                <span class="s2">&quot;tmp_dir&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;tmp_path&quot;</span><span class="p">,</span>
+            <span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">to_cleanup</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_value</span><span class="p">)</span>
+
+        <span class="c1"># Set backup params, in case we reset</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_params</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GridTest.substitute"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.substitute">[docs]</a>    <span class="k">def</span> <span class="nf">substitute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given an input value, return the appropriate substituted string for</span>
+<span class="sd">           it. This means that {{ args.x }} references can reference arguments</span>
+<span class="sd">           in params, or {% func %} can refer to a function in the gridtest</span>
+<span class="sd">           helpers namespace.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_substitute_args</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_substitute_func</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="GridTest.post_substitute"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.post_substitute">[docs]</a>    <span class="k">def</span> <span class="nf">post_substitute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;After a run, sometimes we want to check the result (whatever it is)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Run substitution for custom sections</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">GRIDTEST_RETURNTYPES</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">section</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="n">section</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_substitute_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given a value, determine if it has variable argument substitutions</span>
+<span class="sd">           in the format of {{ args.&lt;name&gt; }} and if so, if the argument is present</span>
+<span class="sd">           return the value with the substitution.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+        <span class="c1"># Returns is a special case, this checks for returns param</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;{{(\s+)?returns(\s)?}}&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;returns&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">substitute_args</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+
+        <span class="c1"># Result is a special case that works after a test is run</span>
+        <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;{{(\s+)?result(\s)?}}&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">substitute_args</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;result&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">})</span>
+
+        <span class="c1"># We allow for namespacing of args, right now only supports args</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;args[.]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">substitute_args</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="p">{}))</span>
+
+    <span class="k">def</span> <span class="nf">_substitute_func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given a value, determine if it contains a function substitution,</span>
+<span class="sd">           and do it. See gridtest.main.helpers.substitute_func. for details.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">substitute_func</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="c1"># Summary</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;print a summary of the test, including if it is supposed to</span>
+<span class="sd">           return, raise, or check existance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summary_success</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_summary_failure</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_summary_success</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;return successful summary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">out</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="s2">&quot;returns&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;returns </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;returns&quot;</span><span class="p">],</span> <span class="n">output</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;raises&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;raises </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;raises&quot;</span><span class="p">],</span> <span class="n">output</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;exists&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;exists </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;exists&quot;</span><span class="p">],</span> <span class="n">output</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;istrue&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;istrue </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;istrue&quot;</span><span class="p">],</span> <span class="n">output</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;isfalse&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;isfalse </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;isfalse&quot;</span><span class="p">],</span> <span class="n">output</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;equals&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;equals </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;equals&quot;</span><span class="p">],</span> <span class="n">output</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output</span>
+
+    <span class="k">def</span> <span class="nf">_summary_failure</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a failure message, including error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">err</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;returns&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;returns </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;returns&quot;</span><span class="p">],</span> <span class="n">error</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;raises&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;raises </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;raises&quot;</span><span class="p">],</span> <span class="n">error</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;exists&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;exists </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;exists&quot;</span><span class="p">],</span> <span class="n">error</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;istrue&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;istrue </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;istrue&quot;</span><span class="p">],</span> <span class="n">error</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;isfalse&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;isfalse </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;isfalse&quot;</span><span class="p">],</span> <span class="n">error</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="s2">&quot;equals&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;equals </span><span class="si">%s</span><span class="s2"> </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;equals&quot;</span><span class="p">],</span> <span class="n">error</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">error</span>
+
+    <span class="c1"># Running</span>
+
+<div class="viewcode-block" id="GridTest.get_func"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.get_func">[docs]</a>    <span class="k">def</span> <span class="nf">get_func</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the function name, meaning we get the module first.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+        <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_funcname</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">func</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Cannot find function.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">func</span></div>
+
+<div class="viewcode-block" id="GridTest.get_funcname"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.get_funcname">[docs]</a>    <span class="k">def</span> <span class="nf">get_funcname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the function name, meaning we get the module first.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># The function name is the name absent the module</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;^</span><span class="si">%s</span><span class="s2">[.]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GridTest.run"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;run an isolated test, and store the return code and result with</span>
+<span class="sd">           the tester here. </span>
+
+<span class="sd">           Arguments:</span>
+<span class="sd">            - interactive (bool) : run interactively for shell to debug</span>
+<span class="sd">            - cleanup (bool) : remove any temporary directories or files (True)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_progress</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Running test </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Should we clean up temporary files produced?</span>
+        <span class="k">if</span> <span class="n">cleanup</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cleanup_temp</span> <span class="o">=</span> <span class="n">cleanup</span>
+
+        <span class="c1"># [passed, result, out, err, raises]</span>
+        <span class="n">passed</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">raises</span> <span class="o">=</span> <span class="n">test_basic</span><span class="p">(</span>
+            <span class="n">funcname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">get_funcname</span><span class="p">(),</span>
+            <span class="n">module</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">func</span><span class="p">,</span>
+            <span class="n">filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="n">returns</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;returns&quot;</span><span class="p">),</span>
+            <span class="n">interactive</span><span class="o">=</span><span class="n">interactive</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="n">passed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="n">result</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out</span> <span class="o">=</span> <span class="n">out</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">err</span> <span class="o">=</span> <span class="n">err</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raises</span> <span class="o">=</span> <span class="n">raises</span>
+
+        <span class="c1"># Finish by checking output</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">check_output</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleanup_temp</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span></div>
+
+    <span class="c1"># Checking Results</span>
+
+<div class="viewcode-block" id="GridTest.check_output"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.check_output">[docs]</a>    <span class="k">def</span> <span class="nf">check_output</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given that self.result is defined, check final output for the test.</span>
+<span class="sd">           This works (and is called) after self.run(), OR by the multiprocessing</span>
+<span class="sd">           worker that has updated self.result. Each of the actions below</span>
+<span class="sd">           does additional parsing of the result, and the client will update</span>
+<span class="sd">           self.success to be False if there is an issue.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Do final substitution</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">post_substitute</span><span class="p">()</span>
+
+        <span class="c1"># Case 1: test for returns</span>
+        <span class="k">if</span> <span class="s2">&quot;returns&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_returns</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;returns&quot;</span><span class="p">])</span>
+
+        <span class="c1"># Case 2: test raises</span>
+        <span class="k">elif</span> <span class="s2">&quot;raises&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_raises</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;raises&quot;</span><span class="p">])</span>
+
+        <span class="c1"># Case 3: test exists</span>
+        <span class="k">elif</span> <span class="s2">&quot;exists&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;exists&quot;</span><span class="p">])</span>
+
+        <span class="c1"># Case 4: Determine if a statement is true or false</span>
+        <span class="k">elif</span> <span class="s2">&quot;istrue&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_istrue</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;istrue&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="s2">&quot;isfalse&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_isfalse</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;isfalse&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="s2">&quot;equals&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">check_equals</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;equals&quot;</span><span class="p">])</span>
+
+        <span class="c1"># Case 5: An error was raised (not expected)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">raises</span> <span class="ow">and</span> <span class="s2">&quot;raises&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Unexpected Exception: </span><span class="si">{self.raises}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># If expected success or failure, and got opposite</span>
+        <span class="k">if</span> <span class="s2">&quot;success&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="s2">&quot;success&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;success key set to false, expected failure.&quot;</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="c1"># Checks</span>
+
+<div class="viewcode-block" id="GridTest.check_exists"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.check_exists">[docs]</a>    <span class="k">def</span> <span class="nf">check_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;check if a filename exists.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="GridTest.check_returns"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.check_returns">[docs]</a>    <span class="k">def</span> <span class="nf">check_returns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;test that a function returns a particular value. The value might</span>
+<span class="sd">           reference an input variable, so we use the args dictionary to</span>
+<span class="sd">           substitute</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">substitute</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="GridTest.check_raises"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.check_raises">[docs]</a>    <span class="k">def</span> <span class="nf">check_raises</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exception</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ensure that running a function raises a particular error. If the</span>
+<span class="sd">           function runs successfully, this is considered a failure.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Case 1: no exception thrown</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">raises</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Expected exception </span><span class="si">{exception}</span><span class="s2"> not raised&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Case 2: correct exception thrown</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">raises</span> <span class="o">==</span> <span class="n">exception</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Exception: </span><span class="si">{self.raises}</span><span class="s2"> raised as desired.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;Expected exception </span><span class="si">{exception}</span><span class="s2">, instead raised </span><span class="si">{self.raises}</span><span class="s2">&quot;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="GridTest.check_istrue"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.check_istrue">[docs]</a>    <span class="k">def</span> <span class="nf">check_istrue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;check if a statement is true.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span> <span class="o">==</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="GridTest.check_isfalse"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.check_isfalse">[docs]</a>    <span class="k">def</span> <span class="nf">check_isfalse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;check if a statement is false</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_istrue</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="GridTest.check_equals"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.check_equals">[docs]</a>    <span class="k">def</span> <span class="nf">check_equals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">statement</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;check if a result equals some statement.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">eval</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">statement</span><span class="p">))</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">result</span></div>
+
+    <span class="c1"># Cleanup and reset</span>
+
+<div class="viewcode-block" id="GridTest.cleanup"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.cleanup">[docs]</a>    <span class="k">def</span> <span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given a list of paths (files or folders) generated by gridtest,</span>
+<span class="sd">           clean them up with shutil.rm</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cleanup_temp</span><span class="p">:</span>
+            <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Skipping cleanup.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_cleanup</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                    <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Cleaning up file </span><span class="si">{path}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+                    <span class="n">bot</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Cleaning up directory </span><span class="si">{path}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GridTest.reset"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTest.reset">[docs]</a>    <span class="k">def</span> <span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;reset a test to it&#39;s original state, meaning that original parameters,</span>
+<span class="sd">           the result, raises, etc. are reset.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_params</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">raises</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valid</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">success</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">to_cleanup</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">err</span> <span class="o">=</span> <span class="p">[]</span></div></div>
+
+
+<div class="viewcode-block" id="GridTestFunc"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridTestFunc">[docs]</a><span class="k">class</span> <span class="nc">GridTestFunc</span><span class="p">(</span><span class="n">GridTest</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;a function can be loaded from within Python with GridTestFunc.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">module</span><span class="o">=</span><span class="n">func</span><span class="o">.</span><span class="vm">__module__</span><span class="p">,</span>
+            <span class="n">func</span><span class="o">=</span><span class="n">func</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+            <span class="n">params</span><span class="o">=</span><span class="n">params</span><span class="p">,</span>
+            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+            <span class="n">show_progress</span><span class="o">=</span><span class="n">show_progress</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="GridRunner"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner">[docs]</a><span class="k">class</span> <span class="nc">GridRunner</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;the grid tester loads a gridtest specification file,</span>
+<span class="sd">           and then deploys testing workers to run the tests.</span>
+
+<span class="sd">           Arguments:</span>
+
+<span class="sd">           input_file (str) : the watcher name, defaults to github</span>
+<span class="sd">           kwargs: should include command line arguments from the client.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="n">__version__</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_progress</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="GridRunner.load"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.load">[docs]</a>    <span class="k">def</span> <span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_file</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;load a testing gridtest file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">input_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">input_file</span><span class="p">):</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Cannot find gridtest file </span><span class="si">{input_file}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_file</span> <span class="o">=</span> <span class="n">input_file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GridRunner.set_name"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.set_name">[docs]</a>    <span class="k">def</span> <span class="nf">set_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;set a custom name. If the user provides a name to the GridRunner,</span>
+<span class="sd">           this name will be used. Otherwise we use the basename of the input</span>
+<span class="sd">           file.</span>
+
+<span class="sd">           Arguments:</span>
+<span class="sd">            - name (str): the name of the input file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_file</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GridRunner.run_tests"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.run_tests">[docs]</a>    <span class="k">def</span> <span class="nf">run_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;run tests. By default, we run them in parallel, unless serial</span>
+<span class="sd">           is selected.</span>
+
+<span class="sd">           Arguments:</span>
+<span class="sd">            - parallel (bool) : run tasks in parallel that are able (default is True)</span>
+<span class="sd">            - nproc (int) : number of processes to run</span>
+<span class="sd">            - cleanup (bool) : clean up files/dir generated with tmp_path, tmp_dir</span>
+<span class="sd">            - name (str) : the name of a test to interact with</span>
+<span class="sd">            - interactive (bool) : run jobs interactively (for debugging)</span>
+<span class="sd">              not available for parallel jobs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Parallel tests cannot be interactive</span>
+        <span class="k">if</span> <span class="n">parallel</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">interactive</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_run_parallel</span><span class="p">(</span><span class="n">tests</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="n">nproc</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">tests</span><span class="p">)</span>
+            <span class="n">progress</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tests</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;[</span><span class="si">%s</span><span class="s2">:</span><span class="si">%s</span><span class="s2">/</span><span class="si">%s</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">progress</span><span class="p">,</span> <span class="n">total</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_progress</span><span class="p">:</span>
+                    <span class="n">bot</span><span class="o">.</span><span class="n">show_progress</span><span class="p">(</span><span class="n">progress</span><span class="p">,</span> <span class="n">total</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">35</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">bot</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Running </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">prefix</span><span class="p">)</span>
+
+                <span class="c1"># Should this be interactive?</span>
+                <span class="n">is_interactive</span> <span class="o">=</span> <span class="n">interactive</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">interactive</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">task</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+                        <span class="n">is_interactive</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">is_interactive</span><span class="p">)</span>
+
+                <span class="c1"># Run the task, update results with finished object</span>
+                <span class="n">task</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">interactive</span><span class="o">=</span><span class="n">is_interactive</span><span class="p">)</span>
+                <span class="n">progress</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">tests</span></div>
+
+    <span class="k">def</span> <span class="nf">_run_parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="n">GRIDTEST_WORKERS</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;run tasks in parallel using the Workers class. Returns the same</span>
+<span class="sd">           tests results, but after running.</span>
+
+<span class="sd">           Arguments:</span>
+<span class="sd">              - queue: the list of task objects to run</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">workers</span> <span class="o">=</span> <span class="n">Workers</span><span class="p">(</span><span class="n">show_progress</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">show_progress</span><span class="p">,</span> <span class="n">workers</span><span class="o">=</span><span class="n">nproc</span><span class="p">)</span>
+        <span class="n">workers</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">tests</span><span class="p">)</span>
+
+        <span class="c1"># Run final checks</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">tests</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">test</span><span class="o">.</span><span class="n">check_output</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">test</span><span class="o">.</span><span class="n">cleanup_temp</span><span class="p">:</span>
+                <span class="n">test</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">tests</span>
+
+<div class="viewcode-block" id="GridRunner.run"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.run">[docs]</a>    <span class="k">def</span> <span class="nf">run</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">regexp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">nproc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">show_progress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">cleanup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;run the grid runner, meaning that we turn each function and set of</span>
+<span class="sd">           tests into a single test, and then run with multiprocessing. </span>
+<span class="sd">           This is the function called by the user that also does filtering</span>
+<span class="sd">           of tests based on a regular expression before calling them.</span>
+
+<span class="sd">           Arguments:</span>
+<span class="sd">              - regexp (str) : if supplied, filter to this pattern </span>
+<span class="sd">              - parallel (bool) : use multiprocessing to run tasks (default True)</span>
+<span class="sd">              - show_progress (bool) : show progress instead of task information</span>
+<span class="sd">              - nproc (int) : number of processes to use for parallel testing</span>
+<span class="sd">              - verbose (bool) : print success output too</span>
+<span class="sd">              - interactive (bool) : interactively debug functions</span>
+<span class="sd">              - name (str) : if specified, a name of a test to interact with</span>
+<span class="sd">              - cleanup (bool) : cleanup files/directories generated with tmp_path tmp_dir</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># 1. Get filtered list of tests</span>
+        <span class="n">tests</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_tests</span><span class="p">(</span><span class="n">regexp</span><span class="o">=</span><span class="n">regexp</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="n">cleanup</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_progress</span> <span class="o">=</span> <span class="n">show_progress</span>
+
+        <span class="c1"># 2. Run tests (serial or in parallel)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">run_tests</span><span class="p">(</span>
+            <span class="n">tests</span><span class="o">=</span><span class="n">tests</span><span class="p">,</span>
+            <span class="n">parallel</span><span class="o">=</span><span class="n">parallel</span><span class="p">,</span>
+            <span class="n">nproc</span><span class="o">=</span><span class="n">nproc</span> <span class="ow">or</span> <span class="n">GRIDTEST_WORKERS</span><span class="p">,</span>
+            <span class="n">interactive</span><span class="o">=</span><span class="n">interactive</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Pretty print results to screen</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">print_results</span><span class="p">(</span><span class="n">tests</span><span class="p">)</span>
+
+        <span class="c1"># return correct error code</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">failed</span><span class="p">(</span><span class="n">tests</span><span class="p">):</span>
+            <span class="k">return</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="mi">0</span></div>
+
+<div class="viewcode-block" id="GridRunner.success"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.success">[docs]</a>    <span class="k">def</span> <span class="nf">success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given a test of tests, return True if all are successful.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">([</span><span class="n">test</span><span class="o">.</span><span class="n">success</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">tests</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span></div>
+
+<div class="viewcode-block" id="GridRunner.failed"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.failed">[docs]</a>    <span class="k">def</span> <span class="nf">failed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given a test of tests, return True if any are not successful.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">tests</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GridRunner.print_results"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.print_results">[docs]</a>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;print the results of the tests, meaning that success is in green,</span>
+<span class="sd">           and non-success is in red.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">total</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">success</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">failure</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">tests</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">total</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">test</span><span class="o">.</span><span class="n">success</span><span class="p">:</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;success: </span><span class="si">{name}</span><span class="s2"> </span><span class="si">{test.summary}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">success</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">bot</span><span class="o">.</span><span class="n">failure</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;failure: </span><span class="si">{name}</span><span class="s2"> </span><span class="si">{test.summary}</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="n">failure</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{success}</span><span class="s2">/</span><span class="si">{total}</span><span class="s2"> tests passed&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GridRunner.get_tests"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.get_tests">[docs]</a>    <span class="k">def</span> <span class="nf">get_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regexp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get tests based on a regular expression.</span>
+
+<span class="sd">           Arguments:</span>
+<span class="sd">            - regexp (str) : if provided, only include those tests that match.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tests</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">parent</span><span class="p">,</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">section</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">regexp</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">regexp</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Each module can have a list of tests</span>
+                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+
+                    <span class="c1"># Get either the file path, module name, or relative path</span>
+                    <span class="n">filename</span> <span class="o">=</span> <span class="n">extract_modulename</span><span class="p">(</span>
+                        <span class="n">section</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dir</span>
+                    <span class="p">)</span>
+
+                    <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">module</span><span class="p">)):</span>
+                        <span class="n">tests</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">)]</span> <span class="o">=</span> <span class="n">GridTest</span><span class="p">(</span>
+                            <span class="n">module</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
+                            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                            <span class="n">params</span><span class="o">=</span><span class="n">module</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                            <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">,</span>
+                            <span class="n">cleanup</span><span class="o">=</span><span class="n">cleanup</span><span class="p">,</span>
+                            <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+                            <span class="n">show_progress</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">show_progress</span><span class="p">,</span>
+                        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">tests</span></div>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;[gridtest|</span><span class="si">%s</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;[gridtest|</span><span class="si">%s</span><span class="s2">]&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Vanessa Sochat
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

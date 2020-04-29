@@ -13,7 +13,9 @@ for generating and running tests.
 
  - [How does it work?](#how-does-it-work): How does gridtest work?
  - [Debugging](#debugging): is easy with the interactive interpreter.
-
+ - [Templates](templates/): for test yaml files, including function and argument substitution
+ - [Python](python/): interacting with a GridRunner from within Python
+ - [Environment](environment/): variables to change defaults for gridtest behavior
 
 <a id="#how-does-it-work">
 ### How does it work?
