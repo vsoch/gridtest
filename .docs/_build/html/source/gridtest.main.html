@@ -165,7 +165,7 @@ Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
 <dl class="function">
 <dt id="gridtest.main.generate.extract_functions">
-<code class="sig-prename descclassname">gridtest.main.generate.</code><code class="sig-name descname">extract_functions</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">include_private=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/generate.html#extract_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.generate.extract_functions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridtest.main.generate.</code><code class="sig-name descname">extract_functions</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">include_private=False</em>, <em class="sig-param">quiet=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/generate.html#extract_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.generate.extract_functions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a filename, extract a module and associated functions with it
 into a grid test. This means creating a structure with function
 names and (if provided) default inputs. The user will fill in
@@ -205,7 +205,7 @@ and a default defined, along with a random value to test.</p>
 
 <dl class="function">
 <dt id="gridtest.main.generate.generate_tests">
-<code class="sig-prename descclassname">gridtest.main.generate.</code><code class="sig-name descname">generate_tests</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">output=None</em>, <em class="sig-param">include_private=False</em>, <em class="sig-param">check_only=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/generate.html#generate_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.generate.generate_tests" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridtest.main.generate.</code><code class="sig-name descname">generate_tests</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">output=None</em>, <em class="sig-param">include_private=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/generate.html#generate_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.generate.generate_tests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a test output file for some input module. If an output file
 is specified and already has existing content, in the case that check is
 used, we only print section names that have not been written. If check
@@ -220,16 +220,19 @@ tests. A “module” input variable can be:</p>
 <li><p>a directory path with files to be recursively discovered</p></li>
 <li><p>a module name</p></li>
 </ul>
+</div></blockquote>
+<p>By default, if a testing file is provided that already has sections defined,
+they will not be overwritten (but new sections will be added). If the
+user wants to produce a new (reset) template, the file should be deleted
+and generate run freshly.</p>
 <dl class="simple">
 <dt>Arguments:</dt><dd><ul class="simple">
 <li><p>module (str) : a file, directory, or module name to parse</p></li>
 <li><p>output (str) : a path to a yaml file to save to</p></li>
 <li><p>include_private (bool) : include “private” functions</p></li>
-<li><p>check_only (bool) :</p></li>
 </ul>
 </dd>
 </dl>
-</div></blockquote>
 </dd></dl>
 
 <dl class="function">
