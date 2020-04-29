@@ -19,7 +19,7 @@ are represented, the return code is 0 (and the CI will pass):
 ```bash
 $ gridtest check tests/modules/temp-tests.yml 
 
-No new tests to add!
+No new tests to add!✨ 🥑️ ✨
 
 # Return code is 0
 $ echo $?
@@ -55,7 +55,8 @@ If we wanted to skip this test, we could do that by defining a skip pattern:
 
 ```bash
 $ gridtest check tests/modules/temp-tests.yml --skip-patterns new_function
-No new tests to add!
+
+No new tests to add!✨ 🥑️ ✨
 ```
 
 And the return code is again 0 (meaning it would pass in CI).
