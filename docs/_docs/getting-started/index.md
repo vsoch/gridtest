@@ -12,6 +12,7 @@ for generating and running tests.
 ## Getting Started
 
  - [How does it work?](#how-does-it-work): How does gridtest work?
+ - [Concepts](#concepts): What are common gridtest concepts?
  - [Debugging](#debugging): is easy with the interactive interpreter.
  - [Templates](templates/): for test yaml files, including function and argument substitution
  - [Testing](testing/): via continuous integration, or checking if tests need updating.
@@ -47,11 +48,49 @@ $ gridtest test --serial script-tests.yml
 ```
 
 Along with testing the conditions that you specify in the testing file, GridTest will also run type checking
-if you have defined types in your code. The rest of this getting started guide will
-review overall functionality. You should look at [tutorials]({{ site.baseurl }}/tutorials/) 
+if you have defined types in your code. You can also check if you need to add
+more tests:
+
+```bash
+# exit code is 0 if all tests written, 1 otherwise
+$ gridtest check script-tests.yml
+
+No new tests to add!✨ 🥑️ ✨
+```
+
+And if there are new tests (meaning new functions or classes in the file that aren't
+tested) you can update your testing file with those missing:
+
+```bash
+$ gridtest update script-tests.yml
+```
+
+The rest of this getting started guide will review overall functionality. 
+You should look at [tutorials]({{ site.baseurl }}/tutorials/) 
 if you have never done this before, and would like to
 walk through basic examples.
 
+<a id="#concepts">
+### What are gridtest concepts
+
+A gridtest is a yaml file that is executed using the software described here,
+GridTest. It's called a GridTest because of the GridTest "matrix" type, which
+makes it easy to run a grid of tests. GridTest's main convention is that 
+it will look for a yaml file, `gridtest.yml` to run tests by default. This means
+that if you write your testing file in the root of a repository with Python
+software like:
+
+```
+setup.py
+requirements.txt
+gridtest.yml
+mymodule/
+  subfolder/
+  __init__.py
+```
+
+You can easily run `gridtest test` in the root of that folder to discover the
+file. This is similar to a Dockerfile, or Singularity recipe file.
 
 <a id="#debugging">
 ### Debugging

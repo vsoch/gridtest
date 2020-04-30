@@ -30,6 +30,7 @@ wants something. I considered calling it crappytest, but the name was too long :
 ## TODO
 
  - develop gridtest matrix input and documentation
+ - add class inspection
  - Add ability to inspect an attribute for a result
  - gridtest test should (by default) look for a gridtest.yml file.
  - Then finish requests use case

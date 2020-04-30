@@ -41,7 +41,13 @@ def get_parser():
     # Run a grid test
     test = subparsers.add_parser("test", help="run a grid test.")
 
-    test.add_argument("filename", help="gridtest file to run tests for", type=str)
+    test.add_argument(
+        "filename",
+        help="gridtest file to run tests for",
+        type=str,
+        default="gridtest.yml",
+        nargs="?",
+    )
 
     test.add_argument(
         "--nproc",

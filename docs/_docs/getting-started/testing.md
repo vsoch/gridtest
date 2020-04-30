@@ -88,12 +88,12 @@ temp:
   filename: /home/vanessa/Desktop/Code/gridtest/tests/modules/temp.py
   temp.create_directory:
   - args:
-      dirname: '{% tmp_dir %}'
+      dirname: '{% raw %}{% tmp_dir %}{% endraw %}'
   temp.new_function:
   - args: {}
   temp.write_file:
   - args:
-      filename: '{% tmp_path %}'
+      filename: '{% raw %}{% tmp_path %}{% endraw %}'
 ```
 
 ## Continuous Integration Recipes
