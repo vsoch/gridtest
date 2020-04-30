@@ -50,7 +50,7 @@ def import_module(name):
     return module
 
 
-def generate_tests(module, output=None, include_private=False):
+def generate_tests(module, output=None, include_private=False, force=False):
     """Generate a test output file for some input module. If an output file 
        is specified and already has existing content, in the case that check is 
        used, we only print section names that have not been written. If check
@@ -71,6 +71,7 @@ def generate_tests(module, output=None, include_private=False):
           - module (str) : a file, directory, or module name to parse
           - output (str) : a path to a yaml file to save to
           - include_private (bool) : include "private" functions
+          - force (bool) : force overwrite existing functions (default False)
     """
     if output and not re.search("[.](yml|yaml)$", output):
         sys.exit("Output file must have yml|yaml extension.")
@@ -89,35 +90,22 @@ def generate_tests(module, output=None, include_private=False):
     else:
         files = [module]
 
-    # We will build up a test specification (or read in existing)
+    # We will build up a test specification (or read in existing) based on filename
     spec = {}
-    if output and os.path.exists(output):
-        spec = read_yaml(output)
 
-    # Keep track of new sections seen
-    sections = []
+    # Update the old test yaml
+    if output and os.path.exists(output) and not force:
+        sys.exit(
+            f"{output} exists! use --force to overwrite, or gridtest update instead."
+        )
 
     # Import each file as a module, or a module name, exit on error
     for filename in files:
         name = re.sub("[.]py$", "", filename.replace("/", "."))
-        functions = extract_functions(filename, include_private)
-        if name not in spec:
-            spec[name] = {}
-
-        sections += [
-            k for k, v in functions.items() if k not in spec[name] and k != "filename"
-        ]
-        # We would want to update filename if done again differently
-        for key, params in functions.items():
-            if key not in spec[name] or key != "filename":
-                spec[name][key] = params
-
-    # Alert about new sections added
-    if sections:
-        print("\nNew sections to add:\n%s" % "\n".join(sections))
+        spec[name] = extract_functions(filename, include_private)
 
     # Write to output file
-    if output and not check_only:
+    if output:
         write_yaml(spec, output)
     return spec
 

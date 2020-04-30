@@ -66,6 +66,36 @@ $ echo $?
 0
 ```
 
+## GridTest Updating
+
+Let's take this same file, and say that we've checked it, and found that a new test
+needs to be added. How do we add the function to the template? You can run
+the update command:
+
+```bash
+$ gridtest update tests/modules/temp-tests.yml 
+Adding function temp.new_function
+Writing [gridtest|temp-tests.yml] to tests/modules/temp-tests.yml
+```
+
+Update is similar to generate, but we already have the filename (for the file
+or module) added to the testing file and don't need to specify it again.
+The test file is updated with the new function (which is rather boring, it doesn't
+have any arguments)
+
+```yaml
+temp:
+  filename: /home/vanessa/Desktop/Code/gridtest/tests/modules/temp.py
+  temp.create_directory:
+  - args:
+      dirname: '{% tmp_dir %}'
+  temp.new_function:
+  - args: {}
+  temp.write_file:
+  - args:
+      filename: '{% tmp_path %}'
+```
+
 ## Continuous Integration Recipes
 
 Gridtest will have templates added soon for particular continuous integration

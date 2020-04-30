@@ -203,7 +203,7 @@
     <span class="k">return</span> <span class="n">module</span></div>
 
 
-<div class="viewcode-block" id="generate_tests"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.generate.generate_tests">[docs]</a><span class="k">def</span> <span class="nf">generate_tests</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_private</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_tests"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.generate.generate_tests">[docs]</a><span class="k">def</span> <span class="nf">generate_tests</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_private</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generate a test output file for some input module. If an output file </span>
 <span class="sd">       is specified and already has existing content, in the case that check is </span>
 <span class="sd">       used, we only print section names that have not been written. If check</span>
@@ -224,6 +224,7 @@
 <span class="sd">          - module (str) : a file, directory, or module name to parse</span>
 <span class="sd">          - output (str) : a path to a yaml file to save to</span>
 <span class="sd">          - include_private (bool) : include &quot;private&quot; functions</span>
+<span class="sd">          - force (bool) : force overwrite existing functions (default False)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">output</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;[.](yml|yaml)$&quot;</span><span class="p">,</span> <span class="n">output</span><span class="p">):</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="s2">&quot;Output file must have yml|yaml extension.&quot;</span><span class="p">)</span>
@@ -242,35 +243,22 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="n">module</span><span class="p">]</span>
 
-    <span class="c1"># We will build up a test specification (or read in existing)</span>
+    <span class="c1"># We will build up a test specification (or read in existing) based on filename</span>
     <span class="n">spec</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="k">if</span> <span class="n">output</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
-        <span class="n">spec</span> <span class="o">=</span> <span class="n">read_yaml</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
 
-    <span class="c1"># Keep track of new sections seen</span>
-    <span class="n">sections</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># Update the old test yaml</span>
+    <span class="k">if</span> <span class="n">output</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span>
+            <span class="n">f</span><span class="s2">&quot;</span><span class="si">{output}</span><span class="s2"> exists! use --force to overwrite, or gridtest update instead.&quot;</span>
+        <span class="p">)</span>
 
     <span class="c1"># Import each file as a module, or a module name, exit on error</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
         <span class="n">name</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;[.]py$&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="s2">&quot;.&quot;</span><span class="p">))</span>
-        <span class="n">functions</span> <span class="o">=</span> <span class="n">extract_functions</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">include_private</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spec</span><span class="p">:</span>
-            <span class="n">spec</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
-
-        <span class="n">sections</span> <span class="o">+=</span> <span class="p">[</span>
-            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">functions</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spec</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="ow">and</span> <span class="n">k</span> <span class="o">!=</span> <span class="s2">&quot;filename&quot;</span>
-        <span class="p">]</span>
-        <span class="c1"># We would want to update filename if done again differently</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">params</span> <span class="ow">in</span> <span class="n">functions</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">spec</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">!=</span> <span class="s2">&quot;filename&quot;</span><span class="p">:</span>
-                <span class="n">spec</span><span class="p">[</span><span class="n">name</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">params</span>
-
-    <span class="c1"># Alert about new sections added</span>
-    <span class="k">if</span> <span class="n">sections</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">New sections to add:</span><span class="se">\n</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sections</span><span class="p">))</span>
+        <span class="n">spec</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">extract_functions</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">include_private</span><span class="p">)</span>
 
     <span class="c1"># Write to output file</span>
-    <span class="k">if</span> <span class="n">output</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">check_only</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
         <span class="n">write_yaml</span><span class="p">(</span><span class="n">spec</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">spec</span></div>
 

@@ -29,7 +29,6 @@ wants something. I considered calling it crappytest, but the name was too long :
 
 ## TODO
 
- - check flow for updating a test file
  - develop gridtest matrix input and documentation
  - Add ability to inspect an attribute for a result
  - gridtest test should (by default) look for a gridtest.yml file.

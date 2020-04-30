@@ -124,7 +124,7 @@ def get_parser():
         dest="skip_patterns",
     )
 
-    # Run a grid test
+    # Generate a grid test
     generate = subparsers.add_parser("generate", help="generate a grid test yaml file.")
 
     generate.add_argument(
@@ -135,15 +135,26 @@ def get_parser():
     )
 
     generate.add_argument(
-        "--reset",
-        dest="reset",
+        "--force",
+        dest="force",
         help="if the output yaml exists, force overwrite with new test templates",
         default=False,
         action="store_true",
     )
 
+    # Update a grid test
+    update = subparsers.add_parser(
+        "update", help="update a gridtest file with new tests."
+    )
+
+    update.add_argument(
+        "input",
+        help="name of input file, folder, or module to write tests for",
+        type=str,
+    )
+
     # Both generate and check groups have --include-private
-    for group in [generate, check]:
+    for group in [generate, check, update]:
         group.add_argument(
             "--include-private",
             dest="include_private",
@@ -193,6 +204,8 @@ def main():
         from .shell import main
     elif args.command == "check":
         from .check import main
+    elif args.command == "update":
+        from .update import main
 
     # Pass on to the correct parser
     return_code = 0

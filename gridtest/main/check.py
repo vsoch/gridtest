@@ -15,7 +15,7 @@ import re
 import sys
 
 
-def check_tests(testfile, include_private=False, skip_patterns=None):
+def get_missing_tests(testfile, include_private=False, skip_patterns=None):
     """Given a testing file, load in as a GridRunner, load the module again,
        and check if new tests need to be generated. Optionally take patterns
        to skip. If no new tests are added, we return 0. Otherwise, we exit with
@@ -64,6 +64,19 @@ def check_tests(testfile, include_private=False, skip_patterns=None):
             for k, v in functions.items()
             if k not in existing and k != "filename" and not re.search(regex, k)
         ]
+    return sections
+
+
+def check_tests(testfile, include_private=False, skip_patterns=None):
+    """A wrapper to get_missing_tests, but we return 0 if no new tests are
+       to be added, and 1 otherwise.
+
+       Arguments:
+          - testfile (str) : the yaml test file
+          - include_private (bool) : include "private" functions
+          - skip_patterns (list) : list of test keys (patterns) to exclude
+    """
+    sections = get_missing_tests(testfile, include_private, skip_patterns)
 
     # If no new sections added, exit with 0
     if sections:

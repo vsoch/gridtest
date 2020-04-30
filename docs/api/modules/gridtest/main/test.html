@@ -162,7 +162,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">gridtest.defaults</span> <span class="k">import</span> <span class="n">GRIDTEST_WORKERS</span><span class="p">,</span> <span class="n">GRIDTEST_RETURNTYPES</span>
-<span class="kn">from</span> <span class="nn">gridtest.utils</span> <span class="k">import</span> <span class="n">read_yaml</span>
+<span class="kn">from</span> <span class="nn">gridtest.utils</span> <span class="k">import</span> <span class="n">read_yaml</span><span class="p">,</span> <span class="n">write_yaml</span>
 <span class="kn">from</span> <span class="nn">gridtest.logger</span> <span class="k">import</span> <span class="n">bot</span>
 <span class="kn">from</span> <span class="nn">gridtest</span> <span class="k">import</span> <span class="n">__version__</span>
 
@@ -685,6 +685,12 @@
         <span class="sd">&quot;&quot;&quot;Given a test of tests, return True if any are not successful.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">success</span><span class="p">(</span><span class="n">tests</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="GridRunner.save"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.save">[docs]</a>    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">testfile</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Save the runner.config to an output yaml file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bot</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Writing </span><span class="si">{self}</span><span class="s2"> to </span><span class="si">{testfile}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">write_yaml</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> <span class="n">testfile</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="GridRunner.print_results"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.print_results">[docs]</a>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;print the results of the tests, meaning that success is in green,</span>

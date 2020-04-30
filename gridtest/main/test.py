@@ -9,7 +9,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 
 from gridtest.defaults import GRIDTEST_WORKERS, GRIDTEST_RETURNTYPES
-from gridtest.utils import read_yaml
+from gridtest.utils import read_yaml, write_yaml
 from gridtest.logger import bot
 from gridtest import __version__
 
@@ -532,6 +532,12 @@ class GridRunner:
         """Given a test of tests, return True if any are not successful.
         """
         return not self.success(tests)
+
+    def save(self, testfile):
+        """Save the runner.config to an output yaml file.
+        """
+        bot.info(f"Writing {self} to {testfile}")
+        write_yaml(self.config, testfile)
 
     def print_results(self, tests):
         """print the results of the tests, meaning that success is in green,

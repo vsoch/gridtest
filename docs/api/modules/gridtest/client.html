@@ -277,7 +277,7 @@
         <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;skip_patterns&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># Run a grid test</span>
+    <span class="c1"># Generate a grid test</span>
     <span class="n">generate</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span><span class="s2">&quot;generate&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;generate a grid test yaml file.&quot;</span><span class="p">)</span>
 
     <span class="n">generate</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -288,15 +288,26 @@
     <span class="p">)</span>
 
     <span class="n">generate</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--reset&quot;</span><span class="p">,</span>
-        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;reset&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--force&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;force&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;if the output yaml exists, force overwrite with new test templates&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
+    <span class="c1"># Update a grid test</span>
+    <span class="n">update</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
+        <span class="s2">&quot;update&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;update a gridtest file with new tests.&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">update</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;input&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;name of input file, folder, or module to write tests for&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+    <span class="p">)</span>
+
     <span class="c1"># Both generate and check groups have --include-private</span>
-    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">[</span><span class="n">generate</span><span class="p">,</span> <span class="n">check</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">[</span><span class="n">generate</span><span class="p">,</span> <span class="n">check</span><span class="p">,</span> <span class="n">update</span><span class="p">]:</span>
         <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
             <span class="s2">&quot;--include-private&quot;</span><span class="p">,</span>
             <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;include_private&quot;</span><span class="p">,</span>
@@ -346,6 +357,8 @@
         <span class="kn">from</span> <span class="nn">.shell</span> <span class="k">import</span> <span class="n">main</span>
     <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s2">&quot;check&quot;</span><span class="p">:</span>
         <span class="kn">from</span> <span class="nn">.check</span> <span class="k">import</span> <span class="n">main</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">command</span> <span class="o">==</span> <span class="s2">&quot;update&quot;</span><span class="p">:</span>
+        <span class="kn">from</span> <span class="nn">.update</span> <span class="k">import</span> <span class="n">main</span>
 
     <span class="c1"># Pass on to the correct parser</span>
     <span class="n">return_code</span> <span class="o">=</span> <span class="mi">0</span>
