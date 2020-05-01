@@ -78,7 +78,14 @@ def test_basic(
     if not func:
         sys.path.insert(0, os.path.dirname(filename))
         module = import_module(module)
-        func = getattr(module, funcname)
+
+        # If we have a class, we need to import and instantiate it first
+        if "self" in args and "." in funcname:
+            instance = getattr(module, funcname.split(".")[-2])(**args["self"])
+            func = getattr(instance, funcname.split(".")[-1])
+            del args["self"]
+        else:
+            func = getattr(module, funcname)
 
     passed = False
     result = None
@@ -99,7 +106,7 @@ def test_basic(
             code.interact(local=locals())
 
     if not func:
-        err = [f"Cannot find function {gridtest_funcname}"]
+        err = [f"Cannot find function {funcname}"]
 
     else:
         passed, error = test_types(func, args, returns)

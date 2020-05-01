@@ -168,6 +168,13 @@ def get_parser():
             default=False,
             action="store_true",
         )
+        group.add_argument(
+            "--skip-classes",
+            dest="skip_classes",
+            help="don't include classes (defaults to False)",
+            default=False,
+            action="store_true",
+        )
 
     return parser
 

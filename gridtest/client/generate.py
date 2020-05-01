@@ -30,5 +30,6 @@ def main(args, extra):
         input_file,
         output=outputfile,
         include_private=args.include_private,
+        include_classes=not args.skip_classes,
         force=args.force,
     )

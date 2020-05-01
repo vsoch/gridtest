@@ -50,7 +50,9 @@ def import_module(name):
     return module
 
 
-def generate_tests(module, output=None, include_private=False, force=False):
+def generate_tests(
+    module, output=None, include_private=False, force=False, include_classes=True
+):
     """Generate a test output file for some input module. If an output file 
        is specified and already has existing content, in the case that check is 
        used, we only print section names that have not been written. If check
@@ -72,6 +74,7 @@ def generate_tests(module, output=None, include_private=False, force=False):
           - output (str) : a path to a yaml file to save to
           - include_private (bool) : include "private" functions
           - force (bool) : force overwrite existing functions (default False)
+          - include_classes (bool) : extract classes to write tests too
     """
     if output and not re.search("[.](yml|yaml)$", output):
         sys.exit("Output file must have yml|yaml extension.")
@@ -102,11 +105,15 @@ def generate_tests(module, output=None, include_private=False, force=False):
     # Import each file as a module, or a module name, exit on error
     for filename in files:
         name = re.sub("[.]py$", "", filename.replace("/", "."))
-        spec[name] = extract_functions(filename, include_private)
+        spec[name] = extract_functions(
+            filename, include_private=include_private, include_classes=include_classes
+        )
 
     # Write to output file
     if output:
         write_yaml(spec, output)
+    else:
+        print("\n" + yaml.dump(spec))
     return spec
 
 
@@ -142,55 +149,103 @@ def extract_modulename(filename, input_dir=None):
     return filename
 
 
-def extract_functions(filename, include_private=False, quiet=False):
+def extract_functions(
+    filename, include_private=False, quiet=False, include_classes=True,
+):
     """Given a filename, extract a module and associated functions with it
        into a grid test. This means creating a structure with function
        names and (if provided) default inputs. The user will fill in
-       the rest of the file.
+       the rest of the file. The function can be used easily recursively by calling
+       itself to get metadata for a subclass, and passing along the (already
+       imported) module.
 
        Arguments:
           - filename (str) : a filename or module name to parse
           - include_private (bool) : include "private" functions
+          - quiet (bool) : suppress additional output
+          - include_classes (bool) : extract classes
     """
     sys.path.insert(1, os.getcwd())
 
     meta = {}
-    name = re.sub(".py$", "", filename).replace("/", ".")
 
     # Try importing the module, fall back to relative path
     try:
+        name = re.sub(".py$", "", filename).replace("/", ".")
         module = import_module(name)
     except:
         name = re.sub(".py$", "", os.path.relpath(filename)).replace("/", ".")
         module = import_module(name)
 
-    # For each function,
-    for funcname in dir(module):
-        if not isinstance(getattr(module, funcname), types.FunctionType):
+    # Generate tuples with (name, module)
+    functions = [(name, module, name)]
+    meta["filename"] = inspect.getfile(module)
+
+    while functions:
+        funcname, func, fullname = functions.pop(0)
+
+        # If it's a module, add functions to list (first pop)
+        if isinstance(func, types.ModuleType):
+            for member in inspect.getmembers(func):
+                functions.append(member + ("%s.%s" % (funcname, member[0]),))
             continue
 
-        # If it's a "private" function and we aren't including private
-        if funcname.startswith("_") and not include_private:
+        if not include_function(funcname, func, include_classes, include_private):
             continue
 
-        key = name + "." + funcname
-        if not quiet:
-            logger.info(f"Extracting {funcname} from {name}")
-            print(f"Extracting {funcname} from {name}")
+        # Extract arguments for function or class, add to matrix
+        try:
+            args = inspect.getfullargspec(func)
 
-        # Extract arguments for function, add to matrix
-        func = getattr(module, funcname)
-        meta["filename"] = inspect.getfile(func)
-        args = inspect.getfullargspec(func)
-        meta[key] = []
+            if not quiet:
+                logger.info(f"Extracting {funcname} from {name}")
+                print(f"Extracting {funcname} from {name}")
 
-        defaults = args.defaults or []
-        argdict = {}
-        for idx in range(len(args.args)):
-            default = None
-            if len(defaults) > idx:
-                default = defaults[idx]
-            argdict.update(formulate_arg(args.args[idx], default))
-        meta[key].append({"args": argdict})
+            meta[fullname] = []
+            defaults = args.defaults or []
+            argdict = {}
+
+            # self is specific to classes, add reference to original class
+            if args.args and args.args[0] == "self":
+                if defaults and defaults[0] != "self":
+                    args.args.pop(0)
+
+            for idx in range(len(args.args)):
+                default = None
+                if len(defaults) > idx:
+                    default = defaults[idx]
+                argdict.update(formulate_arg(args.args[idx], default))
+            meta[fullname].append({"args": argdict})
+
+        # Exceptions will throw type errors
+        except TypeError:
+            continue
+
+        # If it's a class and we are including classes
+        if isinstance(func, object):
+            for member in inspect.getmembers(func):
+                functions.append(member + ("%s.%s.%s" % (name, funcname, member[0]),))
 
     return meta
+
+
+def include_function(funcname, func, include_classes=True, include_private=False):
+    """A helper to determine if a function (or class) should be included.
+       Returns True for yes, False otherwise.
+    """
+    if funcname.startswith("__"):
+        return False
+
+    if not isinstance(func, types.FunctionType) and not include_classes:
+        return False
+
+    if isinstance(func, object) and not include_classes:
+        return False
+
+    if funcname.startswith("_") and not include_private:
+        return False
+
+    if isinstance(func, (int, float, bytes, str, list)):
+        return False
+
+    return True

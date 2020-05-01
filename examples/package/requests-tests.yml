@@ -14,5 +14,3 @@ requests:
   requests.options:
   - args:
       url: null
-  requests.session:
-  - args: {}

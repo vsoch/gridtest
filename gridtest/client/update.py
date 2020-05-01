@@ -17,9 +17,11 @@ from gridtest.main.update import update_tests
 def main(args, extra):
 
     if not args.input:
-        sys.exit("Please provide an input file, folder, or module to parse.")
+        sys.exit("Please provide a yaml test file to update.")
 
-    # Generate the testing file
+    # Update the testing file
     update_tests(
-        args.input, include_private=args.include_private,
+        args.input,
+        include_private=args.include_private,
+        include_classes=not args.skip_classes,
     )

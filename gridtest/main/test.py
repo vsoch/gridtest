@@ -118,11 +118,11 @@ class GridTest:
             return value
 
         # Returns is a special case, this checks for returns param
-        if re.search("{{(\s+)?returns(\s)?}}", value) and "returns" in self.params:
+        if re.search(r"{{(\s+)?returns(\s)?}}", value) and "returns" in self.params:
             value = substitute_args(value, params=self.params)
 
         # Result is a special case that works after a test is run
-        if re.search("{{(\s+)?result(\s)?}}", value) and self.result:
+        if re.search(r"{{(\s+)?result(\s)?}}", value) and self.result:
             value = substitute_args(value, params={"result": self.result})
 
         # We allow for namespacing of args, right now only supports args
@@ -396,7 +396,9 @@ class GridRunner:
         self._version = __version__
         self.load(input_file)
         self.set_name(kwargs.get("name"))
+        self._fill_classes()
         self.show_progress = True
+        self.has_classes = False
 
     def load(self, input_file):
         """load a testing gridtest file.
@@ -404,6 +406,8 @@ class GridRunner:
         input_file = os.path.abspath(input_file)
         if not os.path.exists(input_file):
             sys.exit(f"Cannot find gridtest file {input_file}")
+        if not re.search("(yml|yaml)$", input_file):
+            sys.exit("Please provide a yaml file (e.g., gridtest.yml) to test.")
         self.config = read_yaml(input_file)
         self.input_file = input_file
         self.input_dir = os.path.dirname(input_file)
@@ -418,6 +422,40 @@ class GridRunner:
         """
         self.name = name or os.path.basename(self.input_file)
 
+    def iter_sections(self):
+        for _, section in self.config.items():
+            for name, tests in section.items():
+                if name != "filename":
+                    yield (name, tests)
+
+    def _fill_classes(self):
+        """Read in a config, and create a lookup for any instance variables. Then
+           substitute arguments (starting with instance) for these variables.
+        """
+        # First create the lookup
+        lookup = dict()
+        for name, tests in self.iter_sections():
+            for test in tests:
+                if "instance" in test:
+                    lookup[test["instance"]] = test["args"]
+
+        # Now fill in variables
+        for name, tests in self.iter_sections():
+            for test in tests:
+                if "self" in test["args"]:
+                    self.has_classes = True
+                    if not test["args"]["self"]:
+                        sys.exit(
+                            "%s: please define an instance to use with 'self: {{ instance.name }}'"
+                            % name
+                        )
+                    if re.search("{{.+}}", test["args"]["self"]):
+                        instance = re.sub(
+                            "({{|}}|instance[.])", "", "{{ instance.thisone }}"
+                        ).strip()
+                        if instance in lookup:
+                            test["args"]["self"] = lookup[instance]
+
     def run_tests(self, tests, nproc=9, parallel=True, interactive=False, name=None):
         """run tests. By default, we run them in parallel, unless serial
            is selected.
@@ -431,7 +469,7 @@ class GridRunner:
               not available for parallel jobs.
         """
         # Parallel tests cannot be interactive
-        if parallel and not interactive:
+        if parallel and not interactive and not self.has_classes:
             self._run_parallel(tests, nproc=nproc)
 
         else:
@@ -450,7 +488,6 @@ class GridRunner:
                 if name is not None and interactive:
                     if not task.name.startswith(name):
                         is_interactive = False
-                print(is_interactive)
 
                 # Run the task, update results with finished object
                 task.run(interactive=is_interactive)

@@ -23,5 +23,6 @@ def main(args, extra):
     check_tests(
         args.input,
         include_private=args.include_private,
+        include_classes=not args.skip_classes,
         skip_patterns=args.skip_patterns,
     )
