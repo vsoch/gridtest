@@ -162,6 +162,8 @@ class GridTest:
             return "isfalse %s %s" % (self.params["isfalse"], output)
         elif "equals" in self.params:
             return "equals %s %s" % (self.params["equals"], output)
+        elif "isinstance" in self.params:
+            return "isinstance %s %s" % (self.params["isinstance"], output)
         return output
 
     def _summary_failure(self):
@@ -180,6 +182,8 @@ class GridTest:
             return "isfalse %s %s" % (self.params["isfalse"], error)
         elif "equals" in self.params:
             return "equals %s %s" % (self.params["equals"], error)
+        elif "isinstance" in self.params:
+            return "isinstance %s %s" % (self.params["isinstance"], error)
         return error
 
     # Running
@@ -268,6 +272,8 @@ class GridTest:
             self.check_isfalse(self.params["isfalse"])
         elif "equals" in self.params:
             self.check_equals(self.params["equals"])
+        elif "isinstance" in self.params:
+            self.check_isinstance(self.params["isinstance"])
 
         # Case 5: An error was raised (not expected)
         if self.raises and "raises" not in self.params:
@@ -318,6 +324,11 @@ class GridTest:
             self.err.append(
                 f"Expected exception {exception}, instead raised {self.raises}"
             )
+
+    def check_isinstance(self, instance):
+        """check if the result is of a particular type
+        """
+        return type(self.result).__name__ == instance
 
     def check_istrue(self, statement):
         """check if a statement is true.

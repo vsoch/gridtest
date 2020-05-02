@@ -75,6 +75,7 @@ car:
       color: red
       lights: false
       wheels: 4
+    isinstance: car.Car 
   car.Car.honk:
   - args:
       self: "{{ instance.thisone }}"
@@ -85,5 +86,22 @@ car:
 ```
 
 And then the instance of the Car named as instance "this one" (the second block)
-will be used for those tests. This is a very basic usage for a class, and we 
+will be used for those tests. 
+
+### Testing
+
+Now, we can run tests! Since we've named the testing file `gridtest.yml` we can
+just run:
+
+```bash
+$ gridtest test
+[4/4] |===================================| 100.0% 
+success: car.Car.0 raises ColorException 
+success: car.Car.1 isinstance car.Car
+success: car.Car.honk.0 
+success: car.Car.switch_lights.0 
+4/4 tests passed
+```
+
+This is a very basic usage for a class, and we 
 expect more complex cases to be written up when they are determined.

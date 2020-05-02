@@ -229,4 +229,20 @@ file will be cleaned up after the fact.
     exists: {% raw %}{{ args.outfile }}{% endraw %}
 ```
 
+**isinstance**
+
+To check that a result is of a particular instance type, you can use `isinstance`
+and provide the name of the class that would be returned as a string with `type(self.result).__name__`.
+For example, to test if a custom Car instance is of type car.Car, we would do:
+
+```yaml
+  car.Car:
+  - instance: thisone
+    args:
+      color: red
+      lights: false
+      wheels: 4
+    isinstance: car.Car 
+```
+
 You might next want to browse [tutorials]({{ site.baseurl }}/tutorials/) available.

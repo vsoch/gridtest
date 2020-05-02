@@ -10,6 +10,7 @@ car:
       color: red
       lights: false
       wheels: 4
+    isinstance: car.Car 
   car.Car.honk:
   - args:
       self: "{{ instance.thisone }}"

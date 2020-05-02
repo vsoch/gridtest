@@ -128,6 +128,7 @@ car:
       color: red
       lights: false
       wheels: 4
+    isinstance: car.Car 
   car.Car.honk:
   - args:
       self: "{% raw %}{{ instance.thisone }}{% endraw %}"
@@ -150,7 +151,7 @@ just run:
 $ gridtest test
 [4/4] |===================================| 100.0% 
 success: car.Car.0 raises ColorException 
-success: car.Car.1 
+success: car.Car.1 isinstance car.Car
 success: car.Car.honk.0 
 success: car.Car.switch_lights.0 
 4/4 tests passed
