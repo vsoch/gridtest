@@ -177,20 +177,36 @@ def extract_functions(
         name = re.sub(".py$", "", os.path.relpath(filename)).replace("/", ".")
         module = import_module(name)
 
-    # Generate tuples with (name, module)
+    # Generate tuples with (name, module, fullname)
     functions = [(name, module, name)]
     meta["filename"] = inspect.getfile(module)
+    module_dir = os.path.dirname(meta["filename"])
 
     while functions:
         funcname, func, fullname = functions.pop(0)
 
+        if funcname.startswith("_") and not include_private:
+            continue
+
+        # Skip over functions / modules that aren't a part of original module
+        try:
+            if module_dir not in inspect.getfile(func):
+                continue
+        except:
+            continue
+
         # If it's a module, add functions to list (first pop)
         if isinstance(func, types.ModuleType):
             for member in inspect.getmembers(func):
-                functions.append(member + ("%s.%s" % (funcname, member[0]),))
+                functions.append(member + ("%s.%s.%s" % (name, funcname, member[0]),))
             continue
 
-        if not include_function(funcname, func, include_classes, include_private):
+        if not include_function(
+            funcname,
+            func,
+            include_classes=include_classes,
+            include_private=include_private,
+        ):
             continue
 
         # Extract arguments for function or class, add to matrix
@@ -199,7 +215,8 @@ def extract_functions(
 
             if not quiet:
                 logger.info(f"Extracting {funcname} from {name}")
-                print(f"Extracting {funcname} from {name}")
+                if funcname.startswith("_"):
+                    print(f"Extracting {funcname} from {name}")
 
             meta[fullname] = []
             defaults = args.defaults or []
@@ -223,8 +240,13 @@ def extract_functions(
 
         # If it's a class and we are including classes
         if isinstance(func, object):
-            for member in inspect.getmembers(func):
-                functions.append(member + ("%s.%s.%s" % (name, funcname, member[0]),))
+            try:
+                for member in inspect.getmembers(func):
+                    functions.append(
+                        member + ("%s.%s.%s" % (name, funcname, member[0]),)
+                    )
+            except:
+                print(f"Cannot get members for {func}")
 
     return meta
 
@@ -236,13 +258,16 @@ def include_function(funcname, func, include_classes=True, include_private=False
     if funcname.startswith("__"):
         return False
 
+    if funcname.startswith("_") and not include_private:
+        return False
+
     if not isinstance(func, types.FunctionType) and not include_classes:
         return False
 
-    if isinstance(func, object) and not include_classes:
-        return False
+    if isinstance(func, types.FunctionType):
+        return True
 
-    if funcname.startswith("_") and not include_private:
+    if isinstance(func, object) and not include_classes:
         return False
 
     if isinstance(func, (int, float, bytes, str, list)):

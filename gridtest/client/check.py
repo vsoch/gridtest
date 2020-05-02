@@ -17,7 +17,7 @@ from gridtest.main.check import check_tests
 def main(args, extra):
 
     if not args.input:
-        sys.exit("Please provide a yaml test file to check")
+        args.input = "gridtest.yml"
 
     # Generate the testing file
     check_tests(

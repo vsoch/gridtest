@@ -18,6 +18,8 @@ for generating and running tests.
  - [Testing](testing/): via continuous integration, or checking if tests need updating.
  - [Python](python/): interacting with a GridRunner from within Python
  - [Environment](environment/): variables to change defaults for gridtest behavior
+ - [Grid](grid/): Adding a grid of environment and other parameters to run grid tests
+ - [Optimize](optimize/): some set of parameters for your report
 
 <a id="#how-does-it-work">
 ### How does it work?
@@ -30,21 +32,28 @@ which comes down to a yaml file that you can easily fill in and customize for yo
 For example, I might generate a test yaml file for my script like this:
 
 ```bash
-$ gridtest generate script.py script-tests.yml
+$ gridtest generate script.py gridtest.yml
 ```
 
 And you would then open the file and customize the default template to your liking.
 The testing file can then be run, in the same way, using gridtest:
 
 ```bash
-$ gridtest test script-tests.yml
+$ gridtest test gridtest.yml
+```
+
+Or since gridtest.yml is the default, just leave it out to find the file in
+the present working directory:
+
+```bash
+$ gridtest test
 ```
 
 The tests are run in parallel with multiprocessing to be efficient, but if you want
 you can specify running in serial:
 
 ```bash
-$ gridtest test --serial script-tests.yml
+$ gridtest test --serial
 ```
 
 Along with testing the conditions that you specify in the testing file, GridTest will also run type checking
@@ -53,7 +62,7 @@ more tests:
 
 ```bash
 # exit code is 0 if all tests written, 1 otherwise
-$ gridtest check script-tests.yml
+$ gridtest check gridtest.yml
 
 No new tests to add!✨ 🥑️ ✨
 ```
@@ -62,7 +71,23 @@ And if there are new tests (meaning new functions or classes in the file that ar
 tested) you can update your testing file with those missing:
 
 ```bash
-$ gridtest update script-tests.yml
+$ gridtest update gridtest.yml
+```
+
+**below not implemented yet**
+
+And once your tests are written, you might add a new component (what the library
+is named for) - a grid of environment and other parameters to run the tests with:
+
+```bash
+$ gridtest update --grid gridtest.yml
+```
+
+And finally, some set of optimizations to assess each grid test in:
+
+
+```bash
+$ gridtest update --optimize gridtest.yml
 ```
 
 The rest of this getting started guide will review overall functionality. 

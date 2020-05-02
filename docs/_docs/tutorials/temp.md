@@ -41,7 +41,7 @@ generated the initial template for the script temp.py shown above
 like this:
 
 ```bash
-$ gridtest generate temp.py temp-tests.yml
+$ gridtest generate temp.py gridtest.yml
 Extracting write_file from temp
 Extracting create_directory from temp
 ```
@@ -50,7 +50,7 @@ The first argument is the input for the generate command, and this can be
 a filename, a folder name (that might contain multiple scripts) or a python
 module string (.e.g, requests.get). The second argument is the gridtest
 output file that will be produced with your tests. After you finish,
-the "temp-tests.yml" file will have a list of tests that
+the "gridtest.yml" file will have a list of tests that
 you can add values for. You can delete sections that aren't relevant, or copy
 paste new entries to each list for another testing case.
 
@@ -102,18 +102,25 @@ for more details.
 Once we have our testing file and the original script, we can run the tests as follows:
 
 ```bash
-$ gridtest test temp-tests.yml 
+$ gridtest test gridtest.yml 
 [2/2] |===================================| 100.0% 
 success: temp.create_directory.0 returns /tmp/gridtest-dir.j0aio0l6 
 success: temp.write_file.0 exists /tmp/gridtest-file-ped8_9zl
 2/2 tests passed
 ```
 
+Or since gridtest.yml is the default, just leave it out to find the file in
+the present working directory:
+
+```bash
+$ gridtest test
+```
+
 And the directory mentioned, `/tmp/gridtest-dir.j0aio0l6` will be cleaned up
 upon completion. If we don't want to clean it up, we can add `--no-cleanup`:
 
 ```bash
-$ gridtest test temp-tests.yml --no-cleanup
+$ gridtest test gridtest.yml --no-cleanup
 [2/2] |===================================| 100.0% 
 success: temp.create_directory.0 returns /tmp/gridtest-dir.e1c4gbr8 
 success: temp.write_file.0 exists /tmp/gridtest-file-abd8-4yt

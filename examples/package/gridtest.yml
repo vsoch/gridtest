@@ -1,0 +1,12 @@
+requests:
+  filename: /home/vanessa/anaconda3/lib/python3.7/site-packages/requests/__init__.py
+  requests.api.get:
+  - args:
+      params: null
+      url: https://google.com
+  requests.api.head:
+  - args:
+      url: https://google.com
+  requests.api.options:
+  - args:
+      url: https://google.com

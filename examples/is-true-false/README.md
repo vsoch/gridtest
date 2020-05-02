@@ -25,7 +25,7 @@ then you can cd into this folder, and test generating a gridtest file for the
 [truefalse.py](truefalse.py) included here:
 
 ```bash
-$ gridtest generate truefalse.py truefalse-tests.yml
+$ gridtest generate truefalse.py gridtest.yml
 Extracting add from truefalse
 Extracting add_with_type from truefalse
 ```
@@ -34,7 +34,7 @@ The first argument is the input for the generate command, and this can be
 a filename, a folder name (that might contain multiple scripts) or a python
 module string (.e.g, requests.get). The second argument is the gridtest
 output file that will be produced with your tests. After you finish,
-the [truefalse-tests.yml](truefalse-tests.yml) will have a list of tests that
+the [gridtest.yml](gridtest.yml) will have a list of tests that
 you can add values for. You can delete sections that aren't relevant, or copy
 paste new entries to each list for another testing case.
 
@@ -146,10 +146,16 @@ Finally, you'll have your test file, and an environment where you want to
 test. You can run tests like this:
 
 ```bash
-$ gridtest test script-example.yml
+$ gridtest test gridtest.yml
 [3/3] |===================================| 100.0% 
 success: truefalse.add.0 istrue isinstance(3.0, float) 
 success: truefalse.add_with_type.0 returns 3 
 success: truefalse.add_with_type.1 raises TypeError 
 3/3 tests passed
+```
+
+Or since gridtest.yml is the default, just do:
+
+```bash
+$ gridtest test
 ```

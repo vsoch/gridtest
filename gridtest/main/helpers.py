@@ -75,6 +75,7 @@ def test_basic(
        Arguments:
          - interactive (bool) : run in interactive mode (giving user shell)
     """
+
     if not func:
         sys.path.insert(0, os.path.dirname(filename))
         module = import_module(module)
@@ -85,7 +86,9 @@ def test_basic(
             func = getattr(instance, funcname.split(".")[-1])
             del args["self"]
         else:
-            func = getattr(module, funcname)
+            for piece in funcname.split("."):
+                func = getattr(module, piece)
+                module = func
 
     passed = False
     result = None

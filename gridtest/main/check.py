@@ -15,7 +15,9 @@ import re
 import sys
 
 
-def get_missing_tests(testfile, include_private=False, skip_patterns=None):
+def get_missing_tests(
+    testfile, include_private=False, skip_patterns=None, include_classes=True
+):
     """Given a testing file, load in as a GridRunner, load the module again,
        and check if new tests need to be generated. Optionally take patterns
        to skip. If no new tests are added, we return 0. Otherwise, we exit with
@@ -58,7 +60,12 @@ def get_missing_tests(testfile, include_private=False, skip_patterns=None):
 
     # Import each file as a module, or a module name, exit on error
     for filename in files:
-        functions = extract_functions(filename, include_private, quiet=True)
+        functions = extract_functions(
+            filename,
+            include_private=include_private,
+            quiet=True,
+            include_classes=include_classes,
+        )
         sections += [
             k
             for k, v in functions.items()
@@ -67,16 +74,21 @@ def get_missing_tests(testfile, include_private=False, skip_patterns=None):
     return sections
 
 
-def check_tests(testfile, include_private=False, skip_patterns=None):
+def check_tests(
+    testfile, include_private=False, include_classes=True, skip_patterns=None
+):
     """A wrapper to get_missing_tests, but we return 0 if no new tests are
        to be added, and 1 otherwise.
 
        Arguments:
           - testfile (str) : the yaml test file
           - include_private (bool) : include "private" functions
+          - include_classes (bool) : include classes
           - skip_patterns (list) : list of test keys (patterns) to exclude
     """
-    sections = get_missing_tests(testfile, include_private, skip_patterns)
+    sections = get_missing_tests(
+        testfile, include_private, skip_patterns, include_classes
+    )
 
     # If no new sections added, exit with 0
     if sections:

@@ -49,7 +49,7 @@ The first step is to generate your testing template, which needs to be done once
 and will generate a yaml file that you can fill in as a template.
 
 ```bash
-$ gridtest generate script.py script-tests.yml2
+$ gridtest generate script.py gridtest.yml2
 Extracting add from script
 Extracting add_with_type from script
 Extracting hello from script
@@ -61,7 +61,7 @@ The first argument is the input for the generate command, and this can be
 a filename, a folder name (that might contain multiple scripts) or a python
 module string (.e.g, requests.get). The second argument is the gridtest
 output file that will be produced with your tests. After you finish,
-the output template file (script-tests.yml) will have a list of tests that
+the output template file (gridtest.yml) will have a list of tests that
 you can add values for. You can delete sections that aren't relevant, or copy
 paste new entries to each list for another testing case. The base template
 looks like this:
@@ -200,7 +200,7 @@ And here is an example of when all tests pass:
 You can print a little more output about successes or failures with `--verbose`
 
 ```bash
-$ gridtest test --verbose examples/basic/script-tests.yml 
+$ gridtest test --verbose examples/basic/gridtest.yml 
 [script.hello_with_type:6/6] |===================================| 100.0% 3% 
 success: script.add.0 returns 3 
 success: script.add.1 raises TypeError 
@@ -215,7 +215,7 @@ Or you can filter to a regular expression (pattern) to only run a subset of
 tests:
 
 ```bash
-$ gridtest test --pattern script.add examples/basic/script-tests.yml 
+$ gridtest test --pattern script.add examples/basic/gridtest.yml 
 [script.add_with_type:3/3] |===================================| 100.0% 
 success: script.add.0 returns 3 
 success: script.add.1 raises TypeError 
@@ -237,7 +237,7 @@ and discussed in other examples.
 
 ### Customize Template
 
-And from it we've produced this testing file "script-tests.yml" in the same directory:
+And from it we've produced this testing file "gridtest.yml" in the same directory:
 
 ```yaml
 script:
@@ -273,7 +273,7 @@ script:
 We would run it with gridtest as follows:
 
 ```bash
-$ gridtest test script-tests.yml 
+$ gridtest test gridtest.yml 
 [6/6] |===================================| 100.0% 
 success: script.add.0 returns 3 
 success: script.add.1 raises TypeError 
@@ -282,6 +282,13 @@ success: script.hello.0
 success: script.hello_with_default.0 
 success: script.hello_with_type.0 
 6/6 tests passed
+```
+
+Or since gridtest.yml is the default, just leave it out to find the file in
+the present working directory:
+
+```bash
+$ gridtest test
 ```
 
 Now let's say there is an error in a script. Let's randomly raise an exception:
@@ -295,7 +302,7 @@ def hello(name):
 If we run tests again, we see a failure with an unexpected exception:
 
 ```bash
-$ gridtest test script-tests.yml 
+$ gridtest test gridtest.yml 
 [6/6] |===================================| 100.0% 
 success: script.add.0 returns 3 
 success: script.add.1 raises TypeError 
@@ -312,7 +319,7 @@ If we add the `--interactive` flag, it's going to allow us to cycle through
 *every single test* and press Control+d to jump to the next test:
 
 ```python
-$ gridtest test script-tests.yml --interactive
+$ gridtest test gridtest.yml --interactive
 [script.add:1/6] |=====|-----------------------------|  16.7% 
 
 Gridtest interactive mode! Press Control+D to cycle to next test.
@@ -338,7 +345,7 @@ But that's not really what we want - we know the failing test is `script.hello.0
 so let's run the tests, but only this particular test for interactive:
 
 ```python
-$ gridtest test script-tests.yml --interactive --name script.hello
+$ gridtest test gridtest.yml --interactive --name script.hello
 
 [script.add:1/6] |=====|-----------------------------|  16.7% False
 [script.add:2/6] |===========|-----------------------|  33.3% False
@@ -410,20 +417,20 @@ In the case of a file with multiple tests (the typical case) You can also specif
 to interact with:
 
 ```python
-$ gridtest test examples/basic/script-tests.yml --interactive --name script.add
+$ gridtest test examples/basic/gridtest.yml --interactive --name script.add
 ```
 
 For the above, this would interact with all tests that start with script.add. If you
 want to limit to the script.add module, you might want to do:
 
 ```python
-$ gridtest test examples/basic/script-tests.yml --interactive --name script.add.
+$ gridtest test examples/basic/gridtest.yml --interactive --name script.add.
 ```
 
 Or a specific indexed text for the module:
 
 ```python
-$ gridtest test examples/basic/script-tests.yml --interactive --name script.add.0
+$ gridtest test examples/basic/gridtest.yml --interactive --name script.add.0
 ```
 
 You might next want to browse [tutorials]({{ site.baseurl }}/tutorials/) available.

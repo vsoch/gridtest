@@ -29,7 +29,7 @@ def add_with_type(one: int, two: int) -> int:
 We would first generate a gridtest template like the following:
 
 ```bash
-$ gridtest generate truefalse.py truefalse-tests.yml
+$ gridtest generate truefalse.py gridtest.yml
 Extracting add from truefalse
 Extracting add_with_type from truefalse
 ```
@@ -38,7 +38,7 @@ The first argument is the input for the generate command, and this can be
 a filename, a folder name (that might contain multiple scripts) or a python
 module string (.e.g, requests.get). The second argument is the gridtest
 output file that will be produced with your tests. After you finish,
-the file "truefalse-tests.yml" will have a list of tests that
+the file "gridtest.yml" will have a list of tests that
 you can add values for. You can delete sections that aren't relevant, or copy
 paste new entries to each list for another testing case.
 
@@ -145,13 +145,20 @@ Finally, you'll have your test file, and an environment where you want to
 test. You can run tests like this:
 
 ```bash
-$ gridtest test truefalse-tests.yml 
+$ gridtest test gridtest.yml 
 [4/4] |===================================| 100.0% 
 success: truefalse.add.0 istrue isinstance(3.0, float) 
 success: truefalse.add.1 equals 1+2 
 success: truefalse.add_with_type.0 returns 3 
 success: truefalse.add_with_type.1 raises TypeError 
 4/4 tests passed
+```
+
+Or since gridtest.yml is the default, just leave it out to find the file in
+the present working directory:
+
+```bash
+$ gridtest test
 ```
 
 You might next want to browse other [tutorials]({{ site.baseurl }}/tutorials/) available.

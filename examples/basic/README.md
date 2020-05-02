@@ -24,14 +24,14 @@ then you can cd into this folder, and test generating a gridtest file for the
 [script.py](script.py) included here:
 
 ```bash
-$ gridtest generate script.py script-tests.yml
+$ gridtest generate script.py gridtest.yml
 ```
 
 The first argument is the input for the generate command, and this can be
 a filename, a folder name (that might contain multiple scripts) or a python
 module string (.e.g, requests.get). The second argument is the gridtest
 output file that will be produced with your tests. After you finish,
-the [script-tests.yml](script-tests.yml) will have a list of tests that
+the [gridtest.yml](gridtest.yml) will have a list of tests that
 you can add values for. You can delete sections that aren't relevant, or copy
 paste new entries to each list for another testing case.
 
@@ -175,7 +175,7 @@ For example, if you give the wrong type as input to a function, it will by defau
 exit with an error:
 
 ```bash
-$ gridtest test examples/basic/script-tests.yml 
+$ gridtest test examples/basic/gridtest.yml 
 [script.hello_with_type:6/6] |===================================| 100.0% 3% 
 success: script.add.0 returns 3 
 success: script.add.1 raises TypeError 
@@ -293,7 +293,12 @@ Finally, you'll have your test file, and an environment where you want to
 test. You can run tests like this:
 
 ```bash
-$ gridtest test script-example.yml
+$ gridtest test gridtest.yml
+```
+Or since gridtest.yml is the default, just do:
+
+```bash
+$ gridtest test
 ```
 
 And here is an (under development) snapshot of what a result currently looks like
@@ -311,7 +316,7 @@ And here is an example of when all tests pass:
 You can print a little more output about successes or failures with `--verbose`
 
 ```bash
-$ gridtest test --verbose examples/basic/script-tests.yml 
+$ gridtest test --verbose examples/basic/gridtest.yml 
 [script.hello_with_type:6/6] |===================================| 100.0% 3% 
 success: script.add.0 returns 3 
 success: script.add.1 raises TypeError 
@@ -326,7 +331,7 @@ Or you can filter to a regular expression (pattern) to only run a subset of
 tests:
 
 ```bash
-$ gridtest test --pattern script.add examples/basic/script-tests.yml 
+$ gridtest test --pattern script.add examples/basic/gridtest.yml 
 [script.add_with_type:3/3] |===================================| 100.0% 
 success: script.add.0 returns 3 
 success: script.add.1 raises TypeError 
