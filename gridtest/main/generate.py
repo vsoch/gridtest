@@ -182,6 +182,9 @@ def extract_functions(
     meta["filename"] = inspect.getfile(module)
     module_dir = os.path.dirname(meta["filename"])
 
+    # Don't re-add functions that are seen
+    seen = set()
+
     while functions:
         funcname, func, fullname = functions.pop(0)
 
@@ -198,7 +201,11 @@ def extract_functions(
         # If it's a module, add functions to list (first pop)
         if isinstance(func, types.ModuleType):
             for member in inspect.getmembers(func):
-                functions.append(member + ("%s.%s.%s" % (name, funcname, member[0]),))
+                if member[0] not in seen:
+                    functions.append(
+                        member + ("%s.%s.%s" % (name, funcname, member[0]),)
+                    )
+                    seen.add(member[0])
             continue
 
         if not include_function(
@@ -242,9 +249,11 @@ def extract_functions(
         if isinstance(func, object):
             try:
                 for member in inspect.getmembers(func):
-                    functions.append(
-                        member + ("%s.%s.%s" % (name, funcname, member[0]),)
-                    )
+                    if member[0] not in seen:
+                        functions.append(
+                            member + ("%s.%s.%s" % (name, funcname, member[0]),)
+                        )
+                        seen.add(member[0])
             except:
                 print(f"Cannot get members for {func}")
 

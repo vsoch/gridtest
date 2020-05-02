@@ -29,6 +29,14 @@ wants something. I considered calling it crappytest, but the name was too long :
 
  * Free software: MPL 2.0 License
 
+## Known Issues 
+
+The following are known to not work, and development will depend on how useful
+the average user will assess each of these points. The developer @vsoch has not
+added them yet because she doesn't think them overall useful.
+
+ - support for system libraries (e.g., sys) or anything without a filename in site-packages
+
 ## TODO
 
  - develop gridtest matrix input and documentation
