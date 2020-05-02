@@ -32,6 +32,3 @@ wants something. I considered calling it crappytest, but the name was too long :
 ## TODO
 
  - develop gridtest matrix input and documentation
- - add class, isinstance tests
- - Add ability to inspect an attribute for a result
- - Then finish requests use case

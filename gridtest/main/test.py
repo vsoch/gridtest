@@ -142,49 +142,8 @@ class GridTest:
            return, raise, or check existance.
         """
         if self.success:
-            return self._summary_success()
-        return self._summary_failure()
-
-    def _summary_success(self):
-        """return successful summary
-        """
-        output = "".join(self.out) if self.verbose else ""
-
-        if "returns" in self.params:
-            return "returns %s %s" % (self.params["returns"], output)
-        elif "raises" in self.params:
-            return "raises %s %s" % (self.params["raises"], output)
-        elif "exists" in self.params:
-            return "exists %s %s" % (self.params["exists"], output)
-        elif "istrue" in self.params:
-            return "istrue %s %s" % (self.params["istrue"], output)
-        elif "isfalse" in self.params:
-            return "isfalse %s %s" % (self.params["isfalse"], output)
-        elif "equals" in self.params:
-            return "equals %s %s" % (self.params["equals"], output)
-        elif "isinstance" in self.params:
-            return "isinstance %s %s" % (self.params["isinstance"], output)
-        return output
-
-    def _summary_failure(self):
-        """Return a failure message, including error
-        """
-        error = " ".join(self.err)
-        if "returns" in self.params:
-            return "returns %s %s" % (self.params["returns"], error)
-        elif "raises" in self.params:
-            return "raises %s %s" % (self.params["raises"], error)
-        elif "exists" in self.params:
-            return "exists %s %s" % (self.params["exists"], error)
-        elif "istrue" in self.params:
-            return "istrue %s %s" % (self.params["istrue"], error)
-        elif "isfalse" in self.params:
-            return "isfalse %s %s" % (self.params["isfalse"], error)
-        elif "equals" in self.params:
-            return "equals %s %s" % (self.params["equals"], error)
-        elif "isinstance" in self.params:
-            return "isinstance %s %s" % (self.params["isinstance"], error)
-        return error
+            return self.summary_success()
+        return self.summary_failure()
 
     # Running
 
@@ -253,29 +212,29 @@ class GridTest:
         # Do final substitution
         self.post_substitute()
 
-        # Case 1: test for returns
+        # Set 1: test for returns
         if "returns" in self.params:
             self.check_returns(self.params["returns"])
 
-        # Case 2: test raises
-        elif "raises" in self.params:
+        # Set 2: test raises
+        if "raises" in self.params:
             self.check_raises(self.params["raises"])
 
-        # Case 3: test exists
-        elif "exists" in self.params:
+        # Set 3: test exists
+        if "exists" in self.params:
             self.check_exists(self.params["exists"])
 
-        # Case 4: Determine if a statement is true or false
-        elif "istrue" in self.params:
+        # Set 4: Determine if a statement is true or false
+        if "istrue" in self.params:
             self.check_istrue(self.params["istrue"])
-        elif "isfalse" in self.params:
+        if "isfalse" in self.params:
             self.check_isfalse(self.params["isfalse"])
-        elif "equals" in self.params:
+        if "equals" in self.params:
             self.check_equals(self.params["equals"])
-        elif "isinstance" in self.params:
+        if "isinstance" in self.params:
             self.check_isinstance(self.params["isinstance"])
 
-        # Case 5: An error was raised (not expected)
+        # Set 5: An error was raised (not expected)
         if self.raises and "raises" not in self.params:
             self.err.append(f"Unexpected Exception: {self.raises}.")
             self.success = False
@@ -328,22 +287,29 @@ class GridTest:
     def check_isinstance(self, instance):
         """check if the result is of a particular type
         """
-        return type(self.result).__name__ == instance
+        if not type(self.result).__name__ == instance:
+            self.err.append(
+                f"{type(self.result).__name__} is not instance of {instance}"
+            )
+            self.success = False
 
     def check_istrue(self, statement):
         """check if a statement is true.
         """
-        return eval(str(statement)) == True
+        if not eval(str(statement)) == True:
+            self.success = False
 
     def check_isfalse(self, statement):
         """check if a statement is false
         """
-        return not self.check_istrue(str(statement))
+        if not eval(str(statement)) == False:
+            self.success = False
 
     def check_equals(self, statement):
         """check if a result equals some statement.
         """
-        return eval(str(statement)) == self.result
+        if not eval(str(statement)) == self.result:
+            self.success = False
 
     # Cleanup and reset
 
@@ -374,6 +340,29 @@ class GridTest:
         self.to_cleanup = set()
         self.out = []
         self.err = []
+
+    def _summary(self, out):
+        """return summary for specific output (or error) stream
+        """
+        output = "".join(out) if self.verbose else ""
+        for key in [
+            "returns",
+            "raises",
+            "exists",
+            "istrue",
+            "isfalse",
+            "equals",
+            "isinstance",
+        ]:
+            if key in self.params:
+                output += " %s %s" % (key, self.params[key])
+        return output.strip()
+
+    def summary_success(self):
+        return self._summary(self.out)
+
+    def summary_failure(self):
+        return self._summary(self.err)
 
 
 class GridTestFunc(GridTest):

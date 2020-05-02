@@ -16,9 +16,6 @@ using GridTest.
  - [Temp Tutorial](temp/): Create temporary files and folders for testing, optionally without cleanup
  - [Boolean Logic Tutorial](boolean/): Use `istrue` and `isfalse` to check custom boolean logic
  - [Class Tutorial](class/): Writing tests for Python classes
-
-**not yet written**
-
- - [Package Tutorial](): Writing tests for a system package
+ - [Package Tutorial](package/): Writing tests for a system package, requests
 
 If you want to request or suggest a tutorial, please [open an issue](https://github.com/{{ site.repo }}/issues).

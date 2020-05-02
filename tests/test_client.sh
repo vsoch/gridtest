@@ -25,6 +25,7 @@ printf "Creatied temporary directory to work in. ${output}\n"
 echo "#### Testing basic tests"
 runTest 0 $output gridtest test $here/modules/basic-tests.yml
 runTest 0 $output gridtest test $here/modules/basic-tests.yml --serial
+runTest 0 $output gridtest check $here/modules/basic-tests.yml
 
 echo
 echo "#### Testing temp file and directory tests"

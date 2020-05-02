@@ -203,3 +203,19 @@ def test_istrue_isfalse():
     assert test.result == 3.0
     assert test.params["istrue"] == "isinstance(3.0, float)"
     assert test.params["isfalse"] == "isinstance(3.0, int)"
+
+
+def test_classes():
+    """Test that gridtest can load classes
+    """
+    from gridtest.main.test import GridRunner
+
+    test_file = os.path.join(here, "modules", "car-tests.yml")
+    runner = GridRunner(test_file)
+    tests = runner.get_tests()
+
+    test = tests["car.Car.1"]
+    assert not test.result
+    assert "isinstance" in test.params
+    test.run()
+    assert type(test.result).__name__ == test.params["isinstance"]

@@ -4,9 +4,11 @@ requests:
   - args:
       params: null
       url: https://google.com
+    isinstance: Response
   requests.api.head:
   - args:
       url: https://google.com
+    istrue: "self.result.status_code == 301"
   requests.api.options:
   - args:
       url: https://google.com

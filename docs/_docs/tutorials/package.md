@@ -1,3 +1,14 @@
+---
+title: Package Tutorial
+category: Tutorials
+permalink: /tutorials/package/index.html
+order: 5
+---
+
+This tutorial covers writing gridtests for a specific package of interest,
+such as the `requests` module that might already be installed in your python
+site-packages. If you haven't [installed]({{ site.baseurl }}/install/) gridtest, you should do this first.
+
 # Package Testing
 
 You don't necessarily need to write tests just for local files or modules!
@@ -406,7 +417,7 @@ requests:
       url: null
 ```
 
-to this:
+to a much shorter and simpler:
 
 ```yaml
 requests:
@@ -427,6 +438,8 @@ requests:
 
 This recipe also shows a good example of how to check for an instance type.
 The string "Response" should be given if I check the `type(result).__name__`
-for the result. Also notice the `istrue` statement isn't targeting a `{{ result }}`
+for the result. Also notice the `istrue` statement isn't targeting a `{% raw %}{{ result }}{% endraw %}`
 template that can be converted to a string and evaluated, but rather the GridTest
 instance directly (self.result) and more specifically, the status_code attribute.
+
+You might next want to browse other [tutorials]({{ site.baseurl }}/tutorials/) available.
