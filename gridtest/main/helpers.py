@@ -11,6 +11,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from gridtest.main.generate import import_module, get_function_typing
 from io import StringIO
 import sys
+import time
 import os
 
 
@@ -74,13 +75,12 @@ def test_basic(
        Arguments:
          - interactive (bool) : run in interactive mode (giving user shell)
     """
-
     if not func:
         sys.path.insert(0, os.path.dirname(filename))
         module = import_module(module)
 
         # If we have a class, we need to import and instantiate it first
-        if "self" in args and "." in funcname:
+        if "self" in args:
             instance = getattr(module, funcname.split(".")[-2])(**args["self"])
             func = getattr(instance, funcname.split(".")[-1])
             del args["self"]

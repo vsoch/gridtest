@@ -87,4 +87,3 @@ car:
 And then the instance of the Car named as instance "this one" (the second block)
 will be used for those tests. This is a very basic usage for a class, and we 
 expect more complex cases to be written up when they are determined.
-

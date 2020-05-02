@@ -148,8 +148,12 @@ just run:
 
 ```bash
 $ gridtest test
+[4/4] |===================================| 100.0% 
+success: car.Car.0 raises ColorException 
+success: car.Car.1 
+success: car.Car.honk.0 
+success: car.Car.switch_lights.0 
+4/4 tests passed
 ```
-
-And note that these tests are currently run in serial mode, pending a bug.
 
 You might next want to browse other [tutorials]({{ site.baseurl }}/tutorials/) available.

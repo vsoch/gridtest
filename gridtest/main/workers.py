@@ -66,6 +66,9 @@ class Workers(object):
             self.start()
             for name, task in tests.items():
 
+                # If a class is returned, needs to be in path too
+                sys.path.insert(0, os.path.dirname(task.filename))
+
                 # Get the function name from the tester
                 params = {
                     "funcname": task.get_funcname(),

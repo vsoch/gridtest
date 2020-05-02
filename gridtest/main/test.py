@@ -398,7 +398,6 @@ class GridRunner:
         self.set_name(kwargs.get("name"))
         self._fill_classes()
         self.show_progress = True
-        self.has_classes = False
 
     def load(self, input_file):
         """load a testing gridtest file.
@@ -443,7 +442,6 @@ class GridRunner:
         for name, tests in self.iter_sections():
             for test in tests:
                 if "self" in test["args"]:
-                    self.has_classes = True
                     if not test["args"]["self"]:
                         sys.exit(
                             "%s: please define an instance to use with 'self: {{ instance.name }}'"
@@ -469,7 +467,7 @@ class GridRunner:
               not available for parallel jobs.
         """
         # Parallel tests cannot be interactive
-        if parallel and not interactive and not self.has_classes:
+        if parallel and not interactive:
             self._run_parallel(tests, nproc=nproc)
 
         else:
