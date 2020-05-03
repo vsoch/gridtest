@@ -1,5 +1,5 @@
 ---
-title: Debugging
+title: Decorators
 category: Getting Started
 permalink: /getting-started/deorators/index.html
 order: 6

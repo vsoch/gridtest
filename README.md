@@ -11,7 +11,9 @@ Simple grid testing setup for Python functions and modules.
 GridTest is a small python library that will read in one or more python
 scripts or modules, and generate a testing file that can be used to run grid
 tests. A "gridtest" is one that is run over a grid of environment or parameter
-settings that can optionally be optimized for something.
+settings that can optionally be optimized for something. For example, you can
+run a single function across a grid of its own arguments, and then measure
+the time that each one takes, and report the results in a grid for inspection.
 Take a look at the [examples](examples) folder or the 
 [documentation](https://vsoch.github.io/gridtest) for getting started.
 
