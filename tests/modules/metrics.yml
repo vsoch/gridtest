@@ -1,14 +1,14 @@
-script:
-  filename: /home/vanessa/Desktop/Code/gridtest/examples/metrics/script.py
-  script.gotosleep:
+metrics:
+  filename: /home/vanessa/Desktop/Code/gridtest/tests/modules/metrics.py
+  metrics.gotosleep:
   - metrics:
     - '@timeit'
     grid:
       seconds:
-        list: [10, 15]
-        max: 5
-        min: 0
-  script.add:
+        list: [0, 1, 2]
+        max: 6
+        min: 3
+  metrics.add:
   - args:
       two: 2
       one: 1.0
@@ -18,7 +18,7 @@ script:
       one: 1
       two: 2
     equals: 1+2
-  script.add_with_type:
+  metrics.add_with_type:
   - args:
       one: 1
       two: 2

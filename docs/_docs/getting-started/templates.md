@@ -19,18 +19,56 @@ name, a set of arguments, and then just test that it runs:
     - name: "dinosaur"
 ```
 
-If the script "write" runs in the file or module "script" simply runs with the
-input "dinosaur" as name, this test will be successful. We plan to add a matrix
-type that will look something like this:
+In the above snippet, if `script.write` runs with the
+input "dinosaur" as name, this test will be successful. The next type is what
+gives gridtest it's name, the "grid" specification. This is when we don't want
+to define a single argument, but some set of parameters for gridtest to iterate
+over. As an example, let's say that we have a function that takes an input, `seconds`, and sleeps
+for that many seconds. Our default might start like this:
 
 ```yaml
-  script.write:
-    matrix:
-       ...
+  script.gotosleep:
+    args:
+      - seconds: 1
 ```
 
-More detail will be added as this is developed. This will make it easy to run
-a grid of tests for a function.
+The above would run one test, and sleep for 1 second. But that's not really so
+useful. We would want to define a range of values between 0 and 5, 
+and then a few explicit higher values, 10 and 11. How would that look?
+
+```yaml
+  script.gotosleep:
+    grid:
+      seconds:
+        max: 5
+        min: 0
+        list: [10, 15]
+```
+
+In the example above, the previous argument (arg) has been moved to a section
+called "grid" to indicate to gridtest that this is a grid of parameters to run
+over, and not a one off value. Under grid we have an equivalent entry for
+seconds, but this time, we define a min (0), a max (5), and a list to include
+10 and 15. Gridtest would parse this to run tests over our sleep function
+for all of these argument sets:
+
+```python
+[{'seconds': 0}, {'seconds': 1}, {'seconds': 2}, {'seconds': 3}, {'seconds': 4}, {'seconds': 10}, {'seconds': 15}]
+```
+
+And if we had other grid parameters defined, we'd build a matrix over them too.
+Single values can remain in the args section, but **you are not allowed to have
+the same parameter defined under both args and grid**. To be explicit about the
+grid section:
+
+**min** and **max** are to be used when specifying a range. When unset, **by** 
+would be 1. If you want to decrease, set a negative value for by. You can assume
+the values are going into range like `range(min, max, by)`.
+
+**list** is for when you want to include a list of values, even in addition to a
+range already specified as in the example above.
+
+An interactive result report is planned to better illustrate the output here.
 
 ## Input Types
 
@@ -78,6 +116,8 @@ For example, to test that a requests.response_code is equal to a certain value, 
       url: https://google.com
     istrue: "self.result.status_code == 301"
 ```
+
+
 
 ### Function Variables
 

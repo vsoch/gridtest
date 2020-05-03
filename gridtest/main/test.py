@@ -8,7 +8,11 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-from gridtest.defaults import GRIDTEST_WORKERS, GRIDTEST_RETURNTYPES
+from gridtest.defaults import (
+    GRIDTEST_WORKERS,
+    GRIDTEST_RETURNTYPES,
+    GRIDTEST_GRIDEXPANDERS,
+)
 from gridtest.utils import read_yaml, write_yaml
 from gridtest.logger import bot
 from gridtest import __version__
@@ -23,6 +27,7 @@ from gridtest.main.helpers import test_basic
 from gridtest.main.substitute import substitute_func, substitute_args
 from copy import deepcopy
 
+import itertools
 import re
 import shutil
 import sys
@@ -460,7 +465,7 @@ class GridRunner:
         # Now fill in variables
         for name, tests in self.iter_sections():
             for test in tests:
-                if "self" in test["args"]:
+                if "self" in test.get("args", {}):
                     if not test["args"]["self"]:
                         sys.exit(
                             "%s: please define an instance to use with 'self: {{ instance.name }}'"
@@ -634,6 +639,7 @@ class GridRunner:
             - regexp (str) : if provided, only include those tests that match.
         """
         tests = {}
+
         for parent, section in self.config.items():
             for name, module in section.items():
                 if regexp and not re.search(regexp, name):
@@ -647,18 +653,72 @@ class GridRunner:
                         section.get("filename"), self.input_dir
                     )
 
-                    for idx in range(len(module)):
-                        tests["%s.%s" % (name, idx)] = GridTest(
-                            module=parent,
-                            name=name,
-                            params=module[idx],
-                            verbose=verbose,
-                            cleanup=cleanup,
-                            filename=filename,
-                            show_progress=self.show_progress,
-                        )
+                    idx = 0
+                    # Use idx to index each test with parameters
+                    for entry in module:
 
+                        # Entry cannot have overlap in grid and args
+                        if set(entry.get("args", {}).keys()).intersection(
+                            set(entry.get("grid", {}).keys())
+                        ):
+                            bot.exit(f"{name} has shared grid and args keys.")
+
+                        # Generate list of args
+                        for argset in self.get_args(entry):
+                            updated = deepcopy(entry)
+                            updated["args"] = argset
+                            tests["%s.%s" % (name, idx)] = GridTest(
+                                module=parent,
+                                name=name,
+                                params=updated,
+                                verbose=verbose,
+                                cleanup=cleanup,
+                                filename=filename,
+                                show_progress=self.show_progress,
+                            )
+                            idx += 1
         return tests
+
+    def get_args(self, entry):
+        """Given a test yaml entry, convert the grid specifications and 
+           arguments into a longer list of arguments to each run as a test.
+           E.g., convert something like this:
+ 
+           'grid': {'one': {'min': 0, 'max': 5, 'list': [10, 15]}},
+           'args': {'two': 2},
+
+           into:
+
+        """
+        # Create list of all args to iterate through
+        args = {}
+
+        # First add existing args, ensure we have a list
+        for param, values in entry.get("args", {}).items():
+            args[param] = [values]
+
+        for param, settings in entry.get("grid", {}).items():
+
+            # If any settings defined not allowed, do not continue
+            if set(settings.keys()).difference(GRIDTEST_GRIDEXPANDERS):
+                bot.exit(f"Invalid key in grid settings {settings}")
+
+            # List of values just for param
+            values = []
+
+            # Case 1: min, max, and by
+            if "min" in settings and "max" in settings and "by" in settings:
+                values += range(settings["min"], settings["max"], settings["by"])
+            elif "min" in settings and "max" in settings:
+                values += range(settings["min"], settings["max"])
+            if "list" in settings:
+                values += settings["list"]
+
+            args[param] = values
+
+        # Now generate a list of dicts (the args) with all possible combinations
+        keys, values = zip(*args.items())
+        return [dict(zip(keys, v)) for v in itertools.product(*values)]
 
     def __repr__(self):
         return "[gridtest|%s]" % self.name

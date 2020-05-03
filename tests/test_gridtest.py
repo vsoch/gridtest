@@ -219,3 +219,24 @@ def test_classes():
     assert "isinstance" in test.params
     test.run()
     assert type(test.result).__name__ == test.params["isinstance"]
+
+
+def test_metrics():
+    """Test that gridtest can load metrics specifications
+    """
+    from gridtest.main.test import GridRunner
+
+    test_file = os.path.join(here, "modules", "metrics.yml")
+    runner = GridRunner(test_file)
+    tests = runner.get_tests()
+
+    # List and min/max should expand to 6
+    assert (len([x for x in tests.keys() if "gotosleep" in x])) == 6
+    runner.run()
+
+    # Ensure that invalid specs aren't honored
+    runner = GridRunner(test_file)
+    runner.config["metrics"]["metrics.gotosleep"][0]["grid"]["seconds"]["invalid"] = 1
+
+    with pytest.raises(SystemExit):
+        tests = runner.get_tests()

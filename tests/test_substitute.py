@@ -94,12 +94,9 @@ def test_substitute_gridtest():
     # After we create the tests, we have variable substitution
     assert (
         "{% tmp_dir %}"
-        not in runner.config["temp"]["temp.create_directory"][0]["args"]["dirname"]
+        not in tests["temp.create_directory.0"].params["args"]["dirname"]
     )
-    assert (
-        "{% tmp_path %}"
-        not in runner.config["temp"]["temp.write_file"][0]["args"]["filename"]
-    )
+    assert "{% tmp_path %}" not in tests["temp.write_file.0"].params["args"]["filename"]
 
     # The directory should exist (tmp_dir creates for the test) but not filename
     assert os.path.exists(tests["temp.create_directory.0"].params["args"]["dirname"])

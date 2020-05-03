@@ -39,6 +39,7 @@ GRIDTEST_NPROC = multiprocessing.cpu_count()
 GRIDTEST_WORKERS = int(getenv("GRIDTEST_WORKERS", GRIDTEST_NPROC * 2 + 1))
 GRIDTEST_SHELL = getenv("GRIDTEST_SHELL", "ipython")
 GRIDTEST_RETURNTYPES = ["raises", "returns", "exists", "istrue", "isfalse"]
+GRIDTEST_GRIDEXPANDERS = ["min", "max", "by", "list"]
 
 # Known default functions
 GRIDTEST_FUNCS = ["tmp_dir", "tmp_path"]

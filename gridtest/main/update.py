@@ -15,7 +15,9 @@ import re
 import sys
 
 
-def update_tests(testfile, include_private=False, skip_patterns=None):
+def update_tests(
+    testfile, include_private=False, skip_patterns=None, include_classes=True
+):
     """Given a testing file, load in as a GridRunner, load the module again,
        and update with new tests not found. Optionally take patterns
        to skip. This is akin to check_tests in check.py, but instead we
@@ -25,6 +27,7 @@ def update_tests(testfile, include_private=False, skip_patterns=None):
           - testfile (str) : the yaml test file
           - include_private (bool) : include "private" functions
           - skip_patterns (list) : list of test keys (patterns) to exclude
+          - include_classes (bool) : include classes in update (True)
     """
     if not os.path.exists(testfile):
         sys.exit(f"{testfile} does not exist.")
@@ -46,7 +49,9 @@ def update_tests(testfile, include_private=False, skip_patterns=None):
         )
         files.append(filename)
         [existing.add(x) for x in section.keys() if x != "filename"]
-        functions = extract_functions(filename, include_private, quiet=True)
+        functions = extract_functions(
+            filename, include_private, quiet=True, include_classes=include_classes
+        )
 
         # Regular expression for existing takes into account different import paths
         regex = "(%s)$" % "|".join(list(existing) + skip_patterns + ["^filename$"])
@@ -54,7 +59,7 @@ def update_tests(testfile, include_private=False, skip_patterns=None):
 
             # Make sure functions start with same name as previous level
             if name in key:
-                key = name + ".".join(key.split(name)[1:])
+                key = name + ".".join([x for x in key.split(name)[1:] if x != "."])
 
             if not re.search(regex, key):
                 print(f"Adding function {key}")
