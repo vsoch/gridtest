@@ -11,15 +11,23 @@ for generating and running tests.
 
 ## Getting Started
 
+### Introduction
+
  - [How does it work?](#how-does-it-work): How does gridtest work?
  - [Concepts](#concepts): What are common gridtest concepts?
- - [Debugging](#debugging): is easy with the interactive interpreter.
+
+### Writing Tests
+
  - [Templates](templates/): for test yaml files, including function and argument substitution
+ - [Grid](grid/): Adding a grid of environment and other parameters to run grid tests
+ - [Decorators](decorators/): to measure some metric or benchmark across a grid of tests.
+
+### Running Tests
+
+ - [Environment](environment/): variables to change defaults for gridtest behavior
+ - [Debugging](#debugging): is easy with the interactive interpreter.
  - [Testing](testing/): via continuous integration, or checking if tests need updating.
  - [Python](python/): interacting with a GridRunner from within Python
- - [Environment](environment/): variables to change defaults for gridtest behavior
- - [Grid](grid/): Adding a grid of environment and other parameters to run grid tests
- - [Optimize](optimize/): some set of parameters for your report
 
 <a id="#how-does-it-work">
 ### How does it work?
@@ -98,10 +106,22 @@ walk through basic examples.
 <a id="#concepts">
 ### What are gridtest concepts
 
+#### GridTest
+
 A gridtest is a yaml file that is executed using the software described here,
-GridTest. It's called a GridTest because of the GridTest "matrix" type, which
-makes it easy to run a grid of tests. GridTest's main convention is that 
-it will look for a yaml file, `gridtest.yml` to run tests by default. This means
+GridTest. It's called a GridTest because of the ability to define grids of tests.
+For example, let's say that we want to measure the time it takes to run a function
+over a set of variables. We do this by way of adding an optimization, which
+comes down to a decorator function that will measure the value and return it to
+gridtest. We then might specify a range of numbers for one or more function
+variables. This will ultimately generate a grid of tests for the function,
+each with a set of results from the function itself and decorators. 
+GridTest also will make it easy to run over a grid of different environments,
+although this is not developed yet.
+
+#### gridtest.yml
+
+GridTest's main convention is that  it will look for a yaml file, `gridtest.yml` to run tests by default. This means
 that if you write your testing file in the root of a repository with Python
 software like:
 
@@ -152,8 +172,9 @@ In [1]:
 ```
 
 In the example above, we show that the function, module, and arguments for
-the test are loaded, and you are shown how to run the tests. By way of having
-the interactive terminal, you can of course interact with functions and variables
+the test are loaded, and you are shown how to run the tests. If you have added any
+decorators (optimizations to measure) they will be applied already to the variable 
+func. By way of having the interactive terminal, you can of course interact with functions and variables
 directly, and debug what might be the issue for a test. In the case of a file
 with multiple tests (the typical case) You can also specify the name of the test you want
 to interact with:

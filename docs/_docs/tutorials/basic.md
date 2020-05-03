@@ -182,32 +182,42 @@ Finally, you'll have your test file, and an environment where you want to
 test. You can run tests like this:
 
 ```bash
-$ gridtest test script-example.yml
+$ gridtest test gridtest.yml
+[6/6] |===================================| 100.0% 
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+script.add.0                   success                        returns 3                     
+script.add.1                   success                        raises TypeError              
+script.add_with_type.0         success                        returns 3                     
+script.hello.0                 success                                                      
+script.hello_with_default.0    success                                                      
+script.hello_with_type.0       success                                                      
+
+6/6 tests passed
 ```
 
-And here is an (under development) snapshot of what a result currently looks like
-(and this particular shot was run in serial).
+And since gridtest looks for the gridtest.yml, you can just do:
 
-![img/failed.png](img/failed.png)
-
-And here is an example of when all tests pass:
-
-![img/success.png](img/success.png)
-
+```bash
+$ gridtest test
+```
 
 ### Verbose
 
 You can print a little more output about successes or failures with `--verbose`
 
 ```bash
-$ gridtest test --verbose examples/basic/gridtest.yml 
-[script.hello_with_type:6/6] |===================================| 100.0% 3% 
-success: script.add.0 returns 3 
-success: script.add.1 raises TypeError 
-success: script.add_with_type.0 returns 3 
-success: script.hello.0 
-success: script.hello_with_default.0 
-success: script.hello_with_type.0 success key set to false, expected failure.
+$ gridtest test --verbose 
+[6/6] |===================================| 100.0% 
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+script.add.0                   success                        returns 3                     
+script.add.1                   success                        Exception: TypeError raised as desired. raises TypeError
+script.add_with_type.0         success                        returns 3                     
+script.hello.0                 success                        hello Vanessa!                
+script.hello_with_default.0    success                        hello Dinosaur!               
+script.hello_with_type.0       success                        success key set to false, expected failure.
+
 6/6 tests passed
 ```
 
@@ -215,81 +225,18 @@ Or you can filter to a regular expression (pattern) to only run a subset of
 tests:
 
 ```bash
-$ gridtest test --pattern script.add examples/basic/gridtest.yml 
-[script.add_with_type:3/3] |===================================| 100.0% 
-success: script.add.0 returns 3 
-success: script.add.1 raises TypeError 
-success: script.add_with_type.0 returns 3 
+$ gridtest test --pattern script.add
+[3/3] |===================================| 100.0% 
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+script.add.0                   success                        returns 3                     
+script.add.1                   success                        raises TypeError              
+script.add_with_type.0         success                        returns 3                     
+
 3/3 tests passed
 ```
 
-**under development**
-
-These are of course very simple test cases - we don't have any
-classes, custom types, or matrices of tests. These will be developed
-and discussed in other examples.
-
-
-
-
-
-
-
-### Customize Template
-
-And from it we've produced this testing file "gridtest.yml" in the same directory:
-
-```yaml
-script:
-  filename: script.py
-  script.add:
-  - args:
-      one: 1
-      two: 2
-    returns: 3
-  - args:
-      one: 1
-      two: null
-    raises: TypeError
-  script.add_with_type:
-  - args:
-      one: 1
-      two: 2
-    returns: 3
-  script.hello:
-  - args:
-      name: Vanessa
-  script.hello_with_default:
-  - args:
-      name: Dinosaur
-  script.hello_with_type:
-  - args:
-      name: 1
-    success: false
-```
-
-### Running Tests
-
-We would run it with gridtest as follows:
-
-```bash
-$ gridtest test gridtest.yml 
-[6/6] |===================================| 100.0% 
-success: script.add.0 returns 3 
-success: script.add.1 raises TypeError 
-success: script.add_with_type.0 returns 3 
-success: script.hello.0 
-success: script.hello_with_default.0 
-success: script.hello_with_type.0 
-6/6 tests passed
-```
-
-Or since gridtest.yml is the default, just leave it out to find the file in
-the present working directory:
-
-```bash
-$ gridtest test
-```
+### Debugging
 
 Now let's say there is an error in a script. Let's randomly raise an exception:
 
@@ -304,12 +251,15 @@ If we run tests again, we see a failure with an unexpected exception:
 ```bash
 $ gridtest test gridtest.yml 
 [6/6] |===================================| 100.0% 
-success: script.add.0 returns 3 
-success: script.add.1 raises TypeError 
-success: script.add_with_type.0 returns 3 
-failure: script.hello.0 ruhroh Unexpected Exception: Exception.
-success: script.hello_with_default.0 
-success: script.hello_with_type.0 
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+script.add.0                   success                        returns 3                     
+script.add.1                   success                        raises TypeError              
+script.add_with_type.0         success                        returns 3                     
+script.hello.0                 failure                        ruhroh Unexpected Exception: Exception.                                                     
+script.hello_with_default.0    success                                                      
+script.hello_with_type.0       success                                                      
+
 5/6 tests passed
 ```
 
@@ -417,20 +367,20 @@ In the case of a file with multiple tests (the typical case) You can also specif
 to interact with:
 
 ```python
-$ gridtest test examples/basic/gridtest.yml --interactive --name script.add
+$ gridtest test --interactive --name script.add
 ```
 
 For the above, this would interact with all tests that start with script.add. If you
 want to limit to the script.add module, you might want to do:
 
 ```python
-$ gridtest test examples/basic/gridtest.yml --interactive --name script.add.
+$ gridtest test --interactive --name script.add.
 ```
 
 Or a specific indexed text for the module:
 
 ```python
-$ gridtest test examples/basic/gridtest.yml --interactive --name script.add.0
+$ gridtest test --interactive --name script.add.0
 ```
 
 You might next want to browse [tutorials]({{ site.baseurl }}/tutorials/) available.

@@ -58,6 +58,7 @@ class GridTest:
         # Catching output and error
         self.out = []
         self.err = []
+        self.objectives = {}
 
         # Parse input arguments
         self.set_params(params)
@@ -184,6 +185,7 @@ class GridTest:
             module=self.module,
             func=self.func,
             filename=self.filename,
+            objectives=self.params.get("objectives", []),
             args=self.params.get("args", {}),
             returns=self.params.get("returns"),
             interactive=interactive,
@@ -211,6 +213,9 @@ class GridTest:
         """
         # Do final substitution
         self.post_substitute()
+
+        # If decorators provided, parse their output
+        self.check_objectives()
 
         # Set 1: test for returns
         if "returns" in self.params:
@@ -310,6 +315,22 @@ class GridTest:
         """
         if not eval(str(statement)) == self.result:
             self.success = False
+
+    def check_objectives(self):
+        """After runs are complete, given objectives defined in params, parse
+           over the list and look for objectives output in the output (and remove)
+        """
+        objectives = self.params.get("objectives")
+        if objectives:
+            regex = "^(%s)" % "|".join(objectives)
+            self.objectives = {k: [] for k in objectives}
+            for line in self.out:
+                for objective in objectives:
+                    if line.startswith(objective):
+                        self.objectives[objective].append(
+                            line.replace(objective, "", 1).strip()
+                        )
+            self.out = [x for x in self.out if not re.search(regex, x)]
 
     # Cleanup and reset
 
@@ -466,6 +487,7 @@ class GridRunner:
             - interactive (bool) : run jobs interactively (for debugging)
               not available for parallel jobs.
         """
+
         # Parallel tests cannot be interactive
         if parallel and not interactive:
             self._run_parallel(tests, nproc=nproc)
@@ -581,17 +603,31 @@ class GridRunner:
         total = 0
         success = 0
         failure = 0
+        has_objectives = False
+
+        print("{:<30} {:<30} {:<30}".format("Name", "Status", "Summary"))
+        print("{:_<120}".format(""))
 
         for name, test in tests.items():
             total += 1
+            if test.objectives:
+                has_objectives = True
             if test.success:
-                bot.success(f"success: {name} {test.summary}")
+                bot.success(
+                    "{:<30} {:<30} {:<30}".format(name, "success", test.summary)
+                )
                 success += 1
             else:
                 bot.failure(f"failure: {name} {test.summary}")
                 failure += 1
 
-        print(f"{success}/{total} tests passed")
+        if has_objectives:
+            print("\n{:_<120}".format(""))
+        for name, test in tests.items():
+            for objective, result in test.objectives.items():
+                print("{:<30} {:<30} {:<30}".format(name, objective, "|".join(result)))
+
+        print(f"\n{success}/{total} tests passed")
 
     def get_tests(self, regexp=None, verbose=False, cleanup=True):
         """get tests based on a regular expression.

@@ -1,0 +1,26 @@
+script:
+  filename: /home/vanessa/Desktop/Code/gridtest/examples/optimize/script.py
+
+  script.add:
+    # objectives are each a decorator, we first look to gridtest.decorators then external import
+  - objectives:
+      - "@timeit"
+    args:
+      one: 1.0
+      two: 2
+    istrue: "isinstance(self.result, float)"
+    isfalse: "isinstance(self.result, int)"
+
+  - args:
+      one: 1.0
+      two: 2
+    equals: 1+2
+  script.add_with_type:
+  - args:
+      one: 1
+      two: 2
+    returns: 3
+  - args:
+      one: 1.0
+      two: 2
+    raises: TypeError

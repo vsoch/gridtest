@@ -103,9 +103,11 @@ Once we have our testing file and the original script, we can run the tests as f
 
 ```bash
 $ gridtest test gridtest.yml 
-[2/2] |===================================| 100.0% 
-success: temp.create_directory.0 returns /tmp/gridtest-dir.j0aio0l6 
-success: temp.write_file.0 exists /tmp/gridtest-file-ped8_9zl
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+temp.create_directory.0        success                        returns /tmp/gridtest-dir._cfykliv
+temp.write_file.0              success                        exists /tmp/gridtest-file-ns9yrb5g
+
 2/2 tests passed
 ```
 
@@ -122,15 +124,18 @@ upon completion. If we don't want to clean it up, we can add `--no-cleanup`:
 ```bash
 $ gridtest test gridtest.yml --no-cleanup
 [2/2] |===================================| 100.0% 
-success: temp.create_directory.0 returns /tmp/gridtest-dir.e1c4gbr8 
-success: temp.write_file.0 exists /tmp/gridtest-file-abd8-4yt
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+temp.create_directory.0        success                        returns /tmp/gridtest-dir.ntgs4pp3
+temp.write_file.0              success                        exists /tmp/gridtest-file-x9hw6l12
+
 2/2 tests passed
 ``` 
 
 And then the directory generated would still exist after the run:
 
 ```bash
-$ ls -l /tmp/gridtest-dir.e1c4gbr8/
+$ ls -l /tmp/gridtest-dir.ntgs4pp3
 total 0
 ```
 

@@ -39,4 +39,5 @@ added them yet because she doesn't think them overall useful.
 
 ## TODO
 
- - develop gridtest matrix input and documentation
+ - develop gridtest matrix input and documentation (need to add ranges for variables)
+ - create results report for benchmarks

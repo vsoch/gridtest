@@ -68,11 +68,9 @@ where `<name>` would be some named variable, referenced below.
 |-------------|-------------|--------|---------|
 | args.<name> | Refer to a named argument under args. |`{% raw %}{{ args.<name> }}{% endraw %}` | `{% raw %}{{ args.name }}{% endraw %}` |
 | returns | Refer to the returns value you defined. |`{% raw %}{{ returns }}{% endraw %}` | `{% raw %}{{ returns }}{% endraw %}` |
-| result | Refer to the result returned by the function, passed as raw string. |`{% raw %}{{ result }}{% endraw %}` | `{% raw %}{{ result }}{% endraw %}` |
 
-If you want to refer to a results object that can't be evaluated as a string, then skip the template syntax and
-refer to the GridTest instance (self) directly. For example, to test that a requests.response_code is equal
-to a certain value, we can do:
+If you want to refer to a results object just refer to the GridTest instance (self) directly. 
+For example, to test that a requests.response_code is equal to a certain value, we can do:
 
 ```yaml
   requests.api.head:

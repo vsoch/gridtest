@@ -74,6 +74,7 @@ class Workers(object):
                     "funcname": task.get_funcname(),
                     "module": task.module,
                     "filename": task.filename,
+                    "objectives": task.params.get("objectives", []),
                     "args": task.params.get("args", {}),
                     "returns": task.params.get("returns"),
                 }

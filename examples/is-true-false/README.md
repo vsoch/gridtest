@@ -147,11 +147,15 @@ test. You can run tests like this:
 
 ```bash
 $ gridtest test gridtest.yml
-[3/3] |===================================| 100.0% 
-success: truefalse.add.0 istrue isinstance(3.0, float) 
-success: truefalse.add_with_type.0 returns 3 
-success: truefalse.add_with_type.1 raises TypeError 
-3/3 tests passed
+[4/4] |===================================| 100.0% 
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+truefalse.add.0                success                        istrue isinstance(3.0, float) isfalse isinstance(3.0, int)
+truefalse.add.1                success                        equals 1+2                    
+truefalse.add_with_type.0      success                        returns 3                     
+truefalse.add_with_type.1      success                        raises TypeError              
+
+4/4 tests passed
 ```
 
 Or since gridtest.yml is the default, just do:

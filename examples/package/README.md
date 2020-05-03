@@ -430,3 +430,19 @@ The string "Response" should be given if I check the `type(result).__name__`
 for the result. Also notice the `istrue` statement isn't targeting a `{{ result }}`
 template that can be converted to a string and evaluated, but rather the GridTest
 instance directly (self.result) and more specifically, the status_code attribute.
+
+## Running Tests
+
+And then run your tests:
+
+```bash
+$ gridtest test
+[3/3] |===================================| 100.0% 
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+requests.api.get.0             success                        isinstance Response           
+requests.api.head.0            success                        istrue self.result.status_code == 301
+requests.api.options.0         success                                                      
+
+3/3 tests passed
+```

@@ -72,9 +72,12 @@ We can run the tests as follows:
 
 ```bash
 $ gridtest test gridtest.yml
-[2/2] |===================================| 100.0% 
-success: temp.create_directory.0 returns /tmp/gridtest-dir.j0aio0l6 
-success: temp.write_file.0 exists /tmp/gridtest-file-ped8_9zl 
+[2/2] |===================================| 100.0%
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+temp.create_directory.0        success                        returns /tmp/gridtest-dir.ok6x5kiy
+temp.write_file.0              success                        exists /tmp/gridtest-file-flp_cmi4
+
 2/2 tests passed
 ```
 
@@ -84,8 +87,11 @@ upon completion. If we don't want to clean it up, we can add `--no-cleanup`:
 ```bash
 $ gridtest test gridtest.yml --no-cleanup
 [2/2] |===================================| 100.0% 
-success: temp.create_directory.0 returns /tmp/gridtest-dir.e1c4gbr8 
-success: temp.write_file.0 exists /tmp/gridtest-file-abd8-4yt 
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+temp.create_directory.0        success                        returns /tmp/gridtest-dir.n1devo3f
+temp.write_file.0              success                        exists /tmp/gridtest-file-iqff2y__
+
 2/2 tests passed
 ``` 
 

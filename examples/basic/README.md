@@ -172,20 +172,7 @@ This is different from providing an explicit value.
 
 You might just want to run something, and be sure that the success status is False.
 For example, if you give the wrong type as input to a function, it will by default
-exit with an error:
-
-```bash
-$ gridtest test examples/basic/gridtest.yml 
-[script.hello_with_type:6/6] |===================================| 100.0% 3% 
-success: script.add.0 returns 3 
-success: script.add.1 raises TypeError 
-success: script.add_with_type.0 returns 3 
-success: script.hello.0 
-success: script.hello_with_default.0 
-failure: script.hello_with_type.0 TypeError name (1) is <class 'int'>, should be <class 'str'>
-```
-
-However, if we update the test config from this:
+exit with an error. If we update the test config from this:
 
 ```yaml
   script.hello_with_type:
@@ -316,26 +303,31 @@ And here is an example of when all tests pass:
 You can print a little more output about successes or failures with `--verbose`
 
 ```bash
-$ gridtest test --verbose examples/basic/gridtest.yml 
-[script.hello_with_type:6/6] |===================================| 100.0% 3% 
-success: script.add.0 returns 3 
-success: script.add.1 raises TypeError 
-success: script.add_with_type.0 returns 3 
-success: script.hello.0 
-success: script.hello_with_default.0 
-success: script.hello_with_type.0 success key set to false, expected failure.
-6/6 tests passed
+$ gridtest test --verbose
+[6/6] |===================================| 100.0% 
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+script.add.0                   success                        returns 3                     
+script.add.1                   success                        Exception: TypeError raised as desired. raises TypeError
+script.add_with_type.0         success                        returns 3                     
+script.hello.0                 success                        hello Vanessa!                
+script.hello_with_default.0    success                        hello Dinosaur!               
+script.hello_with_type.0       success                        success key set to false, expected failure.
+
 ```
 
 Or you can filter to a regular expression (pattern) to only run a subset of
 tests:
 
 ```bash
-$ gridtest test --pattern script.add examples/basic/gridtest.yml 
-[script.add_with_type:3/3] |===================================| 100.0% 
-success: script.add.0 returns 3 
-success: script.add.1 raises TypeError 
-success: script.add_with_type.0 returns 3 
+$ gridtest test --pattern script.add 
+[3/3] |===================================| 100.0% 
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+script.add.0                   success                        returns 3                     
+script.add.1                   success                        raises TypeError              
+script.add_with_type.0         success                        returns 3                     
+
 3/3 tests passed
 ```
 

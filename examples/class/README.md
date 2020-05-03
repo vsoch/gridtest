@@ -96,10 +96,13 @@ just run:
 ```bash
 $ gridtest test
 [4/4] |===================================| 100.0% 
-success: car.Car.0 raises ColorException 
-success: car.Car.1 isinstance car.Car
-success: car.Car.honk.0 
-success: car.Car.switch_lights.0 
+Name                           Status                         Summary                       
+________________________________________________________________________________________________________________________
+car.Car.0                      success                        raises ColorException         
+car.Car.1                      success                        isinstance Car                
+car.Car.honk.0                 success                                                      
+car.Car.switch_lights.0        success                                                      
+
 4/4 tests passed
 ```
 

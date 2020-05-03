@@ -10,6 +10,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from gridtest.main.generate import import_module, get_function_typing
 from io import StringIO
+import re
 import sys
 import time
 import os
@@ -63,7 +64,14 @@ def print_interactive(**kwargs):
 
 
 def test_basic(
-    funcname, module, filename, func=None, args=None, returns=None, interactive=False
+    funcname,
+    module,
+    filename,
+    func=None,
+    args=None,
+    returns=None,
+    interactive=False,
+    objectives=None,
 ):
     """test basic is a worker version of the task.test_basic function.
        If a function is not provided, funcname, module, and filename are
@@ -73,8 +81,15 @@ def test_basic(
        a list of values for [passed, result, out, err, raises]
 
        Arguments:
+         - funcname (str) : the name of the function to import
+         - module (str) : the base module to get the function from
+         - func (Function) : if running serial, function can be directly provided
+         - args (dict) : dictionary of arguments
+         - returns (type) : a returns type to test for
          - interactive (bool) : run in interactive mode (giving user shell)
+         - objectives (list) : one or more objectives (decorators) to run.
     """
+    objectives = objectives or []
 
     if not func:
         sys.path.insert(0, os.path.dirname(filename))
@@ -90,11 +105,28 @@ def test_basic(
                 func = getattr(module, piece)
                 module = func
 
+    # Figure out how to apply multiple
+    originalfunc = func
     passed = False
     result = None
     raises = None
     out = []
     err = []
+
+    # import the decorators here (currently only support decorators from gridtest
+    for objective in objectives:
+        if not objective.startswith("@"):
+            continue
+        objective = re.sub("^[@]", "", objective)
+        try:
+            gt = import_module("gridtest.decorators")
+            decorator = getattr(gt, objective)
+
+            # Update func to include wrapper
+            func = decorator(func)
+
+        except:
+            out.append(f"Warning, unable to import decorator @{objective}")
 
     # Interactive mode means giving the user console control
     if interactive:
@@ -112,7 +144,7 @@ def test_basic(
         err = [f"Cannot find function {funcname}"]
 
     else:
-        passed, error = test_types(func, args, returns)
+        passed, error = test_types(originalfunc, args, returns)
         err += error
 
         # if type doesn't pass, TypeError, otherwise continue
@@ -120,20 +152,21 @@ def test_basic(
             raises = "TypeError"
 
         else:
+
             # Run and capture output and error
-            with Capturing() as output:
-                try:
+            try:
+                with Capturing() as output:
                     result = func(**args)
-                    if output:
-                        std = output.pop(0)
-                        out += std.get("out")
-                        err += std.get("err")
-                    passed = True
-                except Exception as e:
-                    raises = type(e).__name__
-                    message = str(e)
-                    if message:
-                        err.append(message)
+                if output:
+                    std = output.pop(0)
+                    out += std.get("out")
+                    err += std.get("err")
+                passed = True
+            except Exception as e:
+                raises = type(e).__name__
+                message = str(e)
+                if message:
+                    err.append(message)
 
     return [passed, result, out, err, raises]
 
