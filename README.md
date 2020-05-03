@@ -43,3 +43,4 @@ added them yet because she doesn't think them overall useful.
 
  - develop gridtest matrix input and documentation (need to add ranges for variables)
  - create results report for benchmarks
+ - custom decorator with example

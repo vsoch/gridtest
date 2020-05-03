@@ -327,9 +327,7 @@ class GridTest:
             for line in self.out:
                 for metric in metrics:
                     if line.startswith(metric):
-                        self.metrics[metric].append(
-                            line.replace(metric, "", 1).strip()
-                        )
+                        self.metrics[metric].append(line.replace(metric, "", 1).strip())
             self.out = [x for x in self.out if not re.search(regex, x)]
 
     # Cleanup and reset
