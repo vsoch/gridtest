@@ -23,8 +23,8 @@ script:
     args:
       one: 1.0
       two: 2
-    istrue: "isinstance({{ result }}, float)"
-    isfalse: "isinstance({{ result }}, int)"
+    istrue: "isinstance(self.result, float)"
+    isfalse: "isinstance(self.result, int)"
 ```
 
 The recipe above is very simple - we are testing a single function, script.add, and
