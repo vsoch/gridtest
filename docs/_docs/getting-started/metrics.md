@@ -8,8 +8,19 @@ order: 6
 ### Metrics
 
 Gridtest includes a suite of decorators that can be added to gridtest.yml
-test yaml files in order to measure a benchmark or metric. As 
-an example, let's take a look at using the (likely familiar) timeit decorator,
+test yaml files in order to measure a benchmark or metric.  These include:
+
+| Name   | Description                            | Usage    |
+|--------|----------------------------------------|----------|
+| timeit | print time (ms) for function execution | @timeit  |
+
+This namespace of decorators will be looked for in the `gridtest.decorators`
+module and you don't need to specify this path. If you define a custom decorator, 
+you can simply define the module and function to import (e.g., `@script.mydecorator`).
+
+### An Example Decorator
+
+As an example, let's take a look at using the (likely familiar) timeit decorator,
 which we can find in `gridtest.decorators`:
 
 ```yaml

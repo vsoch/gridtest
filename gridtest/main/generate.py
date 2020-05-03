@@ -202,9 +202,7 @@ def extract_functions(
         if isinstance(func, types.ModuleType):
             for member in inspect.getmembers(func):
                 if member[0] not in seen:
-                    functions.append(
-                        member + ("%s.%s.%s" % (name, funcname, member[0]),)
-                    )
+                    functions.append(member + ("%s.%s" % (funcname, member[0]),))
                     seen.add(member[0])
             continue
 
@@ -250,9 +248,7 @@ def extract_functions(
             try:
                 for member in inspect.getmembers(func):
                     if member[0] not in seen:
-                        functions.append(
-                            member + ("%s.%s.%s" % (name, funcname, member[0]),)
-                        )
+                        functions.append(member + ("%s.%s" % (funcname, member[0]),))
                         seen.add(member[0])
             except:
                 print(f"Cannot get members for {func}")

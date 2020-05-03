@@ -125,8 +125,18 @@ def test_basic(
             # Update func to include wrapper
             func = decorator(func)
 
+        # Fallback to support for custom modules
         except:
-            out.append(f"Warning, unable to import decorator @{metric}")
+            try:
+                metric_module = metric.split(".")[0]
+                mm = import_module(metric_module)
+                for piece in metric.split(".")[1:]:
+                    decorator = getattr(mm, piece)
+
+                # Update func to include wrapper
+                func = decorator(func)
+            except:
+                out.append(f"Warning, unable to import decorator @{metric}")
 
     # Interactive mode means giving the user console control
     if interactive:

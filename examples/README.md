@@ -6,3 +6,4 @@
  - [package](package): generate for a python package you've already installed
  - [class](class): run grid tests for a car class
  - [metrics](metrics): use decorators to measure metrics across a grid of tests (eg., timeit)
+ - [custom-decorator](custom-decorator): writing a custom decorator to count words over a grid of parameters

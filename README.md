@@ -41,5 +41,4 @@ added them yet because she doesn't think them overall useful.
 
 ## TODO
 
- - create results report for benchmarks
- - custom decorator with example
+ - create results report for metrics

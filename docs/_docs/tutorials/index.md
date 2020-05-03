@@ -17,5 +17,6 @@ using GridTest.
  - [Boolean Logic Tutorial](boolean/): Use `istrue` and `isfalse` to check custom boolean logic
  - [Class Tutorial](class/): Writing tests for Python classes
  - [Package Tutorial](package/): Writing tests for a system package, requests
+ - [Decorators Tutorial](decorators/) Run a grid of tests for a gridtest or custom decorator.
 
 If you want to request or suggest a tutorial, please [open an issue](https://github.com/{{ site.repo }}/issues).
