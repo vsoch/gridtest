@@ -1,7 +1,7 @@
 ---
 title: Decorators
 category: Getting Started
-permalink: /getting-started/deorators/index.html
+permalink: /getting-started/decorators/index.html
 order: 6
 ---
 
