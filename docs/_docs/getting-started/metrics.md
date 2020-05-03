@@ -1,14 +1,14 @@
 ---
-title: Decorators
+title: Metrics
 category: Getting Started
-permalink: /getting-started/decorators/index.html
+permalink: /getting-started/metrics/index.html
 order: 6
 ---
 
-### Decorators
+### Metrics
 
 Gridtest includes a suite of decorators that can be added to gridtest.yml
-test yaml files in order to measure a benchmark or metric to optimize. As 
+test yaml files in order to measure a benchmark or metric. As 
 an example, let's take a look at using the (likely familiar) timeit decorator,
 which we can find in `gridtest.decorators`:
 
@@ -17,8 +17,8 @@ script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/optimize/script.py
 
   script.add:
-    # objectives are each a decorator, we first look to gridtest.decorators then external import
-  - objectives:
+    # metrics are each a decorator, we first look to gridtest.decorators then external import
+  - metrics:
       - "@timeit"
     args:
       one: 1.0
@@ -28,11 +28,11 @@ script:
 ```
 
 The recipe above is very simple - we are testing a single function, script.add, and
-we've defined one objective, a decorator called "timeit" to measure the total time.
-Note that objectives belong on the level of the test, since it's likely we don't want
+we've defined one metric, a decorator called "timeit" to measure the total time.
+Note that metrics belong on the level of the test, since it's likely we don't want
 to use any single decorator across all tests.
 
-### Attributes of a Decorator
+### Attributes of a Metric Decorator
 
 Decorators can only work together (meaning multiple applied to the same function,
 and collected for the same single run) given that:
@@ -47,7 +47,7 @@ even generate a report for the run that shows the different metrics.
 
 ### Running with a Decorator
 
-So let's first try running with a simple decorator. You'll notice that the objectives
+So let's first try running with a simple metric to record time. You'll notice that the metrics
 is printed in a second table to the screen!
 
 ```bash
@@ -67,5 +67,6 @@ script.add.0                   @timeit                        0.00 ms
 ```
 
 A more interactive results view will be developed, along with more real world examples for 
-using a decorator.
+using a decorator, and custom decorator.
+
 You might next want to browse [tutorials]({{ site.baseurl }}/tutorials/) available.

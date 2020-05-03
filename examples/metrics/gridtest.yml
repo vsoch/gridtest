@@ -2,8 +2,8 @@ script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/optimize/script.py
 
   script.add:
-    # objectives are each a decorator, we first look to gridtest.decorators then external import
-  - objectives:
+    # metrics are each a decorator, we first look to gridtest.decorators then external import
+  - metrics:
       - "@timeit"
     args:
       one: 1.0

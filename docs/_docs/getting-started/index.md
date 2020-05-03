@@ -20,7 +20,7 @@ for generating and running tests.
 
  - [Templates](templates/): for test yaml files, including function and argument substitution
  - [Grid](grid/): Adding a grid of environment and other parameters to run grid tests
- - [Decorators](decorators/): to measure some metric or benchmark across a grid of tests.
+ - [Metrics](metrics/): to measure some metric or benchmark across a grid of tests.
 
 ### Running Tests
 

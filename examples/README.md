@@ -5,4 +5,4 @@
  - [is-true-false](is-true-false): example tests for using the `istrue` and `isfalse` conditions.
  - [package](package): generate for a python package you've already installed
  - [class](class): run grid tests for a car class
- - [decorators](decorators): use decorators to measure metrics across a grid of tests (eg., timeit)
+ - [metrics](metrics): use decorators to measure metrics across a grid of tests (eg., timeit)

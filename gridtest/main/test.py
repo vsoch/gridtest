@@ -58,7 +58,7 @@ class GridTest:
         # Catching output and error
         self.out = []
         self.err = []
-        self.objectives = {}
+        self.metrics = {}
 
         # Parse input arguments
         self.set_params(params)
@@ -185,7 +185,7 @@ class GridTest:
             module=self.module,
             func=self.func,
             filename=self.filename,
-            objectives=self.params.get("objectives", []),
+            metrics=self.params.get("metrics", []),
             args=self.params.get("args", {}),
             returns=self.params.get("returns"),
             interactive=interactive,
@@ -215,7 +215,7 @@ class GridTest:
         self.post_substitute()
 
         # If decorators provided, parse their output
-        self.check_objectives()
+        self.check_metrics()
 
         # Set 1: test for returns
         if "returns" in self.params:
@@ -316,19 +316,19 @@ class GridTest:
         if not eval(str(statement)) == self.result:
             self.success = False
 
-    def check_objectives(self):
-        """After runs are complete, given objectives defined in params, parse
-           over the list and look for objectives output in the output (and remove)
+    def check_metrics(self):
+        """After runs are complete, given metrics defined in params, parse
+           over the list and look for metric output in the output (and remove)
         """
-        objectives = self.params.get("objectives")
-        if objectives:
-            regex = "^(%s)" % "|".join(objectives)
-            self.objectives = {k: [] for k in objectives}
+        metrics = self.params.get("metrics")
+        if metrics:
+            regex = "^(%s)" % "|".join(metrics)
+            self.metrics = {k: [] for k in metrics}
             for line in self.out:
-                for objective in objectives:
-                    if line.startswith(objective):
-                        self.objectives[objective].append(
-                            line.replace(objective, "", 1).strip()
+                for metric in metrics:
+                    if line.startswith(metric):
+                        self.metrics[metric].append(
+                            line.replace(metric, "", 1).strip()
                         )
             self.out = [x for x in self.out if not re.search(regex, x)]
 
@@ -603,15 +603,15 @@ class GridRunner:
         total = 0
         success = 0
         failure = 0
-        has_objectives = False
+        has_metrics = False
 
         print("{:<30} {:<30} {:<30}".format("Name", "Status", "Summary"))
         print("{:_<120}".format(""))
 
         for name, test in tests.items():
             total += 1
-            if test.objectives:
-                has_objectives = True
+            if test.metrics:
+                has_metrics = True
             if test.success:
                 bot.success(
                     "{:<30} {:<30} {:<30}".format(name, "success", test.summary)
@@ -621,11 +621,11 @@ class GridRunner:
                 bot.failure(f"failure: {name} {test.summary}")
                 failure += 1
 
-        if has_objectives:
+        if has_metrics:
             print("\n{:_<120}".format(""))
         for name, test in tests.items():
-            for objective, result in test.objectives.items():
-                print("{:<30} {:<30} {:<30}".format(name, objective, "|".join(result)))
+            for metric, result in test.metrics.items():
+                print("{:<30} {:<30} {:<30}".format(name, metric, "|".join(result)))
 
         print(f"\n{success}/{total} tests passed")
 

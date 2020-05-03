@@ -71,7 +71,7 @@ def test_basic(
     args=None,
     returns=None,
     interactive=False,
-    objectives=None,
+    metrics=None,
 ):
     """test basic is a worker version of the task.test_basic function.
        If a function is not provided, funcname, module, and filename are
@@ -87,9 +87,9 @@ def test_basic(
          - args (dict) : dictionary of arguments
          - returns (type) : a returns type to test for
          - interactive (bool) : run in interactive mode (giving user shell)
-         - objectives (list) : one or more objectives (decorators) to run.
+         - metrics (list) : one or more metrics (decorators) to run.
     """
-    objectives = objectives or []
+    metrics = metrics or []
 
     if not func:
         sys.path.insert(0, os.path.dirname(filename))
@@ -114,19 +114,19 @@ def test_basic(
     err = []
 
     # import the decorators here (currently only support decorators from gridtest
-    for objective in objectives:
-        if not objective.startswith("@"):
+    for metric in metrics:
+        if not metric.startswith("@"):
             continue
-        objective = re.sub("^[@]", "", objective)
+        metric = re.sub("^[@]", "", metric)
         try:
             gt = import_module("gridtest.decorators")
-            decorator = getattr(gt, objective)
+            decorator = getattr(gt, metric)
 
             # Update func to include wrapper
             func = decorator(func)
 
         except:
-            out.append(f"Warning, unable to import decorator @{objective}")
+            out.append(f"Warning, unable to import decorator @{metric}")
 
     # Interactive mode means giving the user console control
     if interactive:
