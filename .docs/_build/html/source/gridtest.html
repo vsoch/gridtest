@@ -96,6 +96,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-gridtest.decorators">gridtest.decorators module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-gridtest.defaults">gridtest.defaults module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-gridtest.func">gridtest.func module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-gridtest.utils">gridtest.utils module</a></li>
@@ -208,6 +209,27 @@
 </div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gridtest.decorators">
+<span id="gridtest-decorators-module"></span><h2>gridtest.decorators module<a class="headerlink" href="#module-gridtest.decorators" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2020 Vanessa Sochat.</p>
+<p>This Source Code Form is subject to the terms of the
+Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
+with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
+<p>gridtest.func are short functions that serve as helpers for a gridtest.
+Any function in here can be referenced as {% func_name %} or with arguments
+{% func_name arg1=1 arg2=2 %}. If you possibly have a namespace
+conflict, you can also reference {% gridtest.func.func_name %} and
+it will work to reference the function here.</p>
+<dl class="function">
+<dt id="gridtest.decorators.timeit">
+<code class="sig-prename descclassname">gridtest.decorators.</code><code class="sig-name descname">timeit</code><span class="sig-paren">(</span><em class="sig-param">func</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/decorators.html#timeit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.decorators.timeit" title="Permalink to this definition">¶</a></dt>
+<dd><p>timeit is a well known Python decorator that will time the total executio
+time for a function. Any output to return to the calling function should
+be printed to stdout, and prefixed with the name of the objective (e.g.,
+&#64;timeit).</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-gridtest.defaults">
 <span id="gridtest-defaults-module"></span><h2>gridtest.defaults module<a class="headerlink" href="#module-gridtest.defaults" title="Permalink to this headline">¶</a></h2>

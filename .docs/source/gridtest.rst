@@ -13,6 +13,14 @@ Subpackages
 Submodules
 ----------
 
+gridtest.decorators module
+--------------------------
+
+.. automodule:: gridtest.decorators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gridtest.defaults module
 ------------------------
 

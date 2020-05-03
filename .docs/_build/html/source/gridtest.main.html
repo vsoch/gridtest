@@ -105,6 +105,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridtest.html#module-gridtest.decorators">gridtest.decorators module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.html#module-gridtest.defaults">gridtest.defaults module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.html#module-gridtest.func">gridtest.func module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.html#module-gridtest.utils">gridtest.utils module</a></li>
@@ -192,15 +193,19 @@ Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
 <dl class="function">
 <dt id="gridtest.main.generate.extract_functions">
-<code class="sig-prename descclassname">gridtest.main.generate.</code><code class="sig-name descname">extract_functions</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">include_private=False</em>, <em class="sig-param">quiet=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/generate.html#extract_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.generate.extract_functions" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridtest.main.generate.</code><code class="sig-name descname">extract_functions</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">include_private=False</em>, <em class="sig-param">quiet=False</em>, <em class="sig-param">include_classes=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/generate.html#extract_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.generate.extract_functions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a filename, extract a module and associated functions with it
 into a grid test. This means creating a structure with function
 names and (if provided) default inputs. The user will fill in
-the rest of the file.</p>
+the rest of the file. The function can be used easily recursively by calling
+itself to get metadata for a subclass, and passing along the (already
+imported) module.</p>
 <dl class="simple">
 <dt>Arguments:</dt><dd><ul class="simple">
 <li><p>filename (str) : a filename or module name to parse</p></li>
 <li><p>include_private (bool) : include “private” functions</p></li>
+<li><p>quiet (bool) : suppress additional output</p></li>
+<li><p>include_classes (bool) : extract classes</p></li>
 </ul>
 </dd>
 </dl>
@@ -232,7 +237,7 @@ and a default defined, along with a random value to test.</p>
 
 <dl class="function">
 <dt id="gridtest.main.generate.generate_tests">
-<code class="sig-prename descclassname">gridtest.main.generate.</code><code class="sig-name descname">generate_tests</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">output=None</em>, <em class="sig-param">include_private=False</em>, <em class="sig-param">force=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/generate.html#generate_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.generate.generate_tests" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridtest.main.generate.</code><code class="sig-name descname">generate_tests</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">output=None</em>, <em class="sig-param">include_private=False</em>, <em class="sig-param">force=False</em>, <em class="sig-param">include_classes=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/generate.html#generate_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.generate.generate_tests" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate a test output file for some input module. If an output file
 is specified and already has existing content, in the case that check is
 used, we only print section names that have not been written. If check
@@ -258,6 +263,7 @@ and generate run freshly.</p>
 <li><p>output (str) : a path to a yaml file to save to</p></li>
 <li><p>include_private (bool) : include “private” functions</p></li>
 <li><p>force (bool) : force overwrite existing functions (default False)</p></li>
+<li><p>include_classes (bool) : extract classes to write tests too</p></li>
 </ul>
 </dd>
 </dl>
@@ -292,6 +298,13 @@ present working directory and add .&lt;script&gt;</p>
 </ul>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridtest.main.generate.include_function">
+<code class="sig-prename descclassname">gridtest.main.generate.</code><code class="sig-name descname">include_function</code><span class="sig-paren">(</span><em class="sig-param">funcname</em>, <em class="sig-param">func</em>, <em class="sig-param">include_classes=True</em>, <em class="sig-param">include_private=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/generate.html#include_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.generate.include_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>A helper to determine if a function (or class) should be included.
+Returns True for yes, False otherwise.</p>
 </dd></dl>
 
 </div>
@@ -346,7 +359,7 @@ the format {% tmp_path arg1=1 arg2=2 %}</p>
 
 <dl class="function">
 <dt id="gridtest.main.helpers.test_basic">
-<code class="sig-prename descclassname">gridtest.main.helpers.</code><code class="sig-name descname">test_basic</code><span class="sig-paren">(</span><em class="sig-param">funcname</em>, <em class="sig-param">module</em>, <em class="sig-param">filename</em>, <em class="sig-param">func=None</em>, <em class="sig-param">args=None</em>, <em class="sig-param">returns=None</em>, <em class="sig-param">interactive=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/helpers.html#test_basic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.helpers.test_basic" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridtest.main.helpers.</code><code class="sig-name descname">test_basic</code><span class="sig-paren">(</span><em class="sig-param">funcname</em>, <em class="sig-param">module</em>, <em class="sig-param">filename</em>, <em class="sig-param">func=None</em>, <em class="sig-param">args=None</em>, <em class="sig-param">returns=None</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">metrics=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/helpers.html#test_basic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.helpers.test_basic" title="Permalink to this definition">¶</a></dt>
 <dd><p>test basic is a worker version of the task.test_basic function.
 If a function is not provided, funcname, module, and filename are
 required to retrieve it. A function can only be provided directly
@@ -355,7 +368,13 @@ It works equivalently but is not attached to a class, and returns
 a list of values for [passed, result, out, err, raises]</p>
 <dl class="simple">
 <dt>Arguments:</dt><dd><ul class="simple">
+<li><p>funcname (str) : the name of the function to import</p></li>
+<li><p>module (str) : the base module to get the function from</p></li>
+<li><p>func (Function) : if running serial, function can be directly provided</p></li>
+<li><p>args (dict) : dictionary of arguments</p></li>
+<li><p>returns (type) : a returns type to test for</p></li>
 <li><p>interactive (bool) : run in interactive mode (giving user shell)</p></li>
+<li><p>metrics (list) : one or more metrics (decorators) to run.</p></li>
 </ul>
 </dd>
 </dl>
@@ -421,6 +440,17 @@ with this file, You can obtain one at <a class="reference external" href="http:/
 </dd></dl>
 
 <dl class="method">
+<dt id="gridtest.main.test.GridRunner.get_args">
+<code class="sig-name descname">get_args</code><span class="sig-paren">(</span><em class="sig-param">entry</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.get_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.get_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a test yaml entry, convert the grid specifications and
+arguments into a longer list of arguments to each run as a test.
+E.g., convert something like this:</p>
+<p>‘grid’: {‘one’: {‘min’: 0, ‘max’: 5, ‘list’: [10, 15]}},
+‘args’: {‘two’: 2},</p>
+<p>into:</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="gridtest.main.test.GridRunner.get_tests">
 <code class="sig-name descname">get_tests</code><span class="sig-paren">(</span><em class="sig-param">regexp=None</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">cleanup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.get_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.get_tests" title="Permalink to this definition">¶</a></dt>
 <dd><p>get tests based on a regular expression.</p>
@@ -431,6 +461,11 @@ with this file, You can obtain one at <a class="reference external" href="http:/
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="method">
+<dt id="gridtest.main.test.GridRunner.iter_sections">
+<code class="sig-name descname">iter_sections</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.iter_sections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.iter_sections" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="gridtest.main.test.GridRunner.load">
@@ -536,9 +571,22 @@ file.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="gridtest.main.test.GridTest.check_isinstance">
+<code class="sig-name descname">check_isinstance</code><span class="sig-paren">(</span><em class="sig-param">instance</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridTest.check_isinstance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridTest.check_isinstance" title="Permalink to this definition">¶</a></dt>
+<dd><p>check if the result is of a particular type</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="gridtest.main.test.GridTest.check_istrue">
 <code class="sig-name descname">check_istrue</code><span class="sig-paren">(</span><em class="sig-param">statement</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridTest.check_istrue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridTest.check_istrue" title="Permalink to this definition">¶</a></dt>
 <dd><p>check if a statement is true.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridtest.main.test.GridTest.check_metrics">
+<code class="sig-name descname">check_metrics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridTest.check_metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridTest.check_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>After runs are complete, given metrics defined in params, parse
+over the list and look for metric output in the output (and remove)</p>
 </dd></dl>
 
 <dl class="method">
@@ -636,6 +684,16 @@ helpers namespace.</p>
 <dd><p>print a summary of the test, including if it is supposed to
 return, raise, or check existance.</p>
 </dd></dl>
+
+<dl class="method">
+<dt id="gridtest.main.test.GridTest.summary_failure">
+<code class="sig-name descname">summary_failure</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridTest.summary_failure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridTest.summary_failure" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridtest.main.test.GridTest.summary_success">
+<code class="sig-name descname">summary_success</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridTest.summary_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridTest.summary_success" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 

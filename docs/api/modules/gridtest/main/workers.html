@@ -219,11 +219,15 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">task</span> <span class="ow">in</span> <span class="n">tests</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
 
+                <span class="c1"># If a class is returned, needs to be in path too</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">task</span><span class="o">.</span><span class="n">filename</span><span class="p">))</span>
+
                 <span class="c1"># Get the function name from the tester</span>
                 <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
                     <span class="s2">&quot;funcname&quot;</span><span class="p">:</span> <span class="n">task</span><span class="o">.</span><span class="n">get_funcname</span><span class="p">(),</span>
                     <span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="n">task</span><span class="o">.</span><span class="n">module</span><span class="p">,</span>
                     <span class="s2">&quot;filename&quot;</span><span class="p">:</span> <span class="n">task</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span>
+                    <span class="s2">&quot;metrics&quot;</span><span class="p">:</span> <span class="n">task</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;metrics&quot;</span><span class="p">,</span> <span class="p">[]),</span>
                     <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">task</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;args&quot;</span><span class="p">,</span> <span class="p">{}),</span>
                     <span class="s2">&quot;returns&quot;</span><span class="p">:</span> <span class="n">task</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;returns&quot;</span><span class="p">),</span>
                 <span class="p">}</span>

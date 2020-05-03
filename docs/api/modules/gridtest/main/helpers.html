@@ -163,7 +163,9 @@
 
 <span class="kn">from</span> <span class="nn">gridtest.main.generate</span> <span class="k">import</span> <span class="n">import_module</span><span class="p">,</span> <span class="n">get_function_typing</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">os</span>
 
 
@@ -215,7 +217,14 @@
 
 
 <div class="viewcode-block" id="test_basic"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.helpers.test_basic">[docs]</a><span class="k">def</span> <span class="nf">test_basic</span><span class="p">(</span>
-    <span class="n">funcname</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span>
+    <span class="n">funcname</span><span class="p">,</span>
+    <span class="n">module</span><span class="p">,</span>
+    <span class="n">filename</span><span class="p">,</span>
+    <span class="n">func</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">returns</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">metrics</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;test basic is a worker version of the task.test_basic function.</span>
 <span class="sd">       If a function is not provided, funcname, module, and filename are</span>
@@ -225,19 +234,62 @@
 <span class="sd">       a list of values for [passed, result, out, err, raises]</span>
 
 <span class="sd">       Arguments:</span>
+<span class="sd">         - funcname (str) : the name of the function to import</span>
+<span class="sd">         - module (str) : the base module to get the function from</span>
+<span class="sd">         - func (Function) : if running serial, function can be directly provided</span>
+<span class="sd">         - args (dict) : dictionary of arguments</span>
+<span class="sd">         - returns (type) : a returns type to test for</span>
 <span class="sd">         - interactive (bool) : run in interactive mode (giving user shell)</span>
+<span class="sd">         - metrics (list) : one or more metrics (decorators) to run.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span> <span class="ow">or</span> <span class="p">[]</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">func</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-        <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">funcname</span><span class="p">)</span>
 
+        <span class="c1"># If we have a class, we need to import and instantiate it first</span>
+        <span class="k">if</span> <span class="s2">&quot;self&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">funcname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">])(</span><span class="o">**</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">])</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">funcname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">del</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="n">funcname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">piece</span><span class="p">)</span>
+                <span class="n">module</span> <span class="o">=</span> <span class="n">func</span>
+
+    <span class="c1"># Figure out how to apply multiple</span>
+    <span class="n">originalfunc</span> <span class="o">=</span> <span class="n">func</span>
     <span class="n">passed</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="n">result</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">raises</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">out</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">err</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># import the decorators here (currently only support decorators from gridtest</span>
+    <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">metric</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;@&quot;</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="n">metric</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;^[@]&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">gt</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;gridtest.decorators&quot;</span><span class="p">)</span>
+            <span class="n">decorator</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">gt</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+
+            <span class="c1"># Update func to include wrapper</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="n">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+
+        <span class="c1"># Fallback to support for custom modules</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">metric_module</span> <span class="o">=</span> <span class="n">metric</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">mm</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">metric_module</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="n">metric</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]:</span>
+                    <span class="n">decorator</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mm</span><span class="p">,</span> <span class="n">piece</span><span class="p">)</span>
+
+                <span class="c1"># Update func to include wrapper</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="n">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Warning, unable to import decorator @</span><span class="si">{metric}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="c1"># Interactive mode means giving the user console control</span>
     <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
@@ -252,10 +304,10 @@
             <span class="n">code</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">local</span><span class="o">=</span><span class="nb">locals</span><span class="p">())</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">func</span><span class="p">:</span>
-        <span class="n">err</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;Cannot find function </span><span class="si">{gridtest_funcname}</span><span class="s2">&quot;</span><span class="p">]</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;Cannot find function </span><span class="si">{funcname}</span><span class="s2">&quot;</span><span class="p">]</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">passed</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">test_types</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">returns</span><span class="p">)</span>
+        <span class="n">passed</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">test_types</span><span class="p">(</span><span class="n">originalfunc</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">returns</span><span class="p">)</span>
         <span class="n">err</span> <span class="o">+=</span> <span class="n">error</span>
 
         <span class="c1"># if type doesn&#39;t pass, TypeError, otherwise continue</span>
@@ -263,20 +315,21 @@
             <span class="n">raises</span> <span class="o">=</span> <span class="s2">&quot;TypeError&quot;</span>
 
         <span class="k">else</span><span class="p">:</span>
+
             <span class="c1"># Run and capture output and error</span>
-            <span class="k">with</span> <span class="n">Capturing</span><span class="p">()</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">Capturing</span><span class="p">()</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
                     <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">**</span><span class="n">args</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
-                        <span class="n">std</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                        <span class="n">out</span> <span class="o">+=</span> <span class="n">std</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">)</span>
-                        <span class="n">err</span> <span class="o">+=</span> <span class="n">std</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;err&quot;</span><span class="p">)</span>
-                    <span class="n">passed</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                    <span class="n">raises</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
-                    <span class="n">message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
-                    <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
-                        <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">output</span><span class="p">:</span>
+                    <span class="n">std</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">out</span> <span class="o">+=</span> <span class="n">std</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;out&quot;</span><span class="p">)</span>
+                    <span class="n">err</span> <span class="o">+=</span> <span class="n">std</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;err&quot;</span><span class="p">)</span>
+                <span class="n">passed</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">raises</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">message</span><span class="p">:</span>
+                    <span class="n">err</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">[</span><span class="n">passed</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">raises</span><span class="p">]</span></div>
 
