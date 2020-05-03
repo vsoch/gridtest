@@ -130,3 +130,13 @@ script.multiply_sentence.8     @script.countwords             61 words
 Awesome! We've run a grid of tests over a grid of inputs, and measured some metric with
 our custom decorators. See the [gridtest.yml](gridtest.yml)
 for the full test recipe.
+
+### Save to File
+
+If we want to save the complete results, we can add `--save` with a filename:
+
+```bash
+$ gridtest test --save results.json
+```
+
+You can see the example [results.json](results.json) in this folder.

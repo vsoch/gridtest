@@ -13,7 +13,7 @@ from gridtest.defaults import (
     GRIDTEST_RETURNTYPES,
     GRIDTEST_GRIDEXPANDERS,
 )
-from gridtest.utils import read_yaml, write_yaml
+from gridtest.utils import read_yaml, write_yaml, write_json
 from gridtest.logger import bot
 from gridtest import __version__
 
@@ -546,6 +546,7 @@ class GridRunner:
         interactive=False,
         name=None,
         cleanup=True,
+        save=None,
     ):
         """run the grid runner, meaning that we turn each function and set of
            tests into a single test, and then run with multiprocessing. 
@@ -561,6 +562,7 @@ class GridRunner:
               - interactive (bool) : interactively debug functions
               - name (str) : if specified, a name of a test to interact with
               - cleanup (bool) : cleanup files/directories generated with tmp_path tmp_dir
+              - save (str) : a filepath to save results to (must be json)
         """
         # 1. Get filtered list of tests
         tests = self.get_tests(regexp=regexp, verbose=verbose, cleanup=cleanup)
@@ -577,6 +579,10 @@ class GridRunner:
 
         # Pretty print results to screen
         self.print_results(tests)
+
+        # Save to file?
+        if save:
+            self.save_results(save, tests)
 
         # return correct error code
         if self.failed(tests):
@@ -598,6 +604,38 @@ class GridRunner:
         """
         bot.info(f"Writing {self} to {testfile}")
         write_yaml(self.config, testfile)
+
+    def save_results(self, filename, tests):
+        """save a runner results to file.
+        """
+        filename = os.path.abspath(filename)
+        dirname = os.path.dirname(filename)
+        if not os.path.exists(dirname):
+            bot.exit(f"{dirname} does not exist, skipping save.")
+
+        elif not filename.endswith(".json"):
+            bot.warning(f"{dirname} must be extension .json, skipping save.")
+
+        else:
+            results = []
+            for key, test in tests.items():
+                results.append(
+                    {
+                        "name": key,
+                        "function": test.name,
+                        "filename": test.filename,
+                        "out": test.out,
+                        "err": test.err,
+                        "result": test.result,
+                        "params": test.params,
+                        "raises": test.raises,
+                        "success": test.success,
+                        "metrics": test.metrics,
+                        "module": test.module,
+                    }
+                )
+            write_json(results, filename)
+            return filename
 
     def print_results(self, tests):
         """print the results of the tests, meaning that success is in green,

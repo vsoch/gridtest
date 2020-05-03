@@ -73,6 +73,10 @@ def get_parser():
     )
 
     test.add_argument(
+        "--save", dest="save", help="save a json export of test results.", default=None,
+    )
+
+    test.add_argument(
         "--no-cleanup",
         dest="no_cleanup",
         help="Do not clean up paths generated with tmp_path or tmp_dir",
