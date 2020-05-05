@@ -60,13 +60,31 @@ away.
 
 When you write tests for a file, local, or system module, you store them in
 a yaml file that is stored alongside the code, and can be tested with CI.
+The yaml file can have grids of parameters defined so you can easily test many
+different combinations.
+
+### 5. Capturing Metrics
+
+How long does your function take when you provide parameter X as one value, versus
+another? By way of allowing you to specify one or more metrics alongside tests,
+you can easily capture metrics (Python decorators to your functions to test)
+to output in an interactive report.
+
+### 6. Generating Reports
+
+If you need to save results to a data file (e.g., results.json) or generate
+an interactive report for GitHub pages, this is easy to do do with running
+Gridtest with the `--save` or `--save-web` flags.
+
+If you've
 
 In summary, GridTest:
 
  1. Helps you to discover the tests that you need to write, and creates a template to fill in
  2. Provides an easier way to interactively debug
  3. Stores tests in a yaml file that can be stored in version control
-
+ 4. Allows measuring of metrics alongside tests
+ 5. Generates data exports and interactive reports for results
 
 > Where do I go from here?
 
