@@ -1,0 +1,518 @@
+[
+    {
+        "name": "script.multiply_sentence.0",
+        "function": "script.multiply_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "He ran for the hills.",
+        "params": {
+            "grid": {
+                "count": {
+                    "list": [
+                        1,
+                        5,
+                        10
+                    ]
+                },
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "count": 1,
+                "sentence": "He ran for the hills."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "5 words"
+            ],
+            "@script.countletters": [
+                "17 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.multiply_sentence.1",
+        "function": "script.multiply_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+        "params": {
+            "grid": {
+                "count": {
+                    "list": [
+                        1,
+                        5,
+                        10
+                    ]
+                },
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "count": 1,
+                "sentence": "Skiddery-a rinky dinky dinky, skittery rinky doo."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "7 words"
+            ],
+            "@script.countletters": [
+                "43 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.multiply_sentence.2",
+        "function": "script.multiply_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "You are my sunshine, my only sunshine.",
+        "params": {
+            "grid": {
+                "count": {
+                    "list": [
+                        1,
+                        5,
+                        10
+                    ]
+                },
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "count": 1,
+                "sentence": "You are my sunshine, my only sunshine."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "7 words"
+            ],
+            "@script.countletters": [
+                "32 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.multiply_sentence.3",
+        "function": "script.multiply_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "He ran for the hills.He ran for the hills.He ran for the hills.He ran for the hills.He ran for the hills.",
+        "params": {
+            "grid": {
+                "count": {
+                    "list": [
+                        1,
+                        5,
+                        10
+                    ]
+                },
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "count": 5,
+                "sentence": "He ran for the hills."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "21 words"
+            ],
+            "@script.countletters": [
+                "85 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.multiply_sentence.4",
+        "function": "script.multiply_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.",
+        "params": {
+            "grid": {
+                "count": {
+                    "list": [
+                        1,
+                        5,
+                        10
+                    ]
+                },
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "count": 5,
+                "sentence": "Skiddery-a rinky dinky dinky, skittery rinky doo."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "31 words"
+            ],
+            "@script.countletters": [
+                "215 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.multiply_sentence.5",
+        "function": "script.multiply_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.",
+        "params": {
+            "grid": {
+                "count": {
+                    "list": [
+                        1,
+                        5,
+                        10
+                    ]
+                },
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "count": 5,
+                "sentence": "You are my sunshine, my only sunshine."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "31 words"
+            ],
+            "@script.countletters": [
+                "160 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.multiply_sentence.6",
+        "function": "script.multiply_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "He ran for the hills.He ran for the hills.He ran for the hills.He ran for the hills.He ran for the hills.He ran for the hills.He ran for the hills.He ran for the hills.He ran for the hills.He ran for the hills.",
+        "params": {
+            "grid": {
+                "count": {
+                    "list": [
+                        1,
+                        5,
+                        10
+                    ]
+                },
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "count": 10,
+                "sentence": "He ran for the hills."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "41 words"
+            ],
+            "@script.countletters": [
+                "170 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.multiply_sentence.7",
+        "function": "script.multiply_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.Skiddery-a rinky dinky dinky, skittery rinky doo.",
+        "params": {
+            "grid": {
+                "count": {
+                    "list": [
+                        1,
+                        5,
+                        10
+                    ]
+                },
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "count": 10,
+                "sentence": "Skiddery-a rinky dinky dinky, skittery rinky doo."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "61 words"
+            ],
+            "@script.countletters": [
+                "430 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.multiply_sentence.8",
+        "function": "script.multiply_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.You are my sunshine, my only sunshine.",
+        "params": {
+            "grid": {
+                "count": {
+                    "list": [
+                        1,
+                        5,
+                        10
+                    ]
+                },
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "count": 10,
+                "sentence": "You are my sunshine, my only sunshine."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "61 words"
+            ],
+            "@script.countletters": [
+                "320 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.unique_sentence.0",
+        "function": "script.unique_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "hills. He for the ran",
+        "params": {
+            "grid": {
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "sentence": "He ran for the hills."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "5 words"
+            ],
+            "@script.countletters": [
+                "17 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.unique_sentence.1",
+        "function": "script.unique_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "Skiddery-a dinky dinky, doo. skittery rinky",
+        "params": {
+            "grid": {
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "sentence": "Skiddery-a rinky dinky dinky, skittery rinky doo."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "6 words"
+            ],
+            "@script.countletters": [
+                "38 letters"
+            ]
+        },
+        "module": "script"
+    },
+    {
+        "name": "script.unique_sentence.2",
+        "function": "script.unique_sentence",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/interface/script.py",
+        "out": [],
+        "err": [],
+        "result": "only sunshine, sunshine. are You my",
+        "params": {
+            "grid": {
+                "sentence": {
+                    "list": [
+                        "He ran for the hills.",
+                        "Skiddery-a rinky dinky dinky, skittery rinky doo.",
+                        "You are my sunshine, my only sunshine."
+                    ]
+                }
+            },
+            "metrics": [
+                "@script.countwords",
+                "@script.countletters"
+            ],
+            "args": {
+                "sentence": "You are my sunshine, my only sunshine."
+            }
+        },
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@script.countwords": [
+                "6 words"
+            ],
+            "@script.countletters": [
+                "30 letters"
+            ]
+        },
+        "module": "script"
+    }
+]
