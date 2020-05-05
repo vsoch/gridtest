@@ -26,5 +26,7 @@ def main(args, extra):
         interactive=args.interactive,
         cleanup=not args.no_cleanup,
         save=args.save,
+        save_report=args.save_report,
+        report_template=args.report_template,
     )
     sys.exit(return_code)

@@ -13,6 +13,7 @@ from gridtest.defaults import (
     GRIDTEST_RETURNTYPES,
     GRIDTEST_GRIDEXPANDERS,
 )
+from gridtest.templates import copy_template
 from gridtest.utils import read_yaml, write_yaml, write_json
 from gridtest.logger import bot
 from gridtest import __version__
@@ -547,6 +548,8 @@ class GridRunner:
         name=None,
         cleanup=True,
         save=None,
+        save_report=None,
+        report_template="report",
     ):
         """run the grid runner, meaning that we turn each function and set of
            tests into a single test, and then run with multiprocessing. 
@@ -563,6 +566,8 @@ class GridRunner:
               - name (str) : if specified, a name of a test to interact with
               - cleanup (bool) : cleanup files/directories generated with tmp_path tmp_dir
               - save (str) : a filepath to save results to (must be json)
+              - save_report (str) : path to folder (not existing) to save a report to
+              - report_template (str) : a template name of a report to generate
         """
         # 1. Get filtered list of tests
         tests = self.get_tests(regexp=regexp, verbose=verbose, cleanup=cleanup)
@@ -580,7 +585,12 @@ class GridRunner:
         # Pretty print results to screen
         self.print_results(tests)
 
-        # Save to file?
+        # Save report?
+        if save_report:
+            report_dir = self.save_report(save_report, report_template)
+            save = os.path.join(report_dir, "results.json")
+
+        # Save to file (required for report)
         if save:
             self.save_results(save, tests)
 
@@ -604,6 +614,20 @@ class GridRunner:
         """
         bot.info(f"Writing {self} to {testfile}")
         write_yaml(self.config, testfile)
+
+    def save_report(self, report_dir, report_template):
+        """save a runner results to file.
+        """
+        report_dir = os.path.abspath(report_dir)
+
+        # Report directory cannot already exist
+        if os.path.exists(report_dir):
+            bot.exit(f"{report_dir} already exists, please remove before using.")
+
+        dest = copy_template(report_template, report_dir)
+        if not dest:
+            bot.exit(f"Error writing to {dest}.")
+        return dest
 
     def save_results(self, filename, tests):
         """save a runner results to file.

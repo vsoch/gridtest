@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>GridTest Results</title>
+  <link rel="stylesheet" href="gridtest.css">
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<!-- component template -->
+<script type="text/x-template" id="grid-template">
+  <table>
+    <thead>
+      <tr>
+        <th v-for="key in columns"
+          @click="sortBy(key)"
+          :class="{ active: sortKey == key }">
+          {{ key | capitalize }}
+          <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+          </span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr v-for="entry in filteredHeroes">
+        <td>{{ entry.module }}</td>
+        <td v-on:mouseover="mouseover(entry.name)">
+          <strong>{{ entry.name }}</strong>
+        </td>
+        <td :class="[{ success: entry.success == true }, { failure: entry.success == false }]">{{ entry.success }}</td>
+        <td>{{ entry.args }}</td>
+        <td>{{ entry.raises }}</td>
+        <td>{{ entry.result }}</td>
+      </tr>
+    </tbody>
+  </table>
+</script>
+
+<div id="main">
+  <img src="https://raw.githubusercontent.com/vsoch/gridtest/master/docs/assets/img/logo/gridtest.gif" width="200px">
+  <div id="sidebar">
+  <a v-for="(func, index) in sidebar"
+     @click="activate(func.name)" class="active">
+    {{ func.name }}
+  </a>
+  </div>
+  <div id="table">
+    <form id="search">
+      Search <input name="query" v-model="searchQuery">
+    </form>
+    <grid-tests
+      :mouseover="mouseover"
+      :tests="tests"
+      :heroes="gridData"
+      :columns="gridColumns"
+      :filter-key="searchQuery">    
+    </grid-tests>
+  </div>
+  <div class="modal-mask" v-if="showModal">
+    <div class="modal-wrapper">
+      <div class="modal-container">
+        <div class="modal-header">
+          <slot name="header">
+            {{ modalHeader }}
+          </slot>
+        </div>
+
+        <div class="modal-body" v-html="modalBody">
+          <slot name="body">
+            {{ modalBody }}
+          </slot>
+        </div>
+
+        <div class="modal-footer">
+          <slot name="footer">
+            Press OK to close the result.
+            <button class="modal-default-button" @click="showModal = false">
+              OK
+            </button>
+          </slot>
+        </div>
+     </div>
+    </div>
+  </div>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
+<script src="gridtest.js"></script>
+</body>
+</html>

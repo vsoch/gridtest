@@ -28,8 +28,7 @@ for generating and running tests.
  - [Debugging](#debugging): is easy with the interactive interpreter.
  - [Testing](testing/): via continuous integration, or checking if tests need updating.
  - [Python](python/): interacting with a GridRunner from within Python
- - [Results](results/) are available via a json export or (under development) interactive interface.
-
+ - [Results](results/) are available via a json export or interactive web report.
 
 <a id="#how-does-it-work">
 ### How does it work?

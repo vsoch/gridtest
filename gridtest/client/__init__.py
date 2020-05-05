@@ -77,6 +77,21 @@ def get_parser():
     )
 
     test.add_argument(
+        "--save-web",
+        dest="save_report",
+        help="save a full web report to directory specified (cannot exist)",
+        default=None,
+    )
+
+    test.add_argument(
+        "--report-template",
+        dest="report_template",
+        help="report template to use",
+        default="report",
+        choices=["report"],
+    )
+
+    test.add_argument(
         "--no-cleanup",
         dest="no_cleanup",
         help="Do not clean up paths generated with tmp_path or tmp_dir",

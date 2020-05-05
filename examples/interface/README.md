@@ -72,6 +72,19 @@ will save pages to [web](web) in the present working directory.
 $ gridtest test --save-web web/
 ```
 
+You should then be able to put these static files on GitHub pages, or just cd
+into the folder and run a webserver:
 
-STOPPED HERE - add logo to table, update table colors, make popup (or similar)
-to show gridtest results.
+```bash
+python -m http.server 9999
+```
+
+And see the content at [http://localhost:9999](http://localhost:9999). This
+is a fairly simple results template that lets you select functions in the left
+columns, and then see specific tests in the right table
+
+![img/gridtest.png](img/gridtest.png)
+
+and mouse over the test name to see the output, error, and metrics recorded.
+
+![img/detail.png](img/detail.png)

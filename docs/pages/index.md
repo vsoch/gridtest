@@ -3,8 +3,6 @@ title: GridTest
 permalink: /
 ---
 
-**this library and documentaiton is under development**
-
 > What is GridTest?
 
 If you ask any software engineer about best practices, they will undoubtably
