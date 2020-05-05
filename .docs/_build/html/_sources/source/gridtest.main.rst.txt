@@ -4,6 +4,14 @@ gridtest.main package
 Submodules
 ----------
 
+gridtest.main.check module
+--------------------------
+
+.. automodule:: gridtest.main.check
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gridtest.main.generate module
 -----------------------------
 
@@ -32,6 +40,14 @@ gridtest.main.test module
 -------------------------
 
 .. automodule:: gridtest.main.test
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+gridtest.main.update module
+---------------------------
+
+.. automodule:: gridtest.main.update
    :members:
    :undoc-members:
    :show-inheritance:

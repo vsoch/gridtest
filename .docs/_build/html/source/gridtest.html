@@ -93,6 +93,7 @@
 <li class="toctree-l3"><a class="reference internal" href="gridtest.client.html">gridtest.client package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gridtest.logger.html">gridtest.logger package</a></li>
 <li class="toctree-l3"><a class="reference internal" href="gridtest.main.html">gridtest.main package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="gridtest.templates.html">gridtest.templates package</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
@@ -177,8 +178,11 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="gridtest.client.html">gridtest.client package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.client.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridtest.client.html#module-gridtest.client.check">gridtest.client.check module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.client.html#module-gridtest.client.generate">gridtest.client.generate module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridtest.client.html#module-gridtest.client.shell">gridtest.client.shell module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.client.html#module-gridtest.client.test">gridtest.client.test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridtest.client.html#module-gridtest.client.update">gridtest.client.update module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.client.html#module-gridtest.client">Module contents</a></li>
 </ul>
 </li>
@@ -196,12 +200,18 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gridtest.main.html">gridtest.main package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.main.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridtest.main.html#module-gridtest.main.check">gridtest.main.check module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.main.html#module-gridtest.main.generate">gridtest.main.generate module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.main.html#module-gridtest.main.helpers">gridtest.main.helpers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.main.html#module-gridtest.main.substitute">gridtest.main.substitute module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.main.html#module-gridtest.main.test">gridtest.main.test module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gridtest.main.html#module-gridtest.main.update">gridtest.main.update module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.main.html#module-gridtest.main.workers">gridtest.main.workers module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.main.html#module-gridtest.main">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="gridtest.templates.html">gridtest.templates package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gridtest.templates.html#module-gridtest.templates">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -303,13 +313,12 @@ Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
 <dl class="function">
 <dt id="gridtest.utils.read_file">
-<code class="sig-prename descclassname">gridtest.utils.</code><code class="sig-name descname">read_file</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">mode='r'</em>, <em class="sig-param">readlines=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/utils.html#read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.utils.read_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridtest.utils.</code><code class="sig-name descname">read_file</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">readlines=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/utils.html#read_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.utils.read_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>write_file will open a file, “filename” and write content
 and properly close the file.</p>
 <dl class="simple">
 <dt>Arguments:</dt><dd><ul class="simple">
 <li><p>filename (str) : the filename to read</p></li>
-<li><p>mode (str) : the mode (defaults to r)</p></li>
 <li><p>readlines (bool) : read lines of the file (vs all raw)</p></li>
 </ul>
 </dd>
@@ -318,12 +327,11 @@ and properly close the file.</p>
 
 <dl class="function">
 <dt id="gridtest.utils.read_yaml">
-<code class="sig-prename descclassname">gridtest.utils.</code><code class="sig-name descname">read_yaml</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">mode='r'</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/utils.html#read_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.utils.read_yaml" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridtest.utils.</code><code class="sig-name descname">read_yaml</code><span class="sig-paren">(</span><em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/utils.html#read_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.utils.read_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>read a yaml file, only including sections between dashes</p>
 <dl class="simple">
 <dt>Arguments:</dt><dd><ul class="simple">
 <li><p>filename (str) : the filename to read</p></li>
-<li><p>mode (str) : the mode (defaults to r)</p></li>
 </ul>
 </dd>
 </dl>
@@ -344,8 +352,21 @@ below a base path.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="gridtest.utils.write_json">
+<code class="sig-prename descclassname">gridtest.utils.</code><code class="sig-name descname">write_json</code><span class="sig-paren">(</span><em class="sig-param">json_obj</em>, <em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/utils.html#write_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.utils.write_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>write_json will write a json object to file, pretty printed</p>
+<dl class="simple">
+<dt>Arguents:</dt><dd><ul class="simple">
+<li><p>json_obj (dict) : the dict to print to json</p></li>
+<li><p>filename (str) : the output file to write to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="gridtest.utils.write_yaml">
-<code class="sig-prename descclassname">gridtest.utils.</code><code class="sig-name descname">write_yaml</code><span class="sig-paren">(</span><em class="sig-param">yaml_dict</em>, <em class="sig-param">filename</em>, <em class="sig-param">mode='w'</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/utils.html#write_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.utils.write_yaml" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridtest.utils.</code><code class="sig-name descname">write_yaml</code><span class="sig-paren">(</span><em class="sig-param">yaml_dict</em>, <em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/utils.html#write_yaml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.utils.write_yaml" title="Permalink to this definition">¶</a></dt>
 <dd><p>write a dictionary to yaml file</p>
 <dl class="simple">
 <dt>Arguments:</dt><dd><ul class="simple">

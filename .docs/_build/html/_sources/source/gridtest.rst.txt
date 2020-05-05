@@ -9,6 +9,7 @@ Subpackages
    gridtest.client
    gridtest.logger
    gridtest.main
+   gridtest.templates
 
 Submodules
 ----------

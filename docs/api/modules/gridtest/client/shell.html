@@ -1,0 +1,296 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gridtest.client.shell &mdash; GridTest Python 11 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../assets/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../assets/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../assets/jquery.js"></script>
+        <script type="text/javascript" src="../../../assets/underscore.js"></script>
+        <script type="text/javascript" src="../../../assets/doctools.js"></script>
+        <script type="text/javascript" src="../../../assets/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../assets/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../assets/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../assets/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> GridTest Python
+          
+
+          
+            
+            <img src="../../../assets/logo.gif" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../source/gridtest.html">gridtest package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">CHANGELOG</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">GridTest Python</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../client.html">gridtest.client</a> &raquo;</li>
+        
+      <li>gridtest.client.shell</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for gridtest.client.shell</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">Copyright (C) 2020 Vanessa Sochat.</span>
+
+<span class="sd">This Source Code Form is subject to the terms of the</span>
+<span class="sd">Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed</span>
+<span class="sd">with this file, You can obtain one at http://mozilla.org/MPL/2.0/.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">gridtest.main.test</span> <span class="k">import</span> <span class="n">GridRunner</span><span class="p">,</span> <span class="n">GridTest</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../source/gridtest.client.html#gridtest.client.shell.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">extra</span><span class="p">):</span>
+
+    <span class="n">lookup</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;ipython&quot;</span><span class="p">:</span> <span class="n">ipython</span><span class="p">,</span> <span class="s2">&quot;python&quot;</span><span class="p">:</span> <span class="n">python</span><span class="p">,</span> <span class="s2">&quot;bpython&quot;</span><span class="p">:</span> <span class="n">bpython</span><span class="p">}</span>
+    <span class="n">shells</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ipython&quot;</span><span class="p">,</span> <span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;bpython&quot;</span><span class="p">]</span>
+
+    <span class="kn">from</span> <span class="nn">gridtest.defaults</span> <span class="k">import</span> <span class="n">GRIDTEST_SHELL</span> <span class="k">as</span> <span class="n">shell</span>
+
+    <span class="c1"># If the user asked for a specific shell via environment</span>
+    <span class="n">shell</span> <span class="o">=</span> <span class="n">shell</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">shell</span> <span class="ow">in</span> <span class="n">lookup</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">lookup</span><span class="p">[</span><span class="n">shell</span><span class="p">](</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># Otherwise present order of liklihood to have on system</span>
+    <span class="k">for</span> <span class="n">shell</span> <span class="ow">in</span> <span class="n">shells</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">lookup</span><span class="p">[</span><span class="n">shell</span><span class="p">](</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="get_runner"><a class="viewcode-back" href="../../../source/gridtest.client.html#gridtest.client.shell.get_runner">[docs]</a><span class="k">def</span> <span class="nf">get_runner</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;if the user provides a gridtest file to load, return a runner</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">input</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">):</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Input file </span><span class="si">{args.input}</span><span class="s2"> does not exist.&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">runner</span> <span class="o">=</span> <span class="n">GridRunner</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span>
+                <span class="s2">&quot;Error creating GridRunner, try running shell without test yaml file to debug.&quot;</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">runner</span></div>
+
+
+<div class="viewcode-block" id="print_runner"><a class="viewcode-back" href="../../../source/gridtest.client.html#gridtest.client.shell.print_runner">[docs]</a><span class="k">def</span> <span class="nf">print_runner</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="n">testfile</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;If a runner is provided, print instructions for using it. Otherwise</span>
+<span class="sd">       show instructions for adding a test file.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n\033</span><span class="s2">[1mGridtest Interactive Shell</span><span class="se">\033</span><span class="s2">[0m&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">testfile</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;testfile: </span><span class="si">{testfile}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">runner</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;  runner: </span><span class="si">{runner}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">runner</span> <span class="ow">and</span> <span class="n">testfile</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;runner = GridRunner(</span><span class="si">{testfile}</span><span class="s2">)&quot;</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="ow">not</span> <span class="n">runner</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">testfile</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;runner = GridRunner(&#39;tests.yml&#39;)&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ipython"><a class="viewcode-back" href="../../../source/gridtest.client.html#gridtest.client.shell.ipython">[docs]</a><span class="k">def</span> <span class="nf">ipython</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;give the user an ipython shell, optionally with an endpoint of choice.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span> <span class="nn">gridtest.main.test</span> <span class="k">import</span> <span class="n">GridRunner</span><span class="p">,</span> <span class="n">GridTest</span>
+
+    <span class="n">testfile</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">input</span>
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">get_runner</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">print_runner</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="n">testfile</span><span class="p">)</span>
+    <span class="kn">import</span> <span class="nn">IPython</span>
+
+    <span class="n">IPython</span><span class="o">.</span><span class="n">embed</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="bpython"><a class="viewcode-back" href="../../../source/gridtest.client.html#gridtest.client.shell.bpython">[docs]</a><span class="k">def</span> <span class="nf">bpython</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">gridtest.main.test</span> <span class="k">import</span> <span class="n">GridRunner</span><span class="p">,</span> <span class="n">GridTest</span>
+    <span class="kn">import</span> <span class="nn">bpython</span>
+
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">get_runner</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">print_runner</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+    <span class="n">bpython</span><span class="o">.</span><span class="n">embed</span><span class="p">(</span><span class="n">locals_</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;runner&quot;</span><span class="p">:</span> <span class="n">runner</span><span class="p">,</span> <span class="s2">&quot;testfile&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">})</span></div>
+
+
+<div class="viewcode-block" id="python"><a class="viewcode-back" href="../../../source/gridtest.client.html#gridtest.client.shell.python">[docs]</a><span class="k">def</span> <span class="nf">python</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="kn">from</span> <span class="nn">gridtest.main.test</span> <span class="k">import</span> <span class="n">GridRunner</span><span class="p">,</span> <span class="n">GridTest</span>
+    <span class="kn">import</span> <span class="nn">code</span>
+
+    <span class="n">runner</span> <span class="o">=</span> <span class="n">get_runner</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+    <span class="n">print_runner</span><span class="p">(</span><span class="n">runner</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">)</span>
+    <span class="n">code</span><span class="o">.</span><span class="n">interact</span><span class="p">(</span><span class="n">local</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;runner&quot;</span><span class="p">:</span> <span class="n">runner</span><span class="p">,</span> <span class="s2">&quot;testfile&quot;</span><span class="p">:</span> <span class="n">args</span><span class="o">.</span><span class="n">input</span><span class="p">})</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2018, Vanessa Sochat
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

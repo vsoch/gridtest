@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../assets/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="CHANGELOG" href="../changelog.html" />
+    <link rel="next" title="gridtest.templates package" href="gridtest.templates.html" />
     <link rel="prev" title="gridtest.logger package" href="gridtest.logger.html" /> 
 </head>
 
@@ -94,14 +94,17 @@
 <li class="toctree-l3"><a class="reference internal" href="gridtest.logger.html">gridtest.logger package</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">gridtest.main package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.check">gridtest.main.check module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.generate">gridtest.main.generate module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.helpers">gridtest.main.helpers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.substitute">gridtest.main.substitute module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.test">gridtest.main.test module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.update">gridtest.main.update module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.workers">gridtest.main.workers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="gridtest.templates.html">gridtest.templates package</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="gridtest.html#submodules">Submodules</a></li>
@@ -184,6 +187,48 @@
 <h1>gridtest.main package<a class="headerlink" href="#gridtest-main-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-gridtest.main.check">
+<span id="gridtest-main-check-module"></span><h2>gridtest.main.check module<a class="headerlink" href="#module-gridtest.main.check" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2020 Vanessa Sochat.</p>
+<p>This Source Code Form is subject to the terms of the
+Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
+with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
+<dl class="function">
+<dt id="gridtest.main.check.check_tests">
+<code class="sig-prename descclassname">gridtest.main.check.</code><code class="sig-name descname">check_tests</code><span class="sig-paren">(</span><em class="sig-param">testfile</em>, <em class="sig-param">include_private=False</em>, <em class="sig-param">include_classes=True</em>, <em class="sig-param">skip_patterns=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/check.html#check_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.check.check_tests" title="Permalink to this definition">¶</a></dt>
+<dd><p>A wrapper to get_missing_tests, but we return 0 if no new tests are
+to be added, and 1 otherwise.</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><ul class="simple">
+<li><p>testfile (str) : the yaml test file</p></li>
+<li><p>include_private (bool) : include “private” functions</p></li>
+<li><p>include_classes (bool) : include classes</p></li>
+<li><p>skip_patterns (list) : list of test keys (patterns) to exclude</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridtest.main.check.get_missing_tests">
+<code class="sig-prename descclassname">gridtest.main.check.</code><code class="sig-name descname">get_missing_tests</code><span class="sig-paren">(</span><em class="sig-param">testfile</em>, <em class="sig-param">include_private=False</em>, <em class="sig-param">skip_patterns=None</em>, <em class="sig-param">include_classes=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/check.html#get_missing_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.check.get_missing_tests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a testing file, load in as a GridRunner, load the module again,
+and check if new tests need to be generated. Optionally take patterns
+to skip. If no new tests are added, we return 0. Otherwise, we exit with
+1. This is similar to black linting, and is intended for running in CI
+to pass if a user has written all tests to correpond with their module
+(akin to a more rigorous coverage tool).</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><ul class="simple">
+<li><p>testfile (str) : the yaml test file</p></li>
+<li><p>include_private (bool) : include “private” functions</p></li>
+<li><p>skip_patterns (list) : list of test keys (patterns) to exclude</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 <div class="section" id="module-gridtest.main.generate">
 <span id="gridtest-main-generate-module"></span><h2>gridtest.main.generate module<a class="headerlink" href="#module-gridtest.main.generate" title="Permalink to this headline">¶</a></h2>
@@ -482,7 +527,7 @@ and non-success is in red.</p>
 
 <dl class="method">
 <dt id="gridtest.main.test.GridRunner.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">regexp=None</em>, <em class="sig-param">parallel=True</em>, <em class="sig-param">nproc=None</em>, <em class="sig-param">show_progress=True</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">name=None</em>, <em class="sig-param">cleanup=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">regexp=None</em>, <em class="sig-param">parallel=True</em>, <em class="sig-param">nproc=None</em>, <em class="sig-param">show_progress=True</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">name=None</em>, <em class="sig-param">cleanup=True</em>, <em class="sig-param">save=None</em>, <em class="sig-param">save_report=None</em>, <em class="sig-param">report_template='report'</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>run the grid runner, meaning that we turn each function and set of
 tests into a single test, and then run with multiprocessing.
 This is the function called by the user that also does filtering
@@ -497,6 +542,9 @@ of tests based on a regular expression before calling them.</p>
 <li><p>interactive (bool) : interactively debug functions</p></li>
 <li><p>name (str) : if specified, a name of a test to interact with</p></li>
 <li><p>cleanup (bool) : cleanup files/directories generated with tmp_path tmp_dir</p></li>
+<li><p>save (str) : a filepath to save results to (must be json)</p></li>
+<li><p>save_report (str) : path to folder (not existing) to save a report to</p></li>
+<li><p>report_template (str) : a template name of a report to generate</p></li>
 </ul>
 </dd>
 </dl>
@@ -524,6 +572,18 @@ not available for parallel jobs.</p></li>
 <dt id="gridtest.main.test.GridRunner.save">
 <code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">testfile</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.save"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the runner.config to an output yaml file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridtest.main.test.GridRunner.save_report">
+<code class="sig-name descname">save_report</code><span class="sig-paren">(</span><em class="sig-param">report_dir</em>, <em class="sig-param">report_template</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.save_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.save_report" title="Permalink to this definition">¶</a></dt>
+<dd><p>save a runner results to file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridtest.main.test.GridRunner.save_results">
+<code class="sig-name descname">save_results</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">tests</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.save_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.save_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>save a runner results to file.</p>
 </dd></dl>
 
 <dl class="method">
@@ -705,6 +765,31 @@ return, raise, or check existance.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-gridtest.main.update">
+<span id="gridtest-main-update-module"></span><h2>gridtest.main.update module<a class="headerlink" href="#module-gridtest.main.update" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2020 Vanessa Sochat.</p>
+<p>This Source Code Form is subject to the terms of the
+Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
+with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
+<dl class="function">
+<dt id="gridtest.main.update.update_tests">
+<code class="sig-prename descclassname">gridtest.main.update.</code><code class="sig-name descname">update_tests</code><span class="sig-paren">(</span><em class="sig-param">testfile</em>, <em class="sig-param">include_private=False</em>, <em class="sig-param">skip_patterns=None</em>, <em class="sig-param">include_classes=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/update.html#update_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.update.update_tests" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a testing file, load in as a GridRunner, load the module again,
+and update with new tests not found. Optionally take patterns
+to skip. This is akin to check_tests in check.py, but instead we
+update the runner and save the file.</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><ul class="simple">
+<li><p>testfile (str) : the yaml test file</p></li>
+<li><p>include_private (bool) : include “private” functions</p></li>
+<li><p>skip_patterns (list) : list of test keys (patterns) to exclude</p></li>
+<li><p>include_classes (bool) : include classes in update (True)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
 <div class="section" id="module-gridtest.main.workers">
 <span id="gridtest-main-workers-module"></span><h2>gridtest.main.workers module<a class="headerlink" href="#module-gridtest.main.workers" title="Permalink to this headline">¶</a></h2>
 <p>Copyright (C) 2020 Vanessa Sochat.</p>
@@ -769,7 +854,7 @@ the result of the test, and error codes, are saved with the test.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../changelog.html" class="btn btn-neutral float-right" title="CHANGELOG" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="gridtest.templates.html" class="btn btn-neutral float-right" title="gridtest.templates package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="gridtest.logger.html" class="btn btn-neutral float-left" title="gridtest.logger package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
