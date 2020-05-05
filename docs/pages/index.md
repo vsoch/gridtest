@@ -74,9 +74,10 @@ to output in an interactive report.
 
 If you need to save results to a data file (e.g., results.json) or generate
 an interactive report for GitHub pages, this is easy to do do with running
-Gridtest with the `--save` or `--save-web` flags.
-
-If you've
+Gridtest with the `--save` or `--save-web` flags. An example report is 
+available to view [here](https://vsoch.github.io/gridtest/templates/report/),
+and as we get more real world use cases, the report templates and data export 
+options can be expanded to use and visualize them beautifully. Please [open an issue](https://github.com/vsoch/gridtest/issues) if you have a use case that @vsoch can help with!
 
 In summary, GridTest:
 
