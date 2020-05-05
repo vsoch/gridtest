@@ -31,4 +31,11 @@ echo
 echo "#### Testing temp file and directory tests"
 runTest 0 $output gridtest test $here/modules/temp-tests.yml
 runTest 0 $output gridtest test $here/modules/temp-tests.yml --serial
+
+echo
+echo "#### Testing report generation"
+runTest 0 $output gridtest test $here/modules/metrics.yml --save $tmpdir/results.json
+cat $tmpdir/results.json
+runTest 0 $output gridtest test $here/modules/metrics.yml --save-web $tmpdir/web
+ls $tmpdir/web
 rm -rf ${tmpdir}
