@@ -209,6 +209,6 @@ and mouse over the test name to see the output, error, and metrics recorded.
 
 ![img/detail.png](../img/detail.png)
 
-The report generated above is available for viewing [here]({{ site.baseurl }}/pages/templates/report/)
+The report generated above is available for viewing [here]({{ site.baseurl }}/templates/report/)
 
 You might next want to browse [tutorials]({{ site.baseurl }}/tutorials/) available.
