@@ -2,7 +2,7 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>CodePen - Vue.js Table</title>
+  <title>GridTest Results</title>
   <link rel="stylesheet" href="gridtest.css">
 
 </head>
@@ -24,11 +24,14 @@
     </thead>
     <tbody>
       <tr v-for="entry in filteredHeroes">
-        <td v-for="key in columns"
-          @mouseover="hover = true"
-          @mouseleave="hover = false">
-          {{entry[key]}}
+        <td>{{ entry.module }}</td>
+        <td v-on:mouseover="mouseover(entry.name)">
+          <strong>{{ entry.name }}</strong>
         </td>
+        <td :class="[{ success: entry.success == true }, { failure: entry.success == false }]">{{ entry.success }}</td>
+        <td>{{ entry.args }}</td>
+        <td>{{ entry.raises }}</td>
+        <td>{{ entry.result }}</td>
       </tr>
     </tbody>
   </table>
@@ -47,11 +50,40 @@
       Search <input name="query" v-model="searchQuery">
     </form>
     <grid-tests
+      :mouseover="mouseover"
+      :tests="tests"
       :heroes="gridData"
       :columns="gridColumns"
       :filter-key="searchQuery">    
     </grid-tests>
   </div>
+  <div class="modal-mask" v-if="showModal">
+    <div class="modal-wrapper">
+      <div class="modal-container">
+        <div class="modal-header">
+          <slot name="header">
+            {{ modalHeader }}
+          </slot>
+        </div>
+
+        <div class="modal-body" v-html="modalBody">
+          <slot name="body">
+            {{ modalBody }}
+          </slot>
+        </div>
+
+        <div class="modal-footer">
+          <slot name="footer">
+            Press OK to close the result.
+            <button class="modal-default-button" @click="showModal = false">
+              OK
+            </button>
+          </slot>
+        </div>
+     </div>
+    </div>
+  </div>
+
 </div>
 <script src="https://code.jquery.com/jquery-3.5.0.min.js"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js'></script>
