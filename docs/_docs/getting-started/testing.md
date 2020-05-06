@@ -98,15 +98,28 @@ temp:
 
 ## Continuous Integration Recipes
 
-Gridtest will have templates added soon for particular continuous integration
-provides. Generally, you can use the above `gridest check <testfile>.yml`
-to check for needing to write tests, and then the standard grid runner
-(with any options you need) to run the tests, after installing gridtest.
-For example, in a run statement you might do:
+Gridtest has templates available (CI services added on request) 
+for particular continuous integration providers. Generally, you can use the 
+above `gridest check <testfile>.yml` to check for needing to write tests, 
+and then the standard grid runner (with any options you need) to run the tests, 
+after installing gridtest. For example, in a run statement you might do:
 
 ```bash
 pip install gridtest
 gridtest run testfile.yml
 ```
 
-We will have more examples coming shortly!
+### GitHub Workflows
+
+An example GitHub workflow is provided at [github-workflow](https://github.com/vsoch/gridtest/blob/master/.github/workflows/github-workflow-example.yml), and run with this repository. It will run the grid of
+tests for the [interface] example:
+
+![img/github-workflow.png](img/github-workflow.png)
+
+ and then upload the results report as an artifact.
+
+![img/github-workflow-artifact.png](img/github-workflow-artifact.png)
+
+You could imagine also committing the static files to a docs folder, and then
+opening a pull request (or pushing directly) to update GitHub pages. If you
+want some help setting this up, please don't be afraid to [reach out](https://github.com/{{ site.repo }}/issues).
