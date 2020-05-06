@@ -114,11 +114,11 @@ gridtest run testfile.yml
 An example GitHub workflow is provided at [github-workflow](https://github.com/vsoch/gridtest/blob/master/.github/workflows/github-workflow-example.yml), and run with this repository. It will run the grid of
 tests for the [interface] example:
 
-![img/github-workflow.png](img/github-workflow.png)
+![img/github-workflow.png](../img/github-workflow.png)
 
  and then upload the results report as an artifact.
 
-![img/github-workflow-artifact.png](img/github-workflow-artifact.png)
+![img/github-workflow-artifact.png](../img/github-workflow-artifact.png)
 
 You could imagine also committing the static files to a docs folder, and then
 opening a pull request (or pushing directly) to update GitHub pages. If you
