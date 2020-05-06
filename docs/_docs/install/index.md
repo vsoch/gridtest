@@ -14,6 +14,12 @@ GridTest can be installed natively (python 3 recommended) with pip:
 pip install gridtest
 ```
 
+or via conda-forge:
+
+```bash
+conda install --channel conda-forge gridtest
+```
+
 or you can clone and install from source:
 
 ```bash
