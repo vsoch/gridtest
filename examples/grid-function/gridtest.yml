@@ -1,0 +1,13 @@
+script:
+  filename: /home/vanessa/Desktop/Code/gridtest/examples/grid-function/script.py
+  grids:
+    generate_pids:
+      func: script.get_pokemon_id
+      count: 10
+
+  tests:
+    script.generate_pokemon:
+      - metrics:
+          - "@script.uniquechars"
+        grid:
+          pid: generate_pids

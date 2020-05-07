@@ -16,6 +16,56 @@ import tempfile
 here = os.path.abspath(os.path.dirname(__file__))
 
 
+def test_expand_args():
+    """Test generating arguments from a gridtest lookup
+    """
+    from gridtest.main.substitute import expand_args
+
+    # Case 1. Empty lookup and args, would call function as empty
+    assert expand_args({}, lookup=None) == [{}]
+
+    # Case 2: Add arguments to the grid, still no lookup
+    entry = {
+        "grid": {"one": {"min": 0, "max": 5, "list": [10, 15]}},
+        "args": {"two": 2},
+    }
+
+    args = expand_args(entry, lookup=None)
+    assert len(args) == 7
+    assert all("one" in arg for arg in args)
+    assert all("two" in arg for arg in args)
+
+    # Case 3: Provide a lookup with values
+    entry = {"grid": {"pid": "generate_pids"}}
+    lookup = {
+        "generate_pids": [
+            "115",
+            "551",
+            "538",
+            "495",
+            "602",
+            "489",
+            "868",
+            "414",
+            "745",
+            "351",
+        ]
+    }
+
+    args = expand_args(entry, lookup)
+    assert len(args) == len(lookup["generate_pids"])
+
+    # Case 4: a list at the level of the variable is treated as a list to expand
+    entry = {"grid": {"pid": "generate_pids", "another": [1, 2, 3]}}
+    args = expand_args(entry, lookup)
+    assert len(args) == 30
+
+    # Case 5: a list at the level of the variable is treated as a single list
+    entry = {"grid": {"pid": "generate_pids", "another": [[1, 2, 3]]}}
+    args = expand_args(entry, lookup)
+    assert len(args) == 10
+
+
 def test_substitute_args():
     """Test that argument substitution works
     """

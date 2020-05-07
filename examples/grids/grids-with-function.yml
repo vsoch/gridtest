@@ -1,0 +1,51 @@
+script:
+  filename: script.py 
+  grids:
+
+    # A grid that will generate 10 random values using a custom function
+    generate_pids:
+      func: script.get_pokemon_id
+      count: 10
+
+    # A grid that will generate values with an installed module
+    random_choice:
+      func: random.choice
+      count: 10
+      grid:
+         seq: [[1, 2, 3]]
+
+    # A grid that will generate 10 empty set of arguments
+    generate_empty:
+      count: 10
+
+    # A grid that will generate each cross of x and y (total of 9)
+    generate_matrix:
+      grid:
+        x: [1, 2, 3] 
+        y: [1, 2, 3] 
+
+    # Generate the same, but have lists as arguments
+    generate_lists_matrix:
+      grid:
+        x: [[1, 2, 3], [4, 5, 6]] 
+        y: [[1, 2, 3], [4, 5, 6]] 
+
+    # Generate a grid with a min, max, by
+    generate_by_min_max:
+      grid:
+        x:
+          min: 0
+          max: 10
+          by: 2
+
+    # Generate a grid with a min, max, by for two variables (
+    generate_by_min_max_twovars:
+      grid:
+        x:
+          min: 0
+          max: 10
+          by: 2
+        y:
+          min: 10
+          max: 20
+          by: 2

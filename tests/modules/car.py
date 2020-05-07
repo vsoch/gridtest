@@ -1,4 +1,3 @@
-
 # Example car class to run tests for
 
 valid_colors = ["red", "black", "white", "blue"]
@@ -7,13 +6,13 @@ valid_colors = ["red", "black", "white", "blue"]
 class ColorException(Exception):
     pass
 
+
 class WheelsException(Exception):
     pass
 
 
 class Car:
-
-    def __init__(self, wheels:int=4, color:str="red", lights:bool=False):
+    def __init__(self, wheels: int = 4, color: str = "red", lights: bool = False):
         """a new car must have an even number of wheels, and be a valid color
         """
         if color not in valid_colors:
@@ -25,7 +24,8 @@ class Car:
         self.lights = lights
 
     def __str__(self):
-        return (f"[car][wheels:{self.wheels}][color:{self.color}]")
+        return f"[car][wheels:{self.wheels}][color:{self.color}]"
+
     def __repr__(self):
         return self.__str__()
 
@@ -34,8 +34,7 @@ class Car:
 
     @property
     def axels(self) -> int:
-        return int(wheels/2)
+        return int(wheels / 2)
 
     def switch_lights(self) -> bool:
         self.lights = not self.lights
-
