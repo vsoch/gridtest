@@ -168,6 +168,7 @@ def extract_functions(
     sys.path.insert(1, os.getcwd())
 
     meta = {}
+    tests = {}
 
     # Try importing the module, fall back to relative path
     try:
@@ -223,7 +224,7 @@ def extract_functions(
                 if funcname.startswith("_"):
                     print(f"Extracting {funcname} from {name}")
 
-            meta[fullname] = []
+            tests[fullname] = []
             defaults = args.defaults or []
             argdict = {}
 
@@ -237,7 +238,7 @@ def extract_functions(
                 if len(defaults) > idx:
                     default = defaults[idx]
                 argdict.update(formulate_arg(args.args[idx], default))
-            meta[fullname].append({"args": argdict})
+            tests[fullname].append({"args": argdict})
 
         # Exceptions will throw type errors
         except TypeError:
@@ -253,6 +254,8 @@ def extract_functions(
             except:
                 print(f"Cannot get members for {func}")
 
+    # Add the tests to the final meta object
+    meta['tests'] = tests
     return meta
 
 

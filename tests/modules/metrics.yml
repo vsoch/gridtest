@@ -1,29 +1,30 @@
 metrics:
   filename: /home/vanessa/Desktop/Code/gridtest/tests/modules/metrics.py
-  metrics.gotosleep:
-  - metrics:
-    - '@timeit'
-    grid:
-      seconds:
-        list: [0, 1, 2]
-        max: 6
-        min: 3
-  metrics.add:
-  - args:
-      two: 2
-      one: 1.0
-    isfalse: isinstance(self.result, int)
-    istrue: isinstance(self.result, float)
-  - args:
-      one: 1
-      two: 2
-    equals: 1+2
-  metrics.add_with_type:
-  - args:
-      one: 1
-      two: 2
-    returns: 3
-  - args:
-      one: 1.0
-      two: 2
-    raises: TypeError
+  tests:
+    metrics.gotosleep:
+    - metrics:
+      - '@timeit'
+      grid:
+        seconds:
+          list: [0, 1, 2]
+          max: 6
+          min: 3
+    metrics.add:
+    - args:
+        two: 2
+        one: 1.0
+      isfalse: isinstance(self.result, int)
+      istrue: isinstance(self.result, float)
+    - args:
+        one: 1
+        two: 2
+      equals: 1+2
+    metrics.add_with_type:
+    - args:
+        one: 1
+        two: 2
+      returns: 3
+    - args:
+        one: 1.0
+        two: 2
+      raises: TypeError

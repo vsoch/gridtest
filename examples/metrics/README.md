@@ -17,10 +17,11 @@ We would add this to the functions we want to measure:
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/optimize/script.py
 
-  script.add:
-    # metrics are each a decorator, we first look to gridtest.decorators then external import
-  - metrics:
-      - "@timeit"
+  tests:
+    script.add:
+      # metrics are each a decorator, we first look to gridtest.decorators then external import
+    - metrics:
+        - "@timeit"
 ```
 
 The `@` indicates that we are using a decorator, which is the current convention
@@ -70,14 +71,15 @@ that the timeout output increases to match the input seconds.
 ```yaml
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/optimize/script.py
-  script.gotosleep:
-  - metrics:
-    - '@timeit'
-    grid:
-      seconds:
-        list: [10, 15]
-        max: 5
-        min: 0
+  tests:
+    script.gotosleep:
+    - metrics:
+      - '@timeit'
+      grid:
+        seconds:
+          list: [10, 15]
+          max: 5
+          min: 0
 ```
 
 Before we run the test, let's talk about the formatting of the yaml.

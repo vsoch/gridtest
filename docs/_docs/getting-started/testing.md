@@ -86,14 +86,15 @@ have any arguments)
 ```yaml
 temp:
   filename: /home/vanessa/Desktop/Code/gridtest/tests/modules/temp.py
-  temp.create_directory:
-  - args:
-      dirname: '{% raw %}{% tmp_dir %}{% endraw %}'
-  temp.new_function:
-  - args: {}
-  temp.write_file:
-  - args:
-      filename: '{% raw %}{% tmp_path %}{% endraw %}'
+  tests:
+    temp.create_directory:
+    - args:
+        dirname: '{% raw %}{% tmp_dir %}{% endraw %}'
+    temp.new_function:
+    - args: {}
+    temp.write_file:
+    - args:
+        filename: '{% raw %}{% tmp_path %}{% endraw %}'
 ```
 
 ## Continuous Integration Recipes

@@ -50,13 +50,14 @@ $ gridtest generate script.py
 
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/custom-decorator/script.py
-  script.countwords:
-  - args:
-      func: null
-  script.multiply_sentence:
-  - args:
-      count: null
-      sentence: null
+  tests:
+    script.countwords:
+    - args:
+        func: null
+    script.multiply_sentence:
+    - args:
+        count: null
+        sentence: null
 ```
 
 We don't want a test for the decorator, so we will write this to file, and remove it.
@@ -66,10 +67,11 @@ $ gridtest generate script.py gridtest.yml
 
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/custom-decorator/script.py
-  script.multiply_sentence:
-  - args:
-      count: null
-      sentence: null
+  tests:
+    script.multiply_sentence:
+    - args:
+        count: null
+        sentence: null
 ```
 
 Next, let's add a grid. As a reminder, a grid is akin to an args section, but we can
@@ -78,17 +80,18 @@ define lists and ranges (with min, max, by) to generate parameter matrices over.
 ```yaml
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/custom-decorator/script.py
-  script.multiply_sentence:
-  - metrics:
-    - '@script.countwords'
-    grid:
-      count:
-        list: [1, 5, 10]
-      sentence:
-        list:
-          - "He ran for the hills."
-          - "Skiddery-a rinky dinky dinky, skittery rinky doo."
-          - "You are my sunshine, my only sunshine."
+  tests:
+    script.multiply_sentence:
+    - metrics:
+      - '@script.countwords'
+      grid:
+        count:
+          list: [1, 5, 10]
+        sentence:
+          list:
+            - "He ran for the hills."
+            - "Skiddery-a rinky dinky dinky, skittery rinky doo."
+            - "You are my sunshine, my only sunshine."
 ```
 
 This means that for each sentence under the list of sentences, we will run the function

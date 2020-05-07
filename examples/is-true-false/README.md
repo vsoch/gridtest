@@ -100,14 +100,15 @@ This means that we can edit our script from this:
 ```yaml
 truefalse:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/is-true-false/truefalse.py
-  truefalse.add:
-  - args:
-      one: null
-      two: null
-  truefalse.add_with_type:
-  - args:
-      one: null
-      two: null
+  tests:
+    truefalse.add:
+    - args:
+        one: null
+        two: null
+    truefalse.add_with_type:
+    - args:
+        one: null
+        two: null
 ```
 
 to be something more reasonable to test:
@@ -115,21 +116,22 @@ to be something more reasonable to test:
 ```yaml
 truefalse:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/is-true-false/truefalse.py
-  truefalse.add:
-  - args:
-      one: 1.0
-      two: 2
-    istrue: "isinstance({{ result }}, float)"
-    isfalse: "isinstance({{ result }}, int)"
-  truefalse.add_with_type:
-  - args:
-      one: 1
-      two: 2
-    returns: 3
-  - args:
-      one: 1.0
-      two: 2
-    raises: TypeError
+  tests:
+    truefalse.add:
+    - args:
+        one: 1.0
+        two: 2
+      istrue: "isinstance({{ result }}, float)"
+      isfalse: "isinstance({{ result }}, int)"
+    truefalse.add_with_type:
+    - args:
+        one: 1
+        two: 2
+      returns: 3
+    - args:
+        one: 1.0
+        two: 2
+      raises: TypeError
 ```
 
 For typing, given that a function uses typing, that will be tested. For example,

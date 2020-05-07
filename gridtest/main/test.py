@@ -446,11 +446,10 @@ class GridRunner:
         """
         self.name = name or os.path.basename(self.input_file)
 
-    def iter_sections(self):
+    def iter_tests(self):
         for _, section in self.config.items():
-            for name, tests in section.items():
-                if name != "filename":
-                    yield (name, tests)
+            for name, tests in section.get('tests', {}).items():
+                yield (name, tests)
 
     def _fill_classes(self):
         """Read in a config, and create a lookup for any instance variables. Then
@@ -458,13 +457,13 @@ class GridRunner:
         """
         # First create the lookup
         lookup = dict()
-        for name, tests in self.iter_sections():
+        for name, tests in self.iter_tests():
             for test in tests:
                 if "instance" in test:
                     lookup[test["instance"]] = test["args"]
 
         # Now fill in variables
-        for name, tests in self.iter_sections():
+        for name, tests in self.iter_tests():
             for test in tests:
                 if "self" in test.get("args", {}):
                     if not test["args"]["self"]:
@@ -703,7 +702,7 @@ class GridRunner:
         tests = {}
 
         for parent, section in self.config.items():
-            for name, module in section.items():
+            for name, module in section.get('tests', {}).items():
                 if regexp and not re.search(regexp, name):
                     continue
 

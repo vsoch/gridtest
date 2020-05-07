@@ -48,13 +48,13 @@ def update_tests(
             section.get("filename"), os.path.dirname(testfile)
         )
         files.append(filename)
-        [existing.add(x) for x in section.keys() if x != "filename"]
+        [existing.add(x) for x in section.get('tests', {}).keys()]
         functions = extract_functions(
             filename, include_private, quiet=True, include_classes=include_classes
         )
 
         # Regular expression for existing takes into account different import paths
-        regex = "(%s)$" % "|".join(list(existing) + skip_patterns + ["^filename$"])
+        regex = "(%s)$" % "|".join(list(existing) + skip_patterns)
         for key, params in functions.items():
 
             # Make sure functions start with same name as previous level

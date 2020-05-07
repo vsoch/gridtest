@@ -14,7 +14,6 @@ By default, the number of workers will be the number of processes (nproc) multip
 by 2 plus 1. This isn't some hard defined standard, but what was found to work
 relatively well. You can change this by exporting the variable `GRIDTEST_WORKERS`:
 
-
 ```bash
 export GRIDTEST_WORKERS=2
 ```

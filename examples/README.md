@@ -7,3 +7,4 @@
  - [class](class): run grid tests for a car class
  - [metrics](metrics): use decorators to measure metrics across a grid of tests (eg., timeit)
  - [custom-decorator](custom-decorator): writing a custom decorator to count words over a grid of parameters
+ - [grid-function](grid-function) gridtest can derive input parameters from one or more functions.

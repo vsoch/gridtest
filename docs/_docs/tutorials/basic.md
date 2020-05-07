@@ -69,23 +69,24 @@ looks like this:
 ```yaml
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/basic/script.py
-  script.add:
-  - args:
-      one: null
-      two: null
-  script.add_with_type:
-  - args:
-      one: null
-      two: null
-  script.hello:
-  - args:
-      name: null
-  script.hello_with_default:
-  - args:
-      name: Dinosaur
-  script.hello_with_type:
-  - args:
-      name: null
+  tests:
+    script.add:
+    - args:
+        one: null
+        two: null
+    script.add_with_type:
+    - args:
+        one: null
+        two: null
+    script.hello:
+    - args:
+        name: null
+    script.hello_with_default:
+    - args:
+        name: Dinosaur
+    script.hello_with_type:
+    - args:
+        name: null
 ```
 
 As you can see, each function is discovered, and arguments (and any defaults)
@@ -124,23 +125,24 @@ This means that we can edit our script from this:
 ```yaml
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/basic/script.py
-  script.add:
-  - args:
-      one: null
-      two: null
-  script.add_with_type:
-  - args:
-      one: null
-      two: null
-  script.hello:
-  - args:
-      name: null
-  script.hello_with_default:
-  - args:
-      name: Dinosaur
-  script.hello_with_type:
-  - args:
-      name: null
+  tests:
+    script.add:
+    - args:
+        one: null
+        two: null
+    script.add_with_type:
+    - args:
+        one: null
+        two: null
+    script.hello:
+    - args:
+        name: null
+    script.hello_with_default:
+    - args:
+        name: Dinosaur
+    script.hello_with_type:
+    - args:
+        name: null
 ```
 
 to be something more reasonable to test:
@@ -148,29 +150,30 @@ to be something more reasonable to test:
 ```yaml
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/basic/script.py
-  script.add:
-  - args:
-      one: 1
-      two: 2
-    returns: 3
-  - args:
-      one: 1
-      two: null
-    raises: TypeError
-  script.add_with_type:
-  - args:
-      one: 1
-      two: 2
-    returns: 3
-  script.hello:
-  - args:
-      name: Vanessa
-  script.hello_with_default:
-  - args:
-      name: Dinosaur
-  script.hello_with_type:
-  - args:
-      name: 1
+  tests:
+    script.add:
+    - args:
+        one: 1
+        two: 2
+      returns: 3
+    - args:
+        one: 1
+        two: null
+      raises: TypeError
+    script.add_with_type:
+    - args:
+        one: 1
+        two: 2
+      returns: 3
+    script.hello:
+    - args:
+        name: Vanessa
+    script.hello_with_default:
+    - args:
+        name: Dinosaur
+    script.hello_with_type:
+    - args:
+        name: 1
 ```
 
 For typing, given that a function uses typing, that will be tested. For example,

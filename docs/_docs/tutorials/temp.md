@@ -66,14 +66,15 @@ We ultimately updated the template to include the following:
 ```yaml
 temp:
   filename: temp.py
-  temp.create_directory:
-  - args:
-      dirname: "{% raw %}{% tmp_dir %}{% endraw %}"
-    returns: "{% raw %}{{ args.dirname }}{% endraw %}"
-  temp.write_file:
-  - args:
-      filename: "{% raw %}{% tmp_path %}{% endraw %}"
-    exists: "{% raw %}{{ args.filename }}{% endraw %}"
+  tests:
+    temp.create_directory:
+    - args:
+        dirname: "{% raw %}{% tmp_dir %}{% endraw %}"
+      returns: "{% raw %}{{ args.dirname }}{% endraw %}"
+    temp.write_file:
+    - args:
+        filename: "{% raw %}{% tmp_path %}{% endraw %}"
+      exists: "{% raw %}{{ args.filename }}{% endraw %}"
 ```
 
 The above recipe says that we want to test the function `create_directory`
