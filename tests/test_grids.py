@@ -10,6 +10,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 
 import os
+import sys
 import pytest
 
 here = os.path.abspath(os.path.dirname(__file__))
@@ -21,6 +22,7 @@ def test_grids():
     from gridtest.main.grids import get_grids
     from gridtest.main.test import GridRunner
 
+    sys.path.insert(0, os.path.join(here, "grids"))
     grids_file = os.path.join(here, "grids", "grids.yml")
     runner = GridRunner(grids_file)
 
