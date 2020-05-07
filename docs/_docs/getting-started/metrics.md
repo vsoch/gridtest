@@ -26,16 +26,16 @@ which we can find in `gridtest.decorators`:
 ```yaml
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/optimize/script.py
-
-  script.add:
-    # metrics are each a decorator, we first look to gridtest.decorators then external import
-  - metrics:
-      - "@timeit"
-    args:
-      one: 1.0
-      two: 2
-    istrue: "isinstance(self.result, float)"
-    isfalse: "isinstance(self.result, int)"
+  tests:
+    script.add:
+      # metrics are each a decorator, we first look to gridtest.decorators then external import
+    - metrics:
+        - "@timeit"
+      args:
+        one: 1.0
+        two: 2
+      istrue: "isinstance(self.result, float)"
+      isfalse: "isinstance(self.result, int)"
 ```
 
 The recipe above is very simple - we are testing a single function, script.add, and

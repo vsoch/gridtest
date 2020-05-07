@@ -13,18 +13,19 @@ Extracting lights from car
 ```
 ```yaml
 car:
-  car.Car:
-  - args:
-      color: red
-      lights: false
-      wheels: 4
-  car.Car.honk:
-  - args:
-      self: null
-  car.Car.lights:
-  - args:
-      self: null
   filename: /home/vanessa/Desktop/Code/gridtest/examples/class/car.py
+  tests:
+    car.Car:
+    - args:
+        color: red
+        lights: false
+        wheels: 4
+    car.Car.honk:
+    - args:
+        self: null
+    car.Car.lights:
+    - args:
+        self: null
 ```
 
 We can then write to file:
@@ -64,25 +65,26 @@ use. Just update the "self" variable in each of the class test cases.
 
 ```yaml
 car:
-  car.Car:
-  - args:
-      color: notacolor
-      lights: false
-      wheels: 4
-    raises: ColorException
-  - instance: thisone
-    args:
-      color: red
-      lights: false
-      wheels: 4
-    isinstance: car.Car 
-  car.Car.honk:
-  - args:
-      self: "{{ instance.thisone }}"
-  car.Car.switch_lights:
-  - args:
-      self: "{{ instance.thisone }}"
   filename: /home/vanessa/Desktop/Code/gridtest/examples/class/car.py
+  tests:
+    car.Car:
+    - args:
+        color: notacolor
+        lights: false
+        wheels: 4
+      raises: ColorException
+    - instance: thisone
+      args:
+        color: red
+        lights: false
+        wheels: 4
+      isinstance: car.Car 
+    car.Car.honk:
+    - args:
+        self: "{{ instance.thisone }}"
+    car.Car.switch_lights:
+    - args:
+        self: "{{ instance.thisone }}"
 ```
 
 And then the instance of the Car named as instance "this one" (the second block)

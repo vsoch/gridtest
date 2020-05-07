@@ -1,20 +1,21 @@
 car:
-  car.Car:
-  - args:
-      color: notacolor
-      lights: false
-      wheels: 4
-    raises: ColorException
-  - instance: thisone
-    args:
-      color: red
-      lights: false
-      wheels: 4
-    isinstance: Car 
-  car.Car.honk:
-  - args:
-      self: "{{ instance.thisone }}"
-  car.Car.switch_lights:
-  - args:
-      self: "{{ instance.thisone }}"
   filename: /home/vanessa/Desktop/Code/gridtest/examples/class/car.py
+  tests:
+    car.Car:
+    - args:
+        color: notacolor
+        lights: false
+        wheels: 4
+      raises: ColorException
+    - instance: thisone
+      args:
+        color: red
+        lights: false
+        wheels: 4
+      isinstance: Car 
+    car.Car.honk:
+    - args:
+        self: "{{ instance.thisone }}"
+    car.Car.switch_lights:
+    - args:
+        self: "{{ instance.thisone }}"

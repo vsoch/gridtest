@@ -14,5 +14,6 @@ and **Merged pull requests**. Critical items to know are:
 The versions coincide with releases on pip.
 
 ## [0.2.x](https://github.com/vsoch/gridtest/tree/master) (0.0.x)
+ - adding "tests" level to config files (0.0.11)
  - first alpha release with basic grid test generation (0.0.1)
  - skeleton release (0.0.0)

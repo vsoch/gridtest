@@ -14,7 +14,8 @@ jobs:
             conda create --quiet --name gridtest
             export PATH="/usr/share/miniconda/bin:$PATH"
             source activate gridtest
-            conda install --channel conda-forge gridtest
+            # conda install --channel conda-forge gridtest
+            pip install -e .
 
       - name: Run gridtest and generate web report
         run: |

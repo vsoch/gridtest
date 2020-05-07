@@ -48,14 +48,15 @@ We ultimately updated the template to include the following:
 ```yaml
 temp:
   filename: temp.py
-  temp.create_directory:
-  - args:
-      dirname: "{% tmp_dir %}"
-    returns: "{{ args.dirname }}"
-  temp.write_file:
-  - args:
-      filename: "{% tmp_path %}"
-    exists: "{{ args.filename }}"
+  tests:
+    temp.create_directory:
+    - args:
+        dirname: "{% tmp_dir %}"
+      returns: "{{ args.dirname }}"
+    temp.write_file:
+    - args:
+        filename: "{% tmp_path %}"
+      exists: "{{ args.filename }}"
 ```
 
 The above recipe says that we want to test the function `create_directory`

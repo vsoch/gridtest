@@ -49,30 +49,31 @@ And from it we've produced this testing file "script-tests.yml" in the same dire
 ```yaml
 script:
   filename: script.py
-  script.add:
-  - args:
-      one: 1
-      two: 2
-    returns: 3
-  - args:
-      one: 1
-      two: null
-    raises: TypeError
-  script.add_with_type:
-  - args:
-      one: 1
-      two: 2
-    returns: 3
-  script.hello:
-  - args:
-      name: Vanessa
-  script.hello_with_default:
-  - args:
-      name: Dinosaur
-  script.hello_with_type:
-  - args:
-      name: 1
-    success: false
+  tests:
+    script.add:
+    - args:
+        one: 1
+        two: 2
+      returns: 3
+    - args:
+        one: 1
+        two: null
+      raises: TypeError
+    script.add_with_type:
+    - args:
+        one: 1
+        two: 2
+      returns: 3
+    script.hello:
+    - args:
+        name: Vanessa
+    script.hello_with_default:
+    - args:
+        name: Dinosaur
+    script.hello_with_type:
+    - args:
+        name: 1
+      success: false
 ```
 
 ### Running Tests

@@ -94,14 +94,15 @@ my final testing yaml file looks like. I went from this starting template:
 ```yaml
 truefalse:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/is-true-false/truefalse.py
-  truefalse.add:
-  - args:
-      one: null
-      two: null
-  truefalse.add_with_type:
-  - args:
-      one: null
-      two: null
+  tests:
+    truefalse.add:
+    - args:
+       one: null
+        two: null
+    truefalse.add_with_type:
+    - args:
+        one: null
+        two: null
 ```
 
 to be something more reasonable to test:
@@ -109,25 +110,26 @@ to be something more reasonable to test:
 ```yaml
 truefalse:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/is-true-false/truefalse.py
-  truefalse.add:
-  - args:
-      one: 1.0
-      two: 2
-    istrue: "isinstance({% raw %}{{ result }}{% endraw %}, float)"
-    isfalse: "isinstance({% raw %}{{ result }}{% endraw %}, int)"
-  - args:
-      one: 1.0
-      two: 2
-    equals: 1+2
-  truefalse.add_with_type:
-  - args:
-      one: 1
-      two: 2
-    returns: 3
-  - args:
-      one: 1.0
-      two: 2
-    raises: TypeError
+  tests:
+    truefalse.add:
+    - args:
+        one: 1.0
+        two: 2
+      istrue: "isinstance({% raw %}{{ result }}{% endraw %}, float)"
+      isfalse: "isinstance({% raw %}{{ result }}{% endraw %}, int)"
+    - args:
+        one: 1.0
+        two: 2
+      equals: 1+2
+    truefalse.add_with_type:
+    - args:
+        one: 1
+        two: 2
+      returns: 3
+    - args:
+        one: 1.0
+        two: 2
+      raises: TypeError
 ```
 
 Notice that we are using istrue and isfalse conditional checks.

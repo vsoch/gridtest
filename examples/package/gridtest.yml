@@ -1,14 +1,15 @@
 requests:
   filename: /home/vanessa/anaconda3/lib/python3.7/site-packages/requests/__init__.py
-  requests.api.get:
-  - args:
-      params: null
-      url: https://google.com
-    isinstance: Response
-  requests.api.head:
-  - args:
-      url: https://google.com
-    istrue: "self.result.status_code == 301"
-  requests.api.options:
-  - args:
-      url: https://google.com
+  tests:
+    requests.api.get:
+    - args:
+        params: null
+        url: https://google.com
+      isinstance: Response
+    requests.api.head:
+    - args:
+        url: https://google.com
+      istrue: "self.result.status_code == 301"
+    requests.api.options:
+    - args:
+        url: https://google.com

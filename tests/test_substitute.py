@@ -82,11 +82,11 @@ def test_substitute_gridtest():
     # Before running anything, the runner config should have tmp_path, tmp_dir
     assert (
         "{% tmp_dir %}"
-        in runner.config["temp"]["temp.create_directory"][0]["args"]["dirname"]
+        in runner.config["temp"]["tests"]["temp.create_directory"][0]["args"]["dirname"]
     )
     assert (
         "{% tmp_path %}"
-        in runner.config["temp"]["temp.write_file"][0]["args"]["filename"]
+        in runner.config["temp"]["tests"]["temp.write_file"][0]["args"]["filename"]
     )
 
     tests = runner.get_tests()

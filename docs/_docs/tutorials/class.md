@@ -66,18 +66,19 @@ Extracting honk from car
 Extracting lights from car
 
 car:
-  car.Car:
-  - args:
-      color: red
-      lights: false
-      wheels: 4
-  car.Car.honk:
-  - args:
-      self: null
-  car.Car.lights:
-  - args:
-      self: null
   filename: /home/vanessa/Desktop/Code/gridtest/examples/class/car.py
+  tests:
+    car.Car:
+    - args:
+        color: red
+        lights: false
+        wheels: 4
+    car.Car.honk:
+    - args:
+        self: null
+    car.Car.lights:
+    - args:
+        self: null
 ```
 
 We can then write to file, and we'll use the default name that gridtest can easily discover.
@@ -117,25 +118,26 @@ use. Just update the "self" variable in each of the class test cases.
 
 ```yaml
 car:
-  car.Car:
-  - args:
-      color: notacolor
-      lights: false
-      wheels: 4
-    raises: ColorException
-  - instance: thisone
-    args:
-      color: red
-      lights: false
-      wheels: 4
-    isinstance: car.Car 
-  car.Car.honk:
-  - args:
-      self: "{% raw %}{{ instance.thisone }}{% endraw %}"
-  car.Car.switch_lights:
-  - args:
-      self: "{% raw %}{{ instance.thisone }}{% endraw %}"
   filename: /home/vanessa/Desktop/Code/gridtest/examples/class/car.py
+  tests:
+    car.Car:
+    - args:
+        color: notacolor
+        lights: false
+        wheels: 4
+      raises: ColorException
+    - instance: thisone
+      args:
+        color: red
+        lights: false
+        wheels: 4
+      isinstance: car.Car 
+    car.Car.honk:
+    - args:
+        self: "{% raw %}{{ instance.thisone }}{% endraw %}"
+    car.Car.switch_lights:
+    - args:
+        self: "{% raw %}{{ instance.thisone }}{% endraw %}"
 ```
 
 And then the instance of the Car named as instance "this one" (the second block)

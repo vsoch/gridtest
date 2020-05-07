@@ -49,7 +49,7 @@ def get_missing_tests(
             section.get("filename"), os.path.dirname(testfile)
         )
         files.append(filename)
-        [existing.add(x) for x in section.keys() if x != "filename"]
+        [existing.add(x) for x in section.get("tests", {}).keys()]
 
     # Keep track of new sections seen
     sections = []
@@ -68,8 +68,8 @@ def get_missing_tests(
         )
         sections += [
             k
-            for k, v in functions.items()
-            if k not in existing and k != "filename" and not re.search(regex, k)
+            for k, v in functions.get("tests", {}).items()
+            if k not in existing and not re.search(regex, k)
         ]
     return sections
 
