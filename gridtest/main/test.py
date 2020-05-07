@@ -11,7 +11,6 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 from gridtest.defaults import (
     GRIDTEST_WORKERS,
     GRIDTEST_RETURNTYPES,
-    GRIDTEST_GRIDEXPANDERS,
 )
 from gridtest.templates import copy_template
 from gridtest.utils import read_yaml, write_yaml, write_json
@@ -23,9 +22,10 @@ from gridtest.main.generate import (
     get_function_typing,
     extract_modulename,
 )
-from gridtest.main.workers import Workers
+from gridtest.main.grids import get_grids
 from gridtest.main.helpers import test_basic
-from gridtest.main.substitute import substitute_func, substitute_args
+from gridtest.main.workers import Workers
+from gridtest.main.substitute import substitute_func, substitute_args, expand_args
 from copy import deepcopy
 
 import itertools
@@ -453,6 +453,10 @@ class GridRunner:
             for name, tests in section.get("tests", {}).items():
                 yield (name, tests)
 
+    def iter_grids(self):
+        for name, grid in self.grids.items():
+            yield (name, grid)
+
     def _fill_classes(self):
         """Read in a config, and create a lookup for any instance variables. Then
            substitute arguments (starting with instance) for these variables.
@@ -571,7 +575,7 @@ class GridRunner:
               - report_template (str) : a template name of a report to generate
         """
         # 1. Generate list of tests and grid functions
-        grids = self.get_grids()
+        self.get_grids()
         tests = self.get_tests(regexp=regexp, verbose=verbose, cleanup=cleanup)
 
         self.show_progress = show_progress
@@ -704,35 +708,11 @@ class GridRunner:
            included, we multiply by that many times.
         """
         for parent, section in self.config.items():
-            for name, grid in section.get("grids", {}).items():
-
-                # Unwrap list of arguments (even if empty)
-                args = self.get_args(
-                    {"grid": grid.get("grid", {}), "args": grid.get("args", {})}
+            self.grids.update(
+                get_grids(
+                    section.get("grids", {}), filename=section.get("filename", "")
                 )
-
-                # If there is a count, we need to multiple it by that
-                if "count" in grid:
-                    args = args * grid["count"]
-
-                # If a function is provided, import and run args through it
-                if "func" in grid:
-                    sys.path.insert(0, os.path.dirname(section.get("filename", "")))
-                    funcname = grid.get("func")
-                    module = ".".join(funcname.split(".")[:-1])
-                    funcname = funcname.split(".")[-1]
-                    try:
-                        module = import_module(module)
-                        func = getattr(module, funcname)
-                        if func is None:
-                            bot.exit(f"Cannot find {funcname}.")
-                    except:
-                        bot.exit(f"Cannot import grid function {funcname}")
-
-                    # Run the args through the function
-                    args = [func(**k) for k in args]
-                self.grids[name] = args
-
+            )
         return self.grids
 
     def get_tests(self, regexp=None, verbose=False, cleanup=True):
@@ -767,7 +747,7 @@ class GridRunner:
                             bot.exit(f"{name} has shared grid and args keys.")
 
                         # Generate list of args
-                        for argset in self.get_args(entry):
+                        for argset in expand_args(entry, lookup=self.grids):
                             updated = deepcopy(entry)
                             updated["args"] = argset
                             tests["%s.%s" % (name, idx)] = GridTest(
@@ -781,56 +761,6 @@ class GridRunner:
                             )
                             idx += 1
         return tests
-
-    def get_args(self, entry):
-        """Given a test yaml entry, convert the grid specifications and 
-           arguments into a longer list of arguments to each run as a test.
-           E.g., convert something like this:
- 
-           'grid': {'one': {'min': 0, 'max': 5, 'list': [10, 15]}},
-           'args': {'two': 2},
-
-           into:
-
-        """
-        # Create list of all args to iterate through
-        args = {}
-
-        # First add existing args, ensure we have a list
-        for param, values in entry.get("args", {}).items():
-            args[param] = [values]
-
-        for param, settings in entry.get("grid", {}).items():
-
-            # If settings is a key, it must reference a grid name
-            if isinstance(settings, str):
-                if settings not in self.grids:
-                    bot.exit(f"{settings} must exist in grids.")
-                args[param] = self.grids[settings]
-
-            else:
-                # If any settings defined not allowed, do not continue
-                if set(settings.keys()).difference(GRIDTEST_GRIDEXPANDERS):
-                    bot.exit(f"Invalid key in grid settings {settings}")
-
-                # List of values just for param
-                values = []
-
-                # Case 1: min, max, and by
-                if "min" in settings and "max" in settings and "by" in settings:
-                    values += range(settings["min"], settings["max"], settings["by"])
-                elif "min" in settings and "max" in settings:
-                    values += range(settings["min"], settings["max"])
-                if "list" in settings:
-                    values += settings["list"]
-
-                args[param] = values
-
-        # Now generate a list of dicts (the args) with all possible combinations
-        if args:
-            keys, values = zip(*args.items())
-            return [dict(zip(keys, v)) for v in itertools.product(*values)]
-        return [args]
 
     def __repr__(self):
         return "[gridtest|%s]" % self.name

@@ -19,7 +19,7 @@ for generating and running tests.
 ### Writing Tests
 
  - [Templates](templates/): for test yaml files, including function and argument substitution
- - [Grid](grid/): Adding a grid of environment and other parameters to run grid tests
+ - [Grids](grids/): can be used to programatically generate inputs for tests, or outside of testing when you want to parameterize some values, optionally over a function.
  - [Metrics](metrics/): decorators to measure metrics across a grid of tests.
 
 ### Running Tests
@@ -83,20 +83,39 @@ tested) you can update your testing file with those missing:
 $ gridtest update gridtest.yml
 ```
 
-**below not implemented yet**
-
-And once your tests are written, you might add a new component (what the library
-is named for) - a grid of environment and other parameters to run the tests with:
+If you don't care about testing, you can use GridTest to generate a yaml specification
+of parameterizations. Let's say we have a set of grids defined in grids.yml.
+We can list the named grids that are defined in the file:
 
 ```bash
-$ gridtest update --grid gridtest.yml
+$ gridtest gridview grids.yml --list
+generate_empty
+generate_matrix
+generate_lists_matrix
+generate_by_min_max
+generate_by_min_max_twovars
 ```
 
-And finally, some set of optimizations to assess each grid test in:
-
+And then either print them all to the screen:
 
 ```bash
-$ gridtest update --optimize gridtest.yml
+$ gridtest gridview grids.yml
+```
+
+or just print a specific grid we found with `--list`.
+
+```bash
+$ gridtest gridview grids.yml generate_by_min_max --compact
+[{'x': 0}, {'x': 2}, {'x': 4}, {'x': 6}, {'x': 8}]
+```
+
+For larger grids, it's nice to be able to get a count. The "twovars"
+variant of the function above adds another variable (also with 5 values)
+so we get 5x5:
+
+```bash
+$ $ gridtest gridview grids.yml generate_by_min_max_twovars --count
+25 lists produced.
 ```
 
 The rest of this getting started guide will review overall functionality. 
@@ -137,6 +156,34 @@ mymodule/
 
 You can easily run `gridtest test` in the root of that folder to discover the
 file. This is similar to a Dockerfile, or Singularity recipe file.
+
+#### grids
+
+Gridtest does parameterization by way of grids, which is a section of the gridtest.yml
+(alongside tests) that has definitions for one or more named grids. For example,
+if we wanted to use a function (`script.get_pokemon_id`) to generate a list of
+values for the argument `pid` for a test called `script.generate_pokemon`, we might
+write a recipe like this. 
+
+```yaml
+script:
+  filename: /home/vanessa/Desktop/Code/gridtest/examples/grid-function/script.py
+  grids:
+    generate_pids:
+      func: script.get_pokemon_id
+      count: 10
+
+  tests:
+    script.generate_pokemon:
+        grid:
+          pid: generate_pids
+```
+
+The reference to "generate_pids" for the argument "pid" is referenced under
+grids, and we know to use the `scripts.get_pokemon_id`, run 10 times, to
+generate it. We could also define arguments for the parameterization. For
+a simple example, see the [grid-function](https://github.com/vsoch/gridtest/tree/master/examples/grid-function) 
+example, or read more in the getting started [templates](https://vsoch.github.io/gridtest/getting-started/templates/index.html) guide.
 
 <a id="#debugging">
 ### Debugging

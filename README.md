@@ -45,3 +45,6 @@ added them yet because she doesn't think them overall useful.
 
 ## TODO:
  - write tests for grid parsing cases.
+ - split grids.py to separate grid generation
+ - make tests and examples / docs for grids
+ - should func and count be allowed in test grids?

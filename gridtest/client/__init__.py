@@ -132,6 +132,45 @@ def get_parser():
         default=None,
     )
 
+    # View a grid
+    gridview = subparsers.add_parser(
+        "gridview", help="view an entire set of grids, or a named grid"
+    )
+    gridview.add_argument(
+        "input",
+        help="name of grids.yml file (or equivalent) to view",
+        type=str,
+        nargs="*",
+        default=None,
+    )
+
+    gridview.add_argument(
+        "--compact",
+        "-c",
+        dest="compact",
+        help="pretty compact json",
+        default=False,
+        action="store_true",
+    )
+
+    gridview.add_argument(
+        "--count",
+        "-n",
+        dest="count",
+        help="count the number of results that will be produced",
+        default=False,
+        action="store_true",
+    )
+
+    gridview.add_argument(
+        "--list",
+        "-ls",
+        dest="list",
+        help="list keys (grid names) found.",
+        default=False,
+        action="store_true",
+    )
+
     # Check (lint) a gridtest
     check = subparsers.add_parser(
         "check", help="check a gridtest yaml file to ensure all tests written."
@@ -232,6 +271,8 @@ def main():
         from .test import main
     elif args.command == "generate":
         from .generate import main
+    elif args.command == "gridview":
+        from .gridview import main
     elif args.command == "shell":
         from .shell import main
     elif args.command == "check":

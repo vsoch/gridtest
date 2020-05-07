@@ -18,6 +18,7 @@ This namespace of decorators will be looked for in the `gridtest.decorators`
 module and you don't need to specify this path. If you define a custom decorator, 
 you can simply define the module and function to import (e.g., `@script.mydecorator`).
 
+<a id="an-example-decorator">
 ### An Example Decorator
 
 As an example, let's take a look at using the (likely familiar) timeit decorator,
@@ -43,6 +44,7 @@ we've defined one metric, a decorator called "timeit" to measure the total time.
 Note that metrics belong on the level of the test, since it's likely we don't want
 to use any single decorator across all tests.
 
+<a id="attributes-of-a-metric-decorator">
 ### Attributes of a Metric Decorator
 
 Decorators can only work together (meaning multiple applied to the same function,
@@ -56,6 +58,7 @@ Given these three criteria are met, we can apply multiple decorators to one
 function run, and easily collect output based on parsing the stdout. We can then
 even generate a report for the run that shows the different metrics. 
 
+<a id="running-with-a-decorator">
 ### Running with a Decorator
 
 So let's first try running with a simple metric to record time. You'll notice that the metrics
@@ -77,6 +80,7 @@ script.add.0                   @timeit                        0.00 ms
 4/4 tests passed
 ```
 
+<a id="adding-a-grid">
 ### Adding a Grid
 
 Great - so we've measured time for one function. What if we want to measure the time for
@@ -153,6 +157,7 @@ would be 1. If you want to decrease, set a negative value for by.
 **list** is for when you want to include a list of values, even in addition to a
 range already specified as in the example above.
 
+<a id="run-the-gridtest">
 ## Run the GridTest
 
 Now let's run the test!

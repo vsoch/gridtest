@@ -6,9 +6,26 @@ order: 3
 ---
 
 The power of your recipe comes down to your template. Knowing how input
-and return types work is thus essential for writing awesome templates!
+and return types work is thus essential for writing awesome templates! The basic
+recipe format has a module name as the first key, and then a list of [tests](#testing-types),
+a filename, and [grids](#grids).
 
+```yaml
+script:
+  filename: script.py
+  tests:
+     ...
+  grids:
+     ...
+```
+
+Each of these sections will be discussed below.
+
+<a id="testing-types">
 ## Testing Types
+
+<a id="basic-test">
+### Basic Test
 
 The default (most basic kind of test) that gridtest can run is to take some function
 name, a set of arguments, and then just test that it runs:
@@ -35,6 +52,12 @@ for that many seconds. Our default might start like this:
 The above would run one test, and sleep for 1 second. But that's not really so
 useful. We would want to define a range of values between 0 and 5, 
 and then a few explicit higher values, 10 and 11. How would that look?
+
+<a id="grid-test">
+### Grid Test
+
+We can accomplish better parameterization by using a grid in our test. That
+looks like this:
 
 ```yaml
   script.gotosleep:
@@ -292,5 +315,14 @@ For example, to test if a custom Car instance is of type car.Car, we would do:
       wheels: 4
     isinstance: car.Car 
 ```
+
+### Grids
+
+If you've already read about [grids](../grids), you know that grids can be defined
+in the context of testing to run tests across a grid of input arguments. A good
+example of adding a grid is provided in the 
+[metrics example](https://vsoch.github.io/gridtest/getting-started/metrics/#adding-a-grid).
+
+
 
 You might next want to browse [tutorials]({{ site.baseurl }}/tutorials/) available.
