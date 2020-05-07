@@ -321,6 +321,7 @@
     <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
 
     <span class="n">meta</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">tests</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="c1"># Try importing the module, fall back to relative path</span>
     <span class="k">try</span><span class="p">:</span>
@@ -376,7 +377,7 @@
                 <span class="k">if</span> <span class="n">funcname</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
                     <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Extracting </span><span class="si">{funcname}</span><span class="s2"> from </span><span class="si">{name}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-            <span class="n">meta</span><span class="p">[</span><span class="n">fullname</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">tests</span><span class="p">[</span><span class="n">fullname</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">defaults</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">defaults</span> <span class="ow">or</span> <span class="p">[]</span>
             <span class="n">argdict</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -390,7 +391,7 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">defaults</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">idx</span><span class="p">:</span>
                     <span class="n">default</span> <span class="o">=</span> <span class="n">defaults</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
                 <span class="n">argdict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">formulate_arg</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">default</span><span class="p">))</span>
-            <span class="n">meta</span><span class="p">[</span><span class="n">fullname</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">argdict</span><span class="p">})</span>
+            <span class="n">tests</span><span class="p">[</span><span class="n">fullname</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="n">argdict</span><span class="p">})</span>
 
         <span class="c1"># Exceptions will throw type errors</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
@@ -406,6 +407,8 @@
             <span class="k">except</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Cannot get members for </span><span class="si">{func}</span><span class="s2">&quot;</span><span class="p">)</span>
 
+    <span class="c1"># Add the tests to the final meta object</span>
+    <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;tests&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">tests</span>
     <span class="k">return</span> <span class="n">meta</span></div>
 
 

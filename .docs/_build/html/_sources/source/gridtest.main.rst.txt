@@ -20,6 +20,14 @@ gridtest.main.generate module
    :undoc-members:
    :show-inheritance:
 
+gridtest.main.grids module
+--------------------------
+
+.. automodule:: gridtest.main.grids
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gridtest.main.helpers module
 ----------------------------
 

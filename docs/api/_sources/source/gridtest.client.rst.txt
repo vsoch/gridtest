@@ -20,6 +20,14 @@ gridtest.client.generate module
    :undoc-members:
    :show-inheritance:
 
+gridtest.client.gridview module
+-------------------------------
+
+.. automodule:: gridtest.client.gridview
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gridtest.client.shell module
 ----------------------------
 

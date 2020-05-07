@@ -96,6 +96,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.check">gridtest.main.check module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.generate">gridtest.main.generate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.grids">gridtest.main.grids module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.helpers">gridtest.main.helpers module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.substitute">gridtest.main.substitute module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.test">gridtest.main.test module</a></li>
@@ -353,6 +354,20 @@ Returns True for yes, False otherwise.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="module-gridtest.main.grids">
+<span id="gridtest-main-grids-module"></span><h2>gridtest.main.grids module<a class="headerlink" href="#module-gridtest.main.grids" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2020 Vanessa Sochat.</p>
+<p>This Source Code Form is subject to the terms of the
+Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
+with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
+<dl class="function">
+<dt id="gridtest.main.grids.get_grids">
+<code class="sig-prename descclassname">gridtest.main.grids.</code><code class="sig-name descname">get_grids</code><span class="sig-paren">(</span><em class="sig-param">lookup</em>, <em class="sig-param">filename=''</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#get_grids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.get_grids" title="Permalink to this definition">¶</a></dt>
+<dd><p>given a loaded items (a grids section from a GridRunner). return
+the parameterized grids.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-gridtest.main.helpers">
 <span id="gridtest-main-helpers-module"></span><h2>gridtest.main.helpers module<a class="headerlink" href="#module-gridtest.main.helpers" title="Permalink to this headline">¶</a></h2>
 <p>Copyright (C) 2020 Vanessa Sochat.</p>
@@ -440,6 +455,31 @@ correct. Returns a boolean to indicate correct/ passing (True)</p>
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
 <dl class="function">
+<dt id="gridtest.main.substitute.expand_args">
+<code class="sig-prename descclassname">gridtest.main.substitute.</code><code class="sig-name descname">expand_args</code><span class="sig-paren">(</span><em class="sig-param">entry</em>, <em class="sig-param">lookup=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/substitute.html#expand_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.substitute.expand_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a test yaml entry, convert the grid specifications and
+arguments into a longer list of arguments to each run as a test.
+E.g., convert an entry with these keys:</p>
+<p>‘grid’: {‘one’: {‘min’: 0, ‘max’: 5, ‘list’: [10, 15]}},
+‘args’: {‘two’: 2},</p>
+<p>into:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>[{‘two’: 2, ‘one’: 0},</dt><dd><p>{‘two’: 2, ‘one’: 1},
+{‘two’: 2, ‘one’: 2},
+{‘two’: 2, ‘one’: 3},
+{‘two’: 2, ‘one’: 4},
+{‘two’: 2, ‘one’: 10},
+{‘two’: 2, ‘one’: 15}]</p>
+</dd>
+</dl>
+</div></blockquote>
+<p>In the case that a grid has a string identifier to point to a key
+in the lookup, we use that listing of values instead that should
+already be calculated.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="gridtest.main.substitute.substitute_args">
 <code class="sig-prename descclassname">gridtest.main.substitute.</code><code class="sig-name descname">substitute_args</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">params=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/substitute.html#substitute_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.substitute.substitute_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a value, determine if it has variable argument substitutions
@@ -485,14 +525,12 @@ with this file, You can obtain one at <a class="reference external" href="http:/
 </dd></dl>
 
 <dl class="method">
-<dt id="gridtest.main.test.GridRunner.get_args">
-<code class="sig-name descname">get_args</code><span class="sig-paren">(</span><em class="sig-param">entry</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.get_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.get_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a test yaml entry, convert the grid specifications and
-arguments into a longer list of arguments to each run as a test.
-E.g., convert something like this:</p>
-<p>‘grid’: {‘one’: {‘min’: 0, ‘max’: 5, ‘list’: [10, 15]}},
-‘args’: {‘two’: 2},</p>
-<p>into:</p>
+<dt id="gridtest.main.test.GridRunner.get_grids">
+<code class="sig-name descname">get_grids</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.get_grids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.get_grids" title="Permalink to this definition">¶</a></dt>
+<dd><p>a grid is a specification under “grids” that can be run to
+parameterize a set of arguments, optionally run through a function
+or just generated to have combinations. If a count variable is
+included, we multiply by that many times.</p>
 </dd></dl>
 
 <dl class="method">
@@ -508,8 +546,13 @@ E.g., convert something like this:</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="gridtest.main.test.GridRunner.iter_sections">
-<code class="sig-name descname">iter_sections</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.iter_sections"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.iter_sections" title="Permalink to this definition">¶</a></dt>
+<dt id="gridtest.main.test.GridRunner.iter_grids">
+<code class="sig-name descname">iter_grids</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.iter_grids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.iter_grids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gridtest.main.test.GridRunner.iter_tests">
+<code class="sig-name descname">iter_tests</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.iter_tests"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.iter_tests" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -684,7 +727,8 @@ clean them up with shutil.rm</p>
 <dl class="method">
 <dt id="gridtest.main.test.GridTest.get_func">
 <code class="sig-name descname">get_func</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridTest.get_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridTest.get_func" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the function name, meaning we get the module first.</p>
+<dd><p>Get the function name, meaning we get the module first. This can
+also be used for one off (custom) function and module names.</p>
 </dd></dl>
 
 <dl class="method">
