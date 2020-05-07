@@ -26,6 +26,13 @@ Python projects that don't have the bandwidth to invest time into writing tests,
 makes it easy to generate and fill in a template to run tests,
 and run them during continuous integration.
 
+> Is gridtest just for testing?
+
+One of the powerful features of GridTest is the ability to define [grids](https://vsoch.github.io/gridtest/getting-started/grids/index.html) that can be used within gridtests, but also
+outside of them. For example, you can easily define sets of named
+parameterizations over sets of variables, and even pipe them into
+a function. The result can be an expanded list of arguments, or of results.
+
 > What makes GridTest easy to use?
 
 GridTest nicely manages small annoyances for writing tests.
@@ -86,6 +93,7 @@ In summary, GridTest:
  3. Stores tests in a yaml file that can be stored in version control
  4. Allows measuring of metrics alongside tests
  5. Generates data exports and interactive reports for results
+ 6. Makes it easy to define and interact with expanded parameter grids
 
 > Where do I go from here?
 
