@@ -708,11 +708,9 @@ class GridRunner:
            included, we multiply by that many times.
         """
         for parent, section in self.config.items():
-            self.grids.update(
-                get_grids(
-                    section.get("grids", {}), filename=section.get("filename", "")
-                )
-            )
+            filename = extract_modulename(section.get("filename"), self.input_dir)
+
+            self.grids.update(get_grids(section.get("grids", {}), filename=filename))
         return self.grids
 
     def get_tests(self, regexp=None, verbose=False, cleanup=True):

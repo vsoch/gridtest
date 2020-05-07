@@ -1,5 +1,5 @@
 script:
-  filename: /home/vanessa/Desktop/Code/gridtest/tests/grids/script.py 
+  filename: script.py
   grids:
 
     # A grid that will generate 10 random values using a function
