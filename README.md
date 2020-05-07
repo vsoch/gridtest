@@ -41,3 +41,7 @@ the average user will assess each of these points. The developer @vsoch has not
 added them yet because she doesn't think them overall useful.
 
  - support for system libraries (e.g., sys) or anything without a filename in site-packages
+
+
+## TODO:
+ - write tests for grid parsing cases.

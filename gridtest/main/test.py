@@ -155,7 +155,8 @@ class GridTest:
     # Running
 
     def get_func(self):
-        """Get the function name, meaning we get the module first.
+        """Get the function name, meaning we get the module first. This can
+           also be used for one off (custom) function and module names.
         """
         sys.path.insert(0, os.path.dirname(self.filename))
         module = import_module(self.module)
@@ -423,6 +424,7 @@ class GridRunner:
         self.set_name(kwargs.get("name"))
         self._fill_classes()
         self.show_progress = True
+        self.grids = {}
 
     def load(self, input_file):
         """load a testing gridtest file.
@@ -568,8 +570,10 @@ class GridRunner:
               - save_report (str) : path to folder (not existing) to save a report to
               - report_template (str) : a template name of a report to generate
         """
-        # 1. Get filtered list of tests
+        # 1. Generate list of tests and grid functions
+        grids = self.get_grids()
         tests = self.get_tests(regexp=regexp, verbose=verbose, cleanup=cleanup)
+
         self.show_progress = show_progress
 
         # 2. Run tests (serial or in parallel)
@@ -693,6 +697,44 @@ class GridRunner:
 
         print(f"\n{success}/{total} tests passed")
 
+    def get_grids(self):
+        """a grid is a specification under "grids" that can be run to
+           parameterize a set of arguments, optionally run through a function
+           or just generated to have combinations. If a count variable is
+           included, we multiply by that many times.
+        """
+        for parent, section in self.config.items():
+            for name, grid in section.get("grids", {}).items():
+
+                # Unwrap list of arguments (even if empty)
+                args = self.get_args(
+                    {"grid": grid.get("grid", {}), "args": grid.get("args", {})}
+                )
+
+                # If there is a count, we need to multiple it by that
+                if "count" in grid:
+                    args = args * grid["count"]
+
+                # If a function is provided, import and run args through it
+                if "func" in grid:
+                    sys.path.insert(0, os.path.dirname(section.get("filename", "")))
+                    funcname = grid.get("func")
+                    module = ".".join(funcname.split(".")[:-1])
+                    funcname = funcname.split(".")[-1]
+                    try:
+                        module = import_module(module)
+                        func = getattr(module, funcname)
+                        if func is None:
+                            bot.exit(f"Cannot find {funcname}.")
+                    except:
+                        bot.exit(f"Cannot import grid function {funcname}")
+
+                    # Run the args through the function
+                    args = [func(**k) for k in args]
+                self.grids[name] = args
+
+        return self.grids
+
     def get_tests(self, regexp=None, verbose=False, cleanup=True):
         """get tests based on a regular expression.
 
@@ -760,26 +802,35 @@ class GridRunner:
 
         for param, settings in entry.get("grid", {}).items():
 
-            # If any settings defined not allowed, do not continue
-            if set(settings.keys()).difference(GRIDTEST_GRIDEXPANDERS):
-                bot.exit(f"Invalid key in grid settings {settings}")
+            # If settings is a key, it must reference a grid name
+            if isinstance(settings, str):
+                if settings not in self.grids:
+                    bot.exit(f"{settings} must exist in grids.")
+                args[param] = self.grids[settings]
 
-            # List of values just for param
-            values = []
+            else:
+                # If any settings defined not allowed, do not continue
+                if set(settings.keys()).difference(GRIDTEST_GRIDEXPANDERS):
+                    bot.exit(f"Invalid key in grid settings {settings}")
 
-            # Case 1: min, max, and by
-            if "min" in settings and "max" in settings and "by" in settings:
-                values += range(settings["min"], settings["max"], settings["by"])
-            elif "min" in settings and "max" in settings:
-                values += range(settings["min"], settings["max"])
-            if "list" in settings:
-                values += settings["list"]
+                # List of values just for param
+                values = []
 
-            args[param] = values
+                # Case 1: min, max, and by
+                if "min" in settings and "max" in settings and "by" in settings:
+                    values += range(settings["min"], settings["max"], settings["by"])
+                elif "min" in settings and "max" in settings:
+                    values += range(settings["min"], settings["max"])
+                if "list" in settings:
+                    values += settings["list"]
+
+                args[param] = values
 
         # Now generate a list of dicts (the args) with all possible combinations
-        keys, values = zip(*args.items())
-        return [dict(zip(keys, v)) for v in itertools.product(*values)]
+        if args:
+            keys, values = zip(*args.items())
+            return [dict(zip(keys, v)) for v in itertools.product(*values)]
+        return [args]
 
     def __repr__(self):
         return "[gridtest|%s]" % self.name
