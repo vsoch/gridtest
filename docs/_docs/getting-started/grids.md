@@ -9,6 +9,24 @@ GridTest isn't just for testing! In fact, you can write a file of grid
 specifications that can be loaded and used for parameterization, or your own
 custom functions. The description here will follow example the files in the
 [grids](https://github.com/vsoch/gridtest/tree/master/examples/grids) examples folder.
+Here is a peek at the top of this file, where we define two grids:
+
+```yaml
+mygrids:
+  grids:
+
+    # A grid that will generate 10 empty set of arguments
+    generate_empty:
+      count: 10
+
+    # A grid that will generate each cross of x and y (total of 9)
+    generate_matrix:
+      grid:
+        x: [1, 2, 3] 
+        y: [1, 2, 3] 
+```
+
+This documentation will discuss how to interact with and customize your grids.
 
 ## Loading via a GridRunner
 
