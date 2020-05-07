@@ -48,7 +48,7 @@ def update_tests(
             section.get("filename"), os.path.dirname(testfile)
         )
         files.append(filename)
-        [existing.add(x) for x in section.get('tests', {}).keys()]
+        [existing.add(x) for x in section.get("tests", {}).keys()]
         functions = extract_functions(
             filename, include_private, quiet=True, include_classes=include_classes
         )

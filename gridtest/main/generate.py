@@ -255,7 +255,7 @@ def extract_functions(
                 print(f"Cannot get members for {func}")
 
     # Add the tests to the final meta object
-    meta['tests'] = tests
+    meta["tests"] = tests
     return meta
 
 

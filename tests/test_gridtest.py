@@ -27,7 +27,7 @@ def test_gridrunner(runner):
     """Load a gridtest runner and test for a basic file.
     """
     assert "basic" in runner.config
-    assert len(runner.config["basic"]['tests']) >= 5
+    assert len(runner.config["basic"]["tests"]) >= 5
     assert runner.run() == 0
     assert runner.run(parallel=False) == 0
 
@@ -37,7 +37,7 @@ def test_gridrunner(runner):
     test_file = os.path.join(here, "modules", "temp-tests.yml")
     runner = GridRunner(test_file)
     assert "temp" in runner.config
-    assert len(runner.config["temp"]['tests']) >= 2
+    assert len(runner.config["temp"]["tests"]) >= 2
     assert runner.run() == 0
     assert runner.run(parallel=False) == 0
 
@@ -236,7 +236,9 @@ def test_metrics():
 
     # Ensure that invalid specs aren't honored
     runner = GridRunner(test_file)
-    runner.config["metrics"]['tests']["metrics.gotosleep"][0]["grid"]["seconds"]["invalid"] = 1
+    runner.config["metrics"]["tests"]["metrics.gotosleep"][0]["grid"]["seconds"][
+        "invalid"
+    ] = 1
 
     with pytest.raises(SystemExit):
         tests = runner.get_tests()

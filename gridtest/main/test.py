@@ -448,7 +448,7 @@ class GridRunner:
 
     def iter_tests(self):
         for _, section in self.config.items():
-            for name, tests in section.get('tests', {}).items():
+            for name, tests in section.get("tests", {}).items():
                 yield (name, tests)
 
     def _fill_classes(self):
@@ -702,7 +702,7 @@ class GridRunner:
         tests = {}
 
         for parent, section in self.config.items():
-            for name, module in section.get('tests', {}).items():
+            for name, module in section.get("tests", {}).items():
                 if regexp and not re.search(regexp, name):
                     continue
 
