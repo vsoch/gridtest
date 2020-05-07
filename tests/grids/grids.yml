@@ -1,5 +1,4 @@
 script:
-  filename: script.py
   grids:
 
     # A grid that will generate values with an installed module

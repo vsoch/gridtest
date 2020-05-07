@@ -708,7 +708,7 @@ class GridRunner:
            included, we multiply by that many times.
         """
         for parent, section in self.config.items():
-            filename = extract_modulename(section.get("filename"), self.input_dir)
+            filename = extract_modulename(section.get("filename", ""), self.input_dir)
 
             self.grids.update(get_grids(section.get("grids", {}), filename=filename))
         return self.grids
@@ -731,7 +731,7 @@ class GridRunner:
 
                     # Get either the file path, module name, or relative path
                     filename = extract_modulename(
-                        section.get("filename"), self.input_dir
+                        section.get("filename", ""), self.input_dir
                     )
 
                     idx = 0
