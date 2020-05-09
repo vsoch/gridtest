@@ -19,7 +19,7 @@ for generating and running tests.
 ### Writing Tests
 
  - [Templates](templates/): for test yaml files, including function and argument substitution
- - [Grids](grids/): can be used to programatically generate inputs for tests, or outside of testing when you want to parameterize some values, optionally over a function.
+ - [Grids and Variables](grids/): can be used to programatically generate inputs for tests, or outside of testing when you want to parameterize some values, optionally over a function.
  - [Metrics](metrics/): decorators to measure metrics across a grid of tests.
 
 ### Running Tests

@@ -22,10 +22,10 @@ from gridtest.main.generate import (
     get_function_typing,
     extract_modulename,
 )
-from gridtest.main.grids import get_grids
+from gridtest.main.grids import get_grids, get_variables
 from gridtest.main.helpers import test_basic
 from gridtest.main.workers import Workers
-from gridtest.main.substitute import substitute_func, substitute_args, expand_args
+from gridtest.main.substitute import substitute_func, substitute_args, expand_args, iter_expand_args
 from copy import deepcopy
 
 import itertools
@@ -425,6 +425,7 @@ class GridRunner:
         self._fill_classes()
         self.show_progress = True
         self.grids = {}
+        self.variables = {}
 
     def load(self, input_file):
         """load a testing gridtest file.
@@ -496,7 +497,6 @@ class GridRunner:
             - interactive (bool) : run jobs interactively (for debugging)
               not available for parallel jobs.
         """
-
         # Parallel tests cannot be interactive
         if parallel and not interactive:
             self._run_parallel(tests, nproc=nproc)
@@ -573,12 +573,17 @@ class GridRunner:
               - save (str) : a filepath to save results to (must be json)
               - save_report (str) : path to folder (not existing) to save a report to
               - report_template (str) : a template name of a report to generate
+
         """
         # 1. Generate list of tests and grid functions
+        self.show_progress = show_progress
         self.get_grids()
+
         tests = self.get_tests(regexp=regexp, verbose=verbose, cleanup=cleanup)
 
-        self.show_progress = show_progress
+        # Pretty print results to screen
+        if not tests:
+            bot.exit_info("No tests to run.")
 
         # 2. Run tests (serial or in parallel)
         self.run_tests(
@@ -589,7 +594,6 @@ class GridRunner:
             name=name,
         )
 
-        # Pretty print results to screen
         self.print_results(tests)
 
         # Save report?
@@ -707,11 +711,31 @@ class GridRunner:
            or just generated to have combinations. If a count variable is
            included, we multiply by that many times.
         """
+        # Grids require variables.
+        self.get_variables()
+
         for parent, section in self.config.items():
             filename = extract_modulename(section.get("filename", ""), self.input_dir)
-
-            self.grids.update(get_grids(section.get("grids", {}), filename=filename))
+            self.grids.update(
+                get_grids(
+                    section.get("grids", {}),
+                    filename=filename,
+                    variables=self.variables,
+                )
+            )
         return self.grids
+
+    def get_variables(self):
+        """variables is a specification under "variables" that allows the user
+           to globlly define (equialent) sets of arguments to be parameterized.
+           Instead of returning a kwargs item, we return just the listing.
+        """
+        for parent, section in self.config.items():
+            filename = extract_modulename(section.get("filename", ""), self.input_dir)
+            self.variables.update(
+                get_variables(section.get("variables", {}), filename=filename)
+            )
+        return self.variables
 
     def get_tests(self, regexp=None, verbose=False, cleanup=True):
         """get tests based on a regular expression.
@@ -744,8 +768,14 @@ class GridRunner:
                         ):
                             bot.exit(f"{name} has shared grid and args keys.")
 
+                        # Create a combined lookup, user should not have shared keys
+                        lookup = self.grids.copy()
+                        lookup.update(self.variables)
+
                         # Generate list of args
-                        for argset in expand_args(entry, lookup=self.grids):
+                        # Order is column first when expanded [512, 512, 512... 4096, 4096, 4096]
+
+                        for argset in iter_expand_args(entry, lookup=lookup):
                             updated = deepcopy(entry)
                             updated["args"] = argset
                             tests["%s.%s" % (name, idx)] = GridTest(
@@ -757,6 +787,7 @@ class GridRunner:
                                 filename=filename,
                                 show_progress=self.show_progress,
                             )
+                            print(f"generating test {idx}", end="\r")
                             idx += 1
         return tests
 

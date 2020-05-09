@@ -18,7 +18,43 @@ import re
 import sys
 
 
+def custom_range(start, stop, by=1.0, precision=2):
+    """the range function only accepts integers, and user's will likely
+       want to provide float. Thus we use custom_range to provide this
+
+       Arguments:
+        - start (int or float) : the starting value
+        - stop (int or float) : go up to this value
+        - by (float or int) : increment by this value (default 1.0)
+        - precision (int) : decimals to round to (default 2)
+    """
+    start = float(start)
+    count = 0
+    values = []
+    while True:
+        value = round(float(start + count * by), precision)
+        if by > 0 and value >= stop:
+            break
+        elif by < 0 and value <= stop:
+            break
+        values.append(value)
+        count += 1
+    return values
+
+
+def unpack_args(arglist):
+    """given a list of dictionaries, unpack into tuples
+    """
+    args = []
+    for argset in arglist:
+        newset = ()
+        for key, value in argset.items():
+            pass
+
 def expand_args(entry, lookup=None):
+    return list(iter_expand_args(entry, lookup))
+
+def iter_expand_args(entry, lookup=None):
     """Given a test yaml entry, convert the grid specifications and 
        arguments into a longer list of arguments to each run as a test.
        E.g., convert an entry with these keys:
@@ -52,15 +88,20 @@ def expand_args(entry, lookup=None):
 
         # If settings is a key, it must reference a grid name
         if isinstance(settings, str):
-            if settings not in lookup:
-                bot.exit(f"{settings} must exist in grids lookup.")
-            args[param] = lookup[settings]
 
-        # The user can provide a list of values directly
+            # Case 1: user has provided a key to another grid
+            if settings in lookup:
+                value = lookup[settings]
+                if not isinstance(value, list):
+                    value = [value]
+                args[param] = value
+            else:
+                bot.exit(f"{settings} must exist in grids or variables.")
+
         elif isinstance(settings, list):
             args[param] = settings
 
-        else:
+        elif isinstance(settings, dict):
             # If any settings defined not allowed, do not continue
             if set(settings.keys()).difference(GRIDTEST_GRIDEXPANDERS):
                 bot.exit(f"Invalid key in grid settings {settings}")
@@ -70,18 +111,23 @@ def expand_args(entry, lookup=None):
 
             # Case 1: min, max, and by
             if "min" in settings and "max" in settings and "by" in settings:
-                values += range(settings["min"], settings["max"], settings["by"])
+                values += custom_range(settings["min"], settings["max"], settings["by"])
             elif "min" in settings and "max" in settings:
-                values += range(settings["min"], settings["max"])
+                values += custom_range(settings["min"], settings["max"])
             if "list" in settings:
                 values += settings["list"]
 
             args[param] = values
 
-        # Now generate a list of dicts (the args) with all possible combinations
+        else:
+            args[param] = settings
+
+    # Now generate a list of dicts (the args) with all possible combinations
     if args:
         keys, values = zip(*args.items())
-        return [dict(zip(keys, v)) for v in itertools.product(*values)]
+        for v in itertools.product(*values):
+            yield dict(zip(keys, v))
+
     return [args]
 
 

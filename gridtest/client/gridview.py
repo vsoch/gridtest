@@ -27,6 +27,9 @@ def main(args, extra):
     runner = GridRunner(input_file)
     grids = runner.get_grids()
 
+    # Update with variables
+    grids.update(runner.variables)
+
     # If no name specified, print all grids
     if args.input:
         name = args.input[0]
@@ -45,4 +48,7 @@ def main(args, extra):
         if args.compact:
             print(content)
         else:
-            print(json.dumps(content, indent=4))
+            try:
+                print(json.dumps(content, indent=4))
+            except:
+                print(content)

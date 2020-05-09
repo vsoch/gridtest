@@ -26,7 +26,29 @@ mygrids:
         y: [1, 2, 3] 
 ```
 
-This documentation will discuss how to interact with and customize your grids.
+And we can also define grids intended for one variable under a "variables"
+section:
+
+```yaml
+schrodinger:
+  filename: /home/vanessa/Desktop/Code/pySchrodinger/schrodinger.py
+
+  # Variables can be used for grids or tests. The namespace is shared, variables looked for first.
+  variables:
+
+    generate_m:
+      min: 0.1
+      max: 2.1
+      by: 0.1
+
+    generate_n:
+      min: 0.1
+      max: 2.1
+      by: 0.1
+```
+
+This documentation will discuss how to interact with and customize your grids 
+and variables.
 
 ## Loading via a GridRunner
 
@@ -95,11 +117,64 @@ runner.get_grids()
   {'x': 8, 'y': 18}]}
 ```
 
+Notice how some of the grids above are named parameter sets (dictionaries with
+values to indicate arguments and matching values) and others are flat lists of
+values. For the latter, this means that we have run those same variables
+through a function, which will be discussed later. You can equivalently
+easily get lists of variables as follows:
+
+```bash
+runner.get_variables()                                                                                                            
+Out[4]: 
+{'generate_m': [0.1,
+  0.2,
+  0.3,
+  0.4,
+  0.5,
+  0.6,
+  0.7,
+  0.8,
+  0.9,
+  1.0,
+  1.1,
+  1.2,
+  1.3,
+  1.4,
+  1.5,
+  1.6,
+  1.7,
+  1.8,
+  1.9,
+  2.0],
+ 'generate_n': [0.1,
+  0.2,
+  0.3,
+  0.4,
+  0.5,
+  0.6,
+  0.7,
+  0.8,
+  0.9,
+  1.0,
+  1.1,
+  1.2,
+  1.3,
+  1.4,
+  1.5,
+  1.6,
+  1.7,
+  1.8,
+  1.9,
+  2.0]}
+```
+
+Variables will also be discussed in more detail.
+
 <a id="viewing-on-the-command-line">
 ## Viewing on the Command Line
 
 You can also preview the grids generated from the command line. Here is how
-to list the names for the grids found in a file:
+to list the names for the grids and variables found in a file:
 
 ```bash
 $ gridtest gridview grids.yml --list
