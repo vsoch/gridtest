@@ -247,17 +247,9 @@
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">func</span><span class="p">:</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-        <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
-
-        <span class="c1"># If we have a class, we need to import and instantiate it first</span>
-        <span class="k">if</span> <span class="s2">&quot;self&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
-            <span class="n">instance</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">funcname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">2</span><span class="p">])(</span><span class="o">**</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">])</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">funcname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-            <span class="k">del</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="n">funcname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
-                <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">piece</span><span class="p">)</span>
-                <span class="n">module</span> <span class="o">=</span> <span class="n">func</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">get_function</span><span class="p">(</span>
+            <span class="n">module</span><span class="o">=</span><span class="n">module</span><span class="p">,</span> <span class="n">funcname</span><span class="o">=</span><span class="n">funcname</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span>
+        <span class="p">)</span>
 
     <span class="c1"># Figure out how to apply multiple</span>
     <span class="n">originalfunc</span> <span class="o">=</span> <span class="n">func</span>
@@ -337,6 +329,36 @@
     <span class="k">return</span> <span class="p">[</span><span class="n">passed</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">err</span><span class="p">,</span> <span class="n">raises</span><span class="p">]</span></div>
 
 
+<div class="viewcode-block" id="get_function"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.helpers.get_function">[docs]</a><span class="k">def</span> <span class="nf">get_function</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">funcname</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;given a module name, function name, argument, and filename, derive</span>
+<span class="sd">       a function, optionally deriving an instance first that it might</span>
+<span class="sd">       belong to</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;self&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+
+        <span class="c1"># If args provided for instance</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">funcname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">instanceargs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="s2">&quot;self&quot;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="n">instanceargs</span> <span class="o">=</span> <span class="n">intersect_args</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">])</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="n">instance</span><span class="p">(</span><span class="o">**</span><span class="n">instanceargs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="n">funcname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">piece</span><span class="p">)</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="n">func</span>
+
+        <span class="c1"># func = getattr(instance, funcname.split(&quot;.&quot;)[-1])</span>
+        <span class="k">del</span> <span class="n">args</span><span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">piece</span> <span class="ow">in</span> <span class="n">funcname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">piece</span><span class="p">)</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="n">func</span>
+    <span class="k">return</span> <span class="n">func</span></div>
+
+
 <div class="viewcode-block" id="test_types"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.helpers.test_types">[docs]</a><span class="k">def</span> <span class="nf">test_types</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">returns</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Given a loaded function, get it&#39;s types and ensure that they are</span>
 <span class="sd">       correct. Returns a boolean to indicate correct/ passing (True)</span>
@@ -365,77 +387,6 @@
             <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">err</span>
 
     <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">err</span></div>
-
-
-<span class="c1"># Substitution</span>
-
-
-<div class="viewcode-block" id="substitute_func"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.helpers.substitute_func">[docs]</a><span class="k">def</span> <span class="nf">substitute_func</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Given a value, determine if it contains a function substitution,</span>
-<span class="sd">       and if it&#39;s one an important function (e.g., one from gridtest.helpers)</span>
-<span class="sd">       return the value with the function applied. </span>
-
-<span class="sd">       Arguments:</span>
-<span class="sd">         - value (str) : the value to do the substitution for.</span>
-
-<span class="sd">       Notes: </span>
-<span class="sd">         A function should be in the format: {% tempfile.mkdtemp %} </span>
-<span class="sd">         (global import) or a function in gridtest.func in the format </span>
-<span class="sd">         {% tmp_path %}. If arguments are supplied, they should be in </span>
-<span class="sd">         the format {% tmp_path arg1=1 arg2=2 %}</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Numbers cannot have replacement</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">value</span>
-
-    <span class="c1"># First do substitutions of variables</span>
-    <span class="k">for</span> <span class="n">template</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s2">&quot;{%.+%}&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">varname</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">&quot;({%|%})&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">template</span><span class="p">)</span>
-        <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">varname</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span><span class="p">]</span>
-        <span class="n">modulename</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">funcpath</span> <span class="o">=</span> <span class="n">modulename</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">modulename</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">except</span><span class="p">:</span>
-
-            <span class="c1"># The module is gridtest.func</span>
-            <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;gridtest.func&quot;</span><span class="p">)</span>
-            <span class="n">funcpath</span> <span class="o">=</span> <span class="n">modulename</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">funcpath</span><span class="p">:</span>
-            <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;A function name must be provided for </span><span class="si">{varname}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">func</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">funcpath</span><span class="p">)</span>
-
-        <span class="c1"># If function is found, get value</span>
-        <span class="k">if</span> <span class="n">func</span><span class="p">:</span>
-            <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">x</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">params</span><span class="p">}</span>
-
-            <span class="c1"># Clean up parameters based on intuited types</span>
-            <span class="k">for</span> <span class="n">paramname</span><span class="p">,</span> <span class="n">paramvalue</span> <span class="ow">in</span> <span class="n">params</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-                <span class="k">if</span> <span class="n">paramvalue</span> <span class="o">==</span> <span class="s2">&quot;None&quot;</span><span class="p">:</span>
-                    <span class="n">paramvalue</span> <span class="o">=</span> <span class="kc">None</span>
-
-                <span class="c1"># No quotes and all numeric, probably int</span>
-                <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;^[0-9]+$&quot;</span><span class="p">,</span> <span class="n">paramvalue</span><span class="p">):</span>
-                    <span class="n">paramvalue</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">paramvalue</span><span class="p">)</span>
-
-                <span class="c1"># One decimal, all numbers, probably float</span>
-                <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;^[0-9]+[.]([0-9]+)?$&quot;</span><span class="p">,</span> <span class="n">paramvalue</span><span class="p">):</span>
-                    <span class="n">paramvalue</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">paramvalue</span><span class="p">)</span>
-
-                <span class="c1"># Explicitly a string with quotes</span>
-                <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s1">&#39;^(&quot;.+&quot;)$&#39;</span><span class="p">,</span> <span class="n">paramvalue</span><span class="p">):</span>
-                    <span class="n">paramvalue</span> <span class="o">=</span> <span class="n">paramvalue</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;^(&#39;.+&#39;)$&quot;</span><span class="p">,</span> <span class="n">paramvalue</span><span class="p">):</span>
-                    <span class="n">paramvalue</span> <span class="o">=</span> <span class="n">paramvalue</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
-                <span class="n">kwargs</span><span class="p">[</span><span class="n">paramname</span><span class="p">]</span> <span class="o">=</span> <span class="n">paramvalue</span>
-
-            <span class="n">new_value</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">new_value</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">value</span></div>
 </pre></div>
 
            </div>

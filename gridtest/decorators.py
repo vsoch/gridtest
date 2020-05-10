@@ -35,3 +35,31 @@ def timeit(func):
         return result
 
     return timed
+
+
+def length(func):
+    """calculate the length of a result, None if doesn't have length
+    """
+
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        try:
+            length = len(result)
+        except:
+            length = ""
+        print(f"@length {length}")
+        return result
+
+    return wrapper
+
+
+def result(func):
+    """result will simply capture the result (as a decorator).
+    """
+
+    def wrapper(*args, **kwargs):
+        result = func(*args, **kwargs)
+        print(f"@result {result}")
+        return result
+
+    return wrapper

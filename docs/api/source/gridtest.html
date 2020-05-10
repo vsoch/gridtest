@@ -235,6 +235,18 @@ Any function in here can be referenced as {% func_name %} or with arguments
 conflict, you can also reference {% gridtest.func.func_name %} and
 it will work to reference the function here.</p>
 <dl class="function">
+<dt id="gridtest.decorators.length">
+<code class="sig-prename descclassname">gridtest.decorators.</code><code class="sig-name descname">length</code><span class="sig-paren">(</span><em class="sig-param">func</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/decorators.html#length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.decorators.length" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate the length of a result, None if doesn’t have length</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridtest.decorators.result">
+<code class="sig-prename descclassname">gridtest.decorators.</code><code class="sig-name descname">result</code><span class="sig-paren">(</span><em class="sig-param">func</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/decorators.html#result"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.decorators.result" title="Permalink to this definition">¶</a></dt>
+<dd><p>result will simply capture the result (as a decorator).</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="gridtest.decorators.timeit">
 <code class="sig-prename descclassname">gridtest.decorators.</code><code class="sig-name descname">timeit</code><span class="sig-paren">(</span><em class="sig-param">func</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/decorators.html#timeit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.decorators.timeit" title="Permalink to this definition">¶</a></dt>
 <dd><p>timeit is a well known Python decorator that will time the total executio
@@ -356,7 +368,7 @@ below a base path.</p>
 
 <dl class="function">
 <dt id="gridtest.utils.write_json">
-<code class="sig-prename descclassname">gridtest.utils.</code><code class="sig-name descname">write_json</code><span class="sig-paren">(</span><em class="sig-param">json_obj</em>, <em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/utils.html#write_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.utils.write_json" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">gridtest.utils.</code><code class="sig-name descname">write_json</code><span class="sig-paren">(</span><em class="sig-param">json_obj</em>, <em class="sig-param">filename</em>, <em class="sig-param">pretty=True</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/utils.html#write_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.utils.write_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>write_json will write a json object to file, pretty printed</p>
 <dl class="simple">
 <dt>Arguents:</dt><dd><ul class="simple">

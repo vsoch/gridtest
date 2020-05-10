@@ -459,29 +459,18 @@ with this file, You can obtain one at <a class="reference external" href="http:/
 </dd></dl>
 
 <dl class="function">
+<dt id="gridtest.main.helpers.get_function">
+<code class="sig-prename descclassname">gridtest.main.helpers.</code><code class="sig-name descname">get_function</code><span class="sig-paren">(</span><em class="sig-param">module</em>, <em class="sig-param">funcname</em>, <em class="sig-param">args</em>, <em class="sig-param">filename</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/helpers.html#get_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.helpers.get_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>given a module name, function name, argument, and filename, derive
+a function, optionally deriving an instance first that it might
+belong to</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="gridtest.main.helpers.print_interactive">
 <code class="sig-prename descclassname">gridtest.main.helpers.</code><code class="sig-name descname">print_interactive</code><span class="sig-paren">(</span><em class="sig-param">**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/helpers.html#print_interactive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.helpers.print_interactive" title="Permalink to this definition">¶</a></dt>
 <dd><p>A helper function to print locals that are relevant to test_basic for
 the user.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="gridtest.main.helpers.substitute_func">
-<code class="sig-prename descclassname">gridtest.main.helpers.</code><code class="sig-name descname">substitute_func</code><span class="sig-paren">(</span><em class="sig-param">value</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/helpers.html#substitute_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.helpers.substitute_func" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a value, determine if it contains a function substitution,
-and if it’s one an important function (e.g., one from gridtest.helpers)
-return the value with the function applied.</p>
-<dl class="simple">
-<dt>Arguments:</dt><dd><ul class="simple">
-<li><p>value (str) : the value to do the substitution for.</p></li>
-</ul>
-</dd>
-<dt>Notes:</dt><dd><p>A function should be in the format: {% tempfile.mkdtemp %}
-(global import) or a function in gridtest.func in the format
-{% tmp_path %}. If arguments are supplied, they should be in
-the format {% tmp_path arg1=1 arg2=2 %}</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="function">
@@ -612,7 +601,7 @@ and non-success is in red.</p>
 
 <dl class="method">
 <dt id="gridtest.main.test.GridRunner.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">regexp=None</em>, <em class="sig-param">parallel=True</em>, <em class="sig-param">nproc=None</em>, <em class="sig-param">show_progress=True</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">name=None</em>, <em class="sig-param">cleanup=True</em>, <em class="sig-param">save=None</em>, <em class="sig-param">save_report=None</em>, <em class="sig-param">report_template='report'</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">regexp=None</em>, <em class="sig-param">parallel=True</em>, <em class="sig-param">nproc=None</em>, <em class="sig-param">show_progress=True</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">name=None</em>, <em class="sig-param">cleanup=True</em>, <em class="sig-param">save=None</em>, <em class="sig-param">save_report=None</em>, <em class="sig-param">save_compact=False</em>, <em class="sig-param">report_template='report'</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>run the grid runner, meaning that we turn each function and set of
 tests into a single test, and then run with multiprocessing.
 This is the function called by the user that also does filtering
@@ -667,7 +656,7 @@ not available for parallel jobs.</p></li>
 
 <dl class="method">
 <dt id="gridtest.main.test.GridRunner.save_results">
-<code class="sig-name descname">save_results</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">tests</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.save_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.save_results" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">save_results</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">tests</em>, <em class="sig-param">save_compact</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.save_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.save_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>save a runner results to file.</p>
 </dd></dl>
 

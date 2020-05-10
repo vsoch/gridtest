@@ -161,6 +161,7 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="kn">from</span> <span class="nn">json_tricks</span> <span class="k">import</span> <span class="n">dumps</span>
 <span class="kn">import</span> <span class="nn">yaml</span>
 <span class="kn">import</span> <span class="nn">fnmatch</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -219,7 +220,7 @@
     <span class="k">return</span> <span class="n">filename</span></div>
 
 
-<div class="viewcode-block" id="write_json"><a class="viewcode-back" href="../../source/gridtest.html#gridtest.utils.write_json">[docs]</a><span class="k">def</span> <span class="nf">write_json</span><span class="p">(</span><span class="n">json_obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<div class="viewcode-block" id="write_json"><a class="viewcode-back" href="../../source/gridtest.html#gridtest.utils.write_json">[docs]</a><span class="k">def</span> <span class="nf">write_json</span><span class="p">(</span><span class="n">json_obj</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;write_json will write a json object to file, pretty printed</span>
 
 <span class="sd">       Arguents:</span>
@@ -227,7 +228,10 @@
 <span class="sd">        - filename (str) : the output file to write to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">filey</span><span class="p">:</span>
-        <span class="n">filey</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_obj</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;: &quot;</span><span class="p">)))</span>
+        <span class="k">if</span> <span class="n">pretty</span><span class="p">:</span>
+            <span class="n">filey</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_obj</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;: &quot;</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">filey</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">dumps</span><span class="p">(</span><span class="n">json_obj</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">filename</span></div>
 </pre></div>
 

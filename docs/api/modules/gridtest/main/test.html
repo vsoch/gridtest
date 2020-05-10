@@ -296,6 +296,7 @@
         <span class="k">return</span> <span class="n">substitute_func</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
     <span class="c1"># Summary</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">summary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;print a summary of the test, including if it is supposed to</span>
@@ -615,11 +616,11 @@
 <span class="sd">           substitute arguments (starting with instance) for these variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># First create the lookup</span>
-        <span class="n">lookup</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">tests</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_tests</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">tests</span><span class="p">:</span>
                 <span class="k">if</span> <span class="s2">&quot;instance&quot;</span> <span class="ow">in</span> <span class="n">test</span><span class="p">:</span>
-                    <span class="n">lookup</span><span class="p">[</span><span class="n">test</span><span class="p">[</span><span class="s2">&quot;instance&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">test</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">test</span><span class="p">[</span><span class="s2">&quot;instance&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">test</span>
 
         <span class="c1"># Now fill in variables</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">tests</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_tests</span><span class="p">():</span>
@@ -632,10 +633,10 @@
                         <span class="p">)</span>
                     <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">&quot;{{.+}}&quot;</span><span class="p">,</span> <span class="n">test</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">][</span><span class="s2">&quot;self&quot;</span><span class="p">]):</span>
                         <span class="n">instance</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
-                            <span class="s2">&quot;({{|}}|instance[.])&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;{{ instance.thisone }}&quot;</span>
+                            <span class="s2">&quot;({{|}}|instance[.])&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">test</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">][</span><span class="s2">&quot;self&quot;</span><span class="p">]</span>
                         <span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-                        <span class="k">if</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">lookup</span><span class="p">:</span>
-                            <span class="n">test</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">][</span><span class="s2">&quot;self&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lookup</span><span class="p">[</span><span class="n">instance</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">instance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">:</span>
+                            <span class="n">test</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">][</span><span class="s2">&quot;self&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup</span><span class="p">[</span><span class="n">instance</span><span class="p">]</span>
 
 <div class="viewcode-block" id="GridRunner.run_tests"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.run_tests">[docs]</a>    <span class="k">def</span> <span class="nf">run_tests</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">,</span> <span class="n">nproc</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">parallel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;run tests. By default, we run them in parallel, unless serial</span>
@@ -706,6 +707,7 @@
         <span class="n">cleanup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">save</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">save_report</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">save_compact</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="n">report_template</span><span class="o">=</span><span class="s2">&quot;report&quot;</span><span class="p">,</span>
     <span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;run the grid runner, meaning that we turn each function and set of</span>
@@ -755,7 +757,7 @@
 
         <span class="c1"># Save to file (required for report)</span>
         <span class="k">if</span> <span class="n">save</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">save_results</span><span class="p">(</span><span class="n">save</span><span class="p">,</span> <span class="n">tests</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">save_results</span><span class="p">(</span><span class="n">save</span><span class="p">,</span> <span class="n">tests</span><span class="p">,</span> <span class="n">save_compact</span><span class="p">)</span>
 
         <span class="c1"># return correct error code</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">failed</span><span class="p">(</span><span class="n">tests</span><span class="p">):</span>
@@ -792,7 +794,7 @@
             <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Error writing to </span><span class="si">{dest}</span><span class="s2">.&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">dest</span></div>
 
-<div class="viewcode-block" id="GridRunner.save_results"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.save_results">[docs]</a>    <span class="k">def</span> <span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">tests</span><span class="p">):</span>
+<div class="viewcode-block" id="GridRunner.save_results"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.save_results">[docs]</a>    <span class="k">def</span> <span class="nf">save_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">tests</span><span class="p">,</span> <span class="n">save_compact</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;save a runner results to file.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -806,6 +808,11 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">tests</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                <span class="k">if</span> <span class="n">test</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;save&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span> <span class="o">==</span> <span class="kc">False</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># If the result is instance, convert</span>
                 <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                     <span class="p">{</span>
                         <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">key</span><span class="p">,</span>
@@ -821,7 +828,7 @@
                         <span class="s2">&quot;module&quot;</span><span class="p">:</span> <span class="n">test</span><span class="o">.</span><span class="n">module</span><span class="p">,</span>
                     <span class="p">}</span>
                 <span class="p">)</span>
-            <span class="n">write_json</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="n">write_json</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="ow">not</span> <span class="n">save_compact</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">filename</span></div>
 
 <div class="viewcode-block" id="GridRunner.print_results"><a class="viewcode-back" href="../../../source/gridtest.main.html#gridtest.main.test.GridRunner.print_results">[docs]</a>    <span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tests</span><span class="p">):</span>
@@ -883,47 +890,64 @@
                 <span class="k">if</span> <span class="n">regexp</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">regexp</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
                     <span class="k">continue</span>
 
-                <span class="c1"># Each module can have a list of tests</span>
-                <span class="k">if</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">parent</span><span class="p">):</span>
+                <span class="c1"># Get either the file path, module name, or relative path</span>
+                <span class="n">filename</span> <span class="o">=</span> <span class="n">extract_modulename</span><span class="p">(</span>
+                    <span class="n">section</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dir</span>
+                <span class="p">)</span>
 
-                    <span class="c1"># Get either the file path, module name, or relative path</span>
-                    <span class="n">filename</span> <span class="o">=</span> <span class="n">extract_modulename</span><span class="p">(</span>
-                        <span class="n">section</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_dir</span>
-                    <span class="p">)</span>
+                <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
 
-                    <span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="c1"># Use idx to index each test with parameters</span>
+                <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">module</span><span class="p">:</span>
+                    <span class="n">grid</span> <span class="o">=</span> <span class="kc">None</span>
 
-                    <span class="c1"># Use idx to index each test with parameters</span>
-                    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">module</span><span class="p">:</span>
-                        <span class="n">grid</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="c1"># Grid and args cannot both be defined</span>
+                    <span class="k">if</span> <span class="s2">&quot;args&quot;</span> <span class="ow">in</span> <span class="n">entry</span> <span class="ow">and</span> <span class="s2">&quot;grid&quot;</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">:</span>
+                        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> has defined both a grid and args.&quot;</span><span class="p">)</span>
 
-                        <span class="c1"># Grid and args cannot both be defined</span>
-                        <span class="k">if</span> <span class="s2">&quot;args&quot;</span> <span class="ow">in</span> <span class="n">entry</span> <span class="ow">and</span> <span class="s2">&quot;grid&quot;</span> <span class="ow">in</span> <span class="n">entry</span><span class="p">:</span>
-                            <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> has defined both a grid and args.&quot;</span><span class="p">)</span>
+                    <span class="c1"># If we find a grid, it has to reference an existing grid</span>
+                    <span class="k">if</span> <span class="s2">&quot;grid&quot;</span> <span class="ow">in</span> <span class="n">entry</span> <span class="ow">and</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grids</span><span class="p">:</span>
+                        <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span>
+                            <span class="n">f</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> needs grid </span><span class="si">{entry[&#39;grid&#39;]}</span><span class="s2"> but not found in grids.&quot;</span>
+                        <span class="p">)</span>
 
-                        <span class="c1"># If we find a grid, it has to reference an existing grid</span>
-                        <span class="k">if</span> <span class="s2">&quot;grid&quot;</span> <span class="ow">in</span> <span class="n">entry</span> <span class="ow">and</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grids</span><span class="p">:</span>
-                            <span class="n">bot</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span>
-                                <span class="n">f</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> needs grid </span><span class="si">{entry[&#39;grid&#39;]}</span><span class="s2"> but not found in grids.&quot;</span>
+                    <span class="c1"># If we find a grid, it has to reference an existing grid</span>
+                    <span class="k">if</span> <span class="s2">&quot;grid&quot;</span> <span class="ow">in</span> <span class="n">entry</span> <span class="ow">and</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grids</span><span class="p">:</span>
+                        <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grids</span><span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">]]</span>
+                        <span class="n">params</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">entry</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span> <span class="s2">&quot;instance&quot;</span><span class="p">]:</span>
+                            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+                                <span class="k">del</span> <span class="n">params</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                        <span class="n">grid</span><span class="o">.</span><span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">params</span><span class="p">)</span>
+
+                    <span class="c1"># A class function is tested over it&#39;s instance grid</span>
+                    <span class="n">instance_grid</span> <span class="o">=</span> <span class="p">[{}]</span>
+
+                    <span class="c1"># If entry is defined without a grid, we need to generate it</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">grid</span><span class="p">:</span>
+                        <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">entry</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
+
+                        <span class="c1"># If the grid has an instance, add the correct args to it</span>
+                        <span class="k">if</span> <span class="s2">&quot;self&quot;</span> <span class="ow">in</span> <span class="n">grid</span><span class="o">.</span><span class="n">args</span> <span class="ow">and</span> <span class="s2">&quot;grid&quot;</span> <span class="ow">in</span> <span class="n">grid</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">]:</span>
+                            <span class="n">instance_grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grids</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                                <span class="n">grid</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="s2">&quot;self&quot;</span><span class="p">][</span><span class="s2">&quot;grid&quot;</span><span class="p">],</span> <span class="p">[{}]</span>
                             <span class="p">)</span>
 
-                        <span class="c1"># If we find a grid, it has to reference an existing grid</span>
-                        <span class="k">if</span> <span class="s2">&quot;grid&quot;</span> <span class="ow">in</span> <span class="n">entry</span> <span class="ow">and</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">grids</span><span class="p">:</span>
-                            <span class="n">grid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">grids</span><span class="p">[</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;grid&quot;</span><span class="p">]]</span>
+                    <span class="c1"># If the grid is cached, we already have parameter sets</span>
+                    <span class="n">argsets</span> <span class="o">=</span> <span class="n">grid</span>
+                    <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
+                        <span class="n">argsets</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">argsets</span>
 
-                        <span class="c1"># If entry is defined without a grid, we need to generate it</span>
-                        <span class="k">if</span> <span class="ow">not</span> <span class="n">grid</span><span class="p">:</span>
-                            <span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">entry</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">)</span>
-
-                        <span class="c1"># If the grid is cached, we already have parameter sets</span>
-                        <span class="n">argsets</span> <span class="o">=</span> <span class="n">grid</span>
-                        <span class="k">if</span> <span class="n">grid</span><span class="o">.</span><span class="n">cache</span><span class="p">:</span>
-                            <span class="n">argsets</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">argsets</span>
-
-                        <span class="c1"># iterate over argsets for a grid, get overlapping args</span>
+                    <span class="c1"># iterate over argsets for a grid, get overlapping args</span>
+                    <span class="k">for</span> <span class="n">extra_args</span> <span class="ow">in</span> <span class="n">instance_grid</span><span class="p">:</span>
                         <span class="k">for</span> <span class="n">argset</span> <span class="ow">in</span> <span class="n">argsets</span><span class="p">:</span>
                             <span class="n">updated</span> <span class="o">=</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+
+                            <span class="c1"># Add instance args, if needed</span>
                             <span class="n">updated</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">argset</span>
+                            <span class="k">if</span> <span class="n">extra_args</span><span class="p">:</span>
+                                <span class="n">updated</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">][</span><span class="s2">&quot;self&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">extra_args</span>
+
                             <span class="n">tests</span><span class="p">[</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2">.</span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">idx</span><span class="p">)]</span> <span class="o">=</span> <span class="n">GridTest</span><span class="p">(</span>
                                 <span class="n">module</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
                                 <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>

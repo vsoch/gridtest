@@ -8,6 +8,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
+from json_tricks import dumps
 import yaml
 import fnmatch
 import json
@@ -66,7 +67,7 @@ def write_yaml(yaml_dict, filename):
     return filename
 
 
-def write_json(json_obj, filename):
+def write_json(json_obj, filename, pretty=True):
     """write_json will write a json object to file, pretty printed
 
        Arguents:
@@ -74,5 +75,8 @@ def write_json(json_obj, filename):
         - filename (str) : the output file to write to
     """
     with open(filename, "w") as filey:
-        filey.writelines(json.dumps(json_obj, indent=4, separators=(",", ": ")))
+        if pretty:
+            filey.writelines(dumps(json_obj, indent=4, separators=(",", ": ")))
+        else:
+            filey.writelines(dumps(json_obj))
     return filename

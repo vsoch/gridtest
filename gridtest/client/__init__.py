@@ -77,6 +77,14 @@ def get_parser():
     )
 
     test.add_argument(
+        "--compact",
+        dest="save_compact",
+        help="save compact json",
+        default=False,
+        action="store_true",
+    )
+
+    test.add_argument(
         "--save-web",
         dest="save_report",
         help="save a full web report to directory specified (cannot exist)",

@@ -143,6 +143,7 @@ class GridTest:
         return substitute_func(value)
 
     # Summary
+
     @property
     def summary(self):
         """print a summary of the test, including if it is supposed to
@@ -553,6 +554,7 @@ class GridRunner:
         cleanup=True,
         save=None,
         save_report=None,
+        save_compact=False,
         report_template="report",
     ):
         """run the grid runner, meaning that we turn each function and set of
@@ -602,7 +604,7 @@ class GridRunner:
 
         # Save to file (required for report)
         if save:
-            self.save_results(save, tests)
+            self.save_results(save, tests, save_compact)
 
         # return correct error code
         if self.failed(tests):
@@ -639,7 +641,7 @@ class GridRunner:
             bot.exit(f"Error writing to {dest}.")
         return dest
 
-    def save_results(self, filename, tests):
+    def save_results(self, filename, tests, save_compact):
         """save a runner results to file.
         """
         filename = os.path.abspath(filename)
@@ -653,6 +655,11 @@ class GridRunner:
         else:
             results = []
             for key, test in tests.items():
+
+                if test.params.get("save", True) == False:
+                    continue
+
+                # If the result is instance, convert
                 results.append(
                     {
                         "name": key,
@@ -668,7 +675,7 @@ class GridRunner:
                         "module": test.module,
                     }
                 )
-            write_json(results, filename)
+            write_json(results, filename, pretty=not save_compact)
             return filename
 
     def print_results(self, tests):
@@ -754,6 +761,11 @@ class GridRunner:
                     # If we find a grid, it has to reference an existing grid
                     if "grid" in entry and entry["grid"] in self.grids:
                         grid = self.grids[entry["grid"]]
+                        params = deepcopy(entry)
+                        for key in ["grid", "instance"]:
+                            if key in params:
+                                del params[key]
+                        grid.params.update(params)
 
                     # A class function is tested over it's instance grid
                     instance_grid = [{}]
