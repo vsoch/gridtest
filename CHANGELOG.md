@@ -14,7 +14,8 @@ and **Merged pull requests**. Critical items to know are:
 The versions coincide with releases on pip.
 
 ## [0.2.x](https://github.com/vsoch/gridtest/tree/master) (0.0.x)
- - adding grid exports and variables section (0.0.12)
+ - refactoring to use Grid class, json-tricks export (0.0.13)
+ - adding grid exports, and variables section (0.0.12)
  - adding "tests" level to config files (0.0.11)
  - adding grids section in test file, and function definition for args
  - first alpha release with basic grid test generation (0.0.1)
