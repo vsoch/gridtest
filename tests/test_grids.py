@@ -10,77 +10,78 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 
 import os
+import sys
 import pytest
 
 here = os.path.abspath(os.path.dirname(__file__))
+sys.path.insert(0, here)
+sys.path.insert(0, os.path.join(here, "grids"))
 
 
 def test_grids():
     """Test loading and using different kinds of grids.
     """
-    from gridtest.main.grids import get_grids
+    from gridtest.main.grids import Grid
     from gridtest.main.test import GridRunner
+    from grids.script import get_pokemon_id
 
     grids_file = os.path.join(here, "grids", "grids.yml")
     runner = GridRunner(grids_file)
 
     # Test get_grids function via runner
     grids = runner.get_grids()
+    for key, grid in grids.items():
+        print(list(grid))
 
     # Case 1: a grid with a custom function
-    entry = {"generate_pids": {"func": "script.get_pokemon_id", "count": 10}}
-    result = get_grids(entry)
-    assert "generate_pids" in result
-    assert len(result["generate_pids"]) == 10
+    grid = Grid(
+        name="generate_pids", params={"functions": {"pid": get_pokemon_id}, "count": 10}
+    )
+    assert grid.name == "generate_pids"
+    assert len(list(grid)) == 10
 
     # Case 2: Grid with system function
     entry = {
-        "random_choice": {
-            "func": "random.choice",
-            "count": 10,
-            "grid": {"seq": [[1, 2, 3]]},
-        }
+        "functions": {"pid": "random.choice"},
+        "count": 10,
+        "args": {"seq": [[1, 2, 3]]},
     }
-    result = get_grids(entry)
-    assert "random_choice" in result
-    assert len(result["random_choice"]) == 10
+    grid = Grid(name="random_choice", params=entry)
 
-    # Case 3: Generate empty returns empty arguments
-    result = get_grids({"generate_empty": {"count": 10}})
-    assert "generate_empty" in result
-    assert len(result["generate_empty"]) == 10
+    assert grid.name == "random_choice"
+    assert len(list(grid)) == 10
+    assert len(grid.argsets) == 0
 
-    # Case 4: Generate matrix with single level lists parameterizes over them
-    entry = {"generate_matrix": {"grid": {"x": [1, 2, 3], "y": [1, 2, 3]}}}
-    result = get_grids(entry)
-    assert "generate_matrix" in result
-    assert len(result["generate_matrix"]) == 9
+    # Case 3: cache results
+    entry["cache"] = True
+    grid = Grid(name="random_choice", params=entry)
+    assert len(grid.argsets) == 10
 
-    # Case 5: List of lists uses list as input argument
-    entry = {
-        "generate_lists_matrix": {
-            "grid": {"x": [[1, 2, 3], [4, 5, 6]], "y": [[1, 2, 3], [4, 5, 6]]}
-        }
-    }
-    result = get_grids(entry)
-    assert "generate_lists_matrix" in result
-    assert len(result["generate_lists_matrix"]) == 4
+    # Case 4: Generate empty returns empty arguments
+    grid = Grid(name="generate_empty", params={"count": 10})
+    assert len(list(grid)) == 10
 
-    # Case 6: min, max and by with one argument
-    entry = {"generate_by_min_max": {"grid": {"x": {"min": 0, "max": 10, "by": 2}}}}
-    result = get_grids(entry)
-    assert "generate_by_min_max" in result
-    assert len(result["generate_by_min_max"]) == 5
+    # Case 5: Generate matrix with single level lists parameterizes over them
+    params = {"args": {"x": [1, 2, 3], "y": [1, 2, 3]}}
+    grid = Grid("generate_matrix", params=params)
+    assert len(list(grid)) == 9
+
+    # Case 6: List of lists uses list as input argument
+    params = {"args": {"x": [[1, 2, 3], [4, 5, 6]], "y": [[1, 2, 3], [4, 5, 6]]}}
+    grid = Grid("generate_lists_matrix", params=params)
+    assert len(list(grid)) == 4
+
+    # Case 7: min, max and by with one argument
+    entry = {"args": {"x": {"min": 0, "max": 10, "by": 2}}}
+    grid = Grid("generate_by_min_max", params=entry)
+    assert len(list(grid)) == 5
 
     # Case 7: min, max, and two arguments
     entry = {
-        "generate_by_min_max_twovars": {
-            "grid": {
-                "y": {"min": 0, "max": 10, "by": 2},
-                "x": {"min": 10, "max": 20, "by": 2},
-            }
+        "args": {
+            "y": {"min": 0, "max": 10, "by": 2},
+            "x": {"min": 10, "max": 20, "by": 2},
         }
     }
-    result = get_grids(entry)
-    assert "generate_by_min_max_twovars" in result
-    assert len(result["generate_by_min_max_twovars"]) == 25
+    grid = Grid("generate_by_min_max_twovars", params=entry)
+    assert len(list(grid)) == 25
