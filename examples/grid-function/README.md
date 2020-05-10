@@ -41,13 +41,13 @@ How will we generate that?
 ### Create your Yaml
 
 Remember that for the example in the [custom-decorator](../custom-decorator), 
-we just provide a list of sentences in our grid:
+we just provide a list of sentences for our args:
 
 ```yaml
   script.multiply_sentence:
   - metrics:
     - '@script.countwords'
-    grid:
+    args:
       count:
         list: [1, 5, 10]
       sentence:
@@ -60,8 +60,7 @@ we just provide a list of sentences in our grid:
 This seems reasonable for a dummy example, or small set of inputs, but likely 
 isn't reasonable if we want to more programatically generated inputs.
 For example, for our current pokemon function we would need to hard
-code a specific set of ids (as a list)
-
+code a specific set of ids (as a list):
 
 ```
 script:
@@ -70,7 +69,7 @@ script:
     script.generate_pokemon:
     - metrics:
       - '@script.countwords'
-      grid:
+      args:
         pid: 
           list: [1, 2, 3]
 ```
@@ -82,7 +81,7 @@ script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/grid-function/script.py
   tests:
     script.generate_pokemon:
-      grid:
+      args:
         pid: 
           min: 1
           max: 3
@@ -102,7 +101,7 @@ A more realistic use case would be having some numerical optimization function
 that requires a distribution (an array of numbers) to be generated for some input.
 We'd want to generate that array with a function over some grid of parameters.
 
-### Add a grid
+### Add Arguments
 
 We basically need to point the parameter "pid" to be generated from the function. What
 does that look like? First we need to add the function under "grids" - a grid
@@ -114,34 +113,69 @@ script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/grid-function/script.py
   grids:
     generate_pids:
-      func: script.get_pokemon_id    
-  tests:
-    script.generate_pokemon:
+      functions: 
+        pid: script.get_pokemon_id
 ...
 ```
 
 The function doesn't have any input arguments, so we can just specify it's name
-under the "func" key, and a count for the number of times we want it run. 
-If we had another grid of arguments to run that function
-over, we would define them in a grid just as we are used to for a test. Then we
-need to specify our generate_pokemon function to use it:
+under functions, and notice that we are mapping it to populate the variable "pid."
+But not we run into another issue - how do we tell the grid to be run 10 times
+(each to randomly generate a pokemon id?) To do this, we add a "count" to our
+grid:
 
 ```yaml
 script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/grid-function/script.py
   grids:
     generate_pids:
-      func: script.get_pokemon_id
-      count: 10     
-
-  tests:
-    script.generate_pokemon:
-      grid:
-        pid: generate_pids
+      count: 10
+      functions: 
+        pid: 
+          func: script.get_pokemon_id
 ```
 
-The above says that "for the script.generate_pokemon test, generate the "pid"
-variable from "generate_pids", which is a function that should run 10 times."
+Then we need to specify our generate_pokemon function to use it, and we do this
+by adding the reference to the grid "generate_pids" under `script.generate_pokemon`:
+
+```yaml
+  tests:
+    script.generate_pokemon:
+      - metrics:
+          - "@script.uniquechars"
+        grid: generate_pids
+```
+
+The above says that "for script.generate_pokemon test, use the grid named
+"generate_pids" to parameterize and populate input parameters. We can then
+pop up to the grids section to see that we will generate pid by running
+a function 10 times.
+
+> Why can't I specify the arguments alongside the test?
+
+You can! The above recipe is actually defining a global grid to use, which
+might be optimal if you want to share grids between tests. But you can
+just as easily define an inline grid. That would look like this:
+
+```yaml
+script:
+  filename: /home/vanessa/Desktop/Code/gridtest/examples/grid-function/script.py
+  tests:
+    script.generate_pokemon:
+      - metrics:
+          - "@script.uniquechars"
+        count: 10
+        functions: 
+          pid: 
+            func: script.get_pokemon_id
+```
+
+And is a more succinct (but possibly redundant) method to run the same thing.
+See [gridtest-inline.yml](gridtest-inline.yml) for this example, and to run:
+
+```bash
+$ gridtest test gridtest-inline.yml
+```
 
 ### Add a Metric
 

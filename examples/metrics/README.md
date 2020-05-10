@@ -47,14 +47,13 @@ script.add.0                   @timeit                        0.00 ms
 4/4 tests passed
 ```
 
-## Adding a Grid
+## Adding Arguments
 
 Great - so we've measured time for one function. What if we want to measure the time for
 a function, but across a parameter grid? We might want to adopt our recipe to allow for this:
 
 ```yaml
-    # A grid specification of a parameter - min 0, max 5, increment by 1, also add 10 and 15
-    grid:
+    args:
       one:
         min: 0
         max: 5
@@ -75,7 +74,7 @@ script:
     script.gotosleep:
     - metrics:
       - '@timeit'
-      grid:
+      args:
         seconds:
           list: [10, 15]
           max: 5

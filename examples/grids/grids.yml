@@ -7,19 +7,19 @@ mygrids:
 
     # A grid that will generate each cross of x and y (total of 9)
     generate_matrix:
-      grid:
+      args:
         x: [1, 2, 3] 
         y: [1, 2, 3] 
 
     # Generate the same, but have lists as arguments
     generate_lists_matrix:
-      grid:
+      args:
         x: [[1, 2, 3], [4, 5, 6]] 
         y: [[1, 2, 3], [4, 5, 6]] 
 
     # Generate a grid with a min, max, by
     generate_by_min_max:
-      grid:
+      args:
         x:
           min: 0
           max: 10
@@ -27,7 +27,7 @@ mygrids:
 
     # Generate a grid with a min, max, by for two variables (
     generate_by_min_max_twovars:
-      grid:
+      args:
         x:
           min: 0
           max: 10

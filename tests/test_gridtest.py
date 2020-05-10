@@ -230,13 +230,13 @@ def test_metrics():
     runner = GridRunner(test_file)
     tests = runner.get_tests()
 
-    # List and min/max should expand to 6
-    assert (len([x for x in tests.keys() if "gotosleep" in x])) == 6
+    # List and min/max should expand to 3
+    assert (len([x for x in tests.keys() if "gotosleep" in x])) == 3
     runner.run()
 
     # Ensure that invalid specs aren't honored
     runner = GridRunner(test_file)
-    runner.config["metrics"]["tests"]["metrics.gotosleep"][0]["grid"]["seconds"][
+    runner.config["metrics"]["tests"]["metrics.gotosleep"][0]["args"]["seconds"][
         "invalid"
     ] = 1
 

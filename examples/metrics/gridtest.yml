@@ -4,7 +4,7 @@ script:
     script.gotosleep:
     - metrics:
       - '@timeit'
-      grid:
+      args:
         seconds:
           list: [10, 15]
           max: 5

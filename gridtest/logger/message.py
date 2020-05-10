@@ -255,6 +255,10 @@ class GridTestMessage:
         self.emit(ERROR, message, "ERROR")
         sys.exit(return_code)
 
+    def exit_info(self, message, return_code=0):
+        self.emit(INFO, message)
+        sys.exit(return_code)
+
     def warning(self, message):
         self.emit(WARNING, message, "WARNING")
 

@@ -9,6 +9,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 
 from gridtest.main.generate import import_module, get_function_typing
+from gridtest.main.grids import intersect_args
 from io import StringIO
 import re
 import sys
@@ -154,6 +155,8 @@ def test_basic(
         err = [f"Cannot find function {funcname}"]
 
     else:
+        # Subset arguments down to those allowed
+        args = intersect_args(originalfunc, args)
         passed, error = test_types(originalfunc, args, returns)
         err += error
 

@@ -80,15 +80,14 @@ script.add.0                   @timeit                        0.00 ms
 4/4 tests passed
 ```
 
-<a id="adding-a-grid">
-### Adding a Grid
+<a id="adding-arguments">
+### Adding Arguments
 
 Great - so we've measured time for one function. What if we want to measure the time for
 a function, but across a parameter grid? We might want to adopt our recipe to allow for this:
 
 ```yaml
-    # A grid specification of a parameter - min 0, max 5, increment by 1, also add 10 and 15
-    grid:
+    args:
       one:
         min: 0
         max: 5
@@ -136,7 +135,7 @@ script:
   script.gotosleep:
   - metrics:
     - '@timeit'
-    grid:
+    args:
       seconds:
         list: [10, 15]
         max: 5
@@ -156,6 +155,8 @@ would be 1. If you want to decrease, set a negative value for by.
 
 **list** is for when you want to include a list of values, even in addition to a
 range already specified as in the example above.
+
+> Did you know that an arguments section is just an inline grid? You can also define this section globally and share between tests, see [grids](../grids) to learn more.
 
 <a id="run-the-gridtest">
 ## Run the GridTest

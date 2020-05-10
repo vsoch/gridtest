@@ -4,7 +4,7 @@ metrics:
     metrics.gotosleep:
     - metrics:
       - '@timeit'
-      grid:
+      args:
         seconds:
           list: [0, 1, 2]
           max: 6

@@ -22,10 +22,10 @@ from gridtest.main.generate import (
     get_function_typing,
     extract_modulename,
 )
-from gridtest.main.grids import get_grids
+from gridtest.main.grids import Grid
 from gridtest.main.helpers import test_basic
 from gridtest.main.workers import Workers
-from gridtest.main.substitute import substitute_func, substitute_args, expand_args
+from gridtest.main.substitute import substitute_func, substitute_args
 from copy import deepcopy
 
 import itertools
@@ -496,7 +496,6 @@ class GridRunner:
             - interactive (bool) : run jobs interactively (for debugging)
               not available for parallel jobs.
         """
-
         # Parallel tests cannot be interactive
         if parallel and not interactive:
             self._run_parallel(tests, nproc=nproc)
@@ -573,12 +572,17 @@ class GridRunner:
               - save (str) : a filepath to save results to (must be json)
               - save_report (str) : path to folder (not existing) to save a report to
               - report_template (str) : a template name of a report to generate
+
         """
         # 1. Generate list of tests and grid functions
+        self.show_progress = show_progress
         self.get_grids()
+
         tests = self.get_tests(regexp=regexp, verbose=verbose, cleanup=cleanup)
 
-        self.show_progress = show_progress
+        # Pretty print results to screen
+        if not tests:
+            bot.exit_info("No tests to run.")
 
         # 2. Run tests (serial or in parallel)
         self.run_tests(
@@ -589,7 +593,6 @@ class GridRunner:
             name=name,
         )
 
-        # Pretty print results to screen
         self.print_results(tests)
 
         # Save report?
@@ -709,8 +712,8 @@ class GridRunner:
         """
         for parent, section in self.config.items():
             filename = extract_modulename(section.get("filename", ""), self.input_dir)
-
-            self.grids.update(get_grids(section.get("grids", {}), filename=filename))
+            for name, grid in section.get("grids", {}).items():
+                self.grids[name] = Grid(name=name, params=grid, filename=filename)
         return self.grids
 
     def get_tests(self, regexp=None, verbose=False, cleanup=True):
@@ -723,6 +726,7 @@ class GridRunner:
 
         for parent, section in self.config.items():
             for name, module in section.get("tests", {}).items():
+
                 if regexp and not re.search(regexp, name):
                     continue
 
@@ -735,18 +739,37 @@ class GridRunner:
                     )
 
                     idx = 0
+
                     # Use idx to index each test with parameters
                     for entry in module:
+                        grid = None
 
-                        # Entry cannot have overlap in grid and args
-                        if set(entry.get("args", {}).keys()).intersection(
-                            set(entry.get("grid", {}).keys())
-                        ):
-                            bot.exit(f"{name} has shared grid and args keys.")
+                        # Grid and args cannot both be defined
+                        if "args" in entry and "grid" in entry:
+                            bot.exit(f"{name} has defined both a grid and args.")
 
-                        # Generate list of args
-                        for argset in expand_args(entry, lookup=self.grids):
-                            updated = deepcopy(entry)
+                        # If we find a grid, it has to reference an existing grid
+                        if "grid" in entry and entry["grid"] not in self.grids:
+                            bot.exit(
+                                f"{name} needs grid {entry['grid']} but not found in grids."
+                            )
+
+                        # If we find a grid, it has to reference an existing grid
+                        if "grid" in entry and entry["grid"] in self.grids:
+                            grid = self.grids[entry["grid"]]
+
+                        # If entry is defined without a grid, we need to generate it
+                        if not grid:
+                            grid = Grid(name=name, params=entry, filename=filename)
+
+                        # If the grid is cached, we already have parameter sets
+                        argsets = grid
+                        if grid.cache:
+                            argsets = grid.argsets
+
+                        # iterate over argsets for a grid, get overlapping args
+                        for argset in argsets:
+                            updated = deepcopy(grid.params)
                             updated["args"] = argset
                             tests["%s.%s" % (name, idx)] = GridTest(
                                 module=parent,
@@ -757,6 +780,7 @@ class GridRunner:
                                 filename=filename,
                                 show_progress=self.show_progress,
                             )
+                            print(f"generating test {idx}", end="\r")
                             idx += 1
         return tests
 
