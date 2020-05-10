@@ -94,17 +94,9 @@ def test_basic(
 
     if not func:
         sys.path.insert(0, os.path.dirname(filename))
-        module = import_module(module)
-
-        # If we have a class, we need to import and instantiate it first
-        if "self" in args:
-            instance = getattr(module, funcname.split(".")[-2])(**args["self"])
-            func = getattr(instance, funcname.split(".")[-1])
-            del args["self"]
-        else:
-            for piece in funcname.split("."):
-                func = getattr(module, piece)
-                module = func
+        func = get_function(
+            module=module, funcname=funcname, args=args, filename=filename
+        )
 
     # Figure out how to apply multiple
     originalfunc = func
@@ -182,6 +174,36 @@ def test_basic(
                     err.append(message)
 
     return [passed, result, out, err, raises]
+
+
+def get_function(module, funcname, args, filename):
+    """given a module name, function name, argument, and filename, derive
+       a function, optionally deriving an instance first that it might
+       belong to
+    """
+    sys.path.insert(0, os.path.dirname(filename))
+    module = import_module(module)
+
+    if "self" in args:
+
+        # If args provided for instance
+        instance = getattr(module, funcname.split(".")[0])
+        instanceargs = {}
+        if "self" in args:
+            instanceargs = intersect_args(instance, args["self"])
+        instance = instance(**instanceargs)
+
+        for piece in funcname.split(".")[1:]:
+            func = getattr(instance, piece)
+            instance = func
+
+        # func = getattr(instance, funcname.split(".")[-1])
+        del args["self"]
+    else:
+        for piece in funcname.split("."):
+            func = getattr(module, piece)
+            module = func
+    return func
 
 
 def test_types(func, args=None, returns=None):

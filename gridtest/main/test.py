@@ -462,11 +462,11 @@ class GridRunner:
            substitute arguments (starting with instance) for these variables.
         """
         # First create the lookup
-        lookup = dict()
+        self.lookup = dict()
         for name, tests in self.iter_tests():
             for test in tests:
                 if "instance" in test:
-                    lookup[test["instance"]] = test["args"]
+                    self.lookup[test["instance"]] = test
 
         # Now fill in variables
         for name, tests in self.iter_tests():
@@ -479,10 +479,10 @@ class GridRunner:
                         )
                     if re.search("{{.+}}", test["args"]["self"]):
                         instance = re.sub(
-                            "({{|}}|instance[.])", "", "{{ instance.thisone }}"
+                            "({{|}}|instance[.])", "", test["args"]["self"]
                         ).strip()
-                        if instance in lookup:
-                            test["args"]["self"] = lookup[instance]
+                        if instance in self.lookup:
+                            test["args"]["self"] = self.lookup[instance]
 
     def run_tests(self, tests, nproc=9, parallel=True, interactive=False, name=None):
         """run tests. By default, we run them in parallel, unless serial
@@ -730,47 +730,59 @@ class GridRunner:
                 if regexp and not re.search(regexp, name):
                     continue
 
-                # Each module can have a list of tests
-                if name.startswith(parent):
+                # Get either the file path, module name, or relative path
+                filename = extract_modulename(
+                    section.get("filename", ""), self.input_dir
+                )
 
-                    # Get either the file path, module name, or relative path
-                    filename = extract_modulename(
-                        section.get("filename", ""), self.input_dir
-                    )
+                idx = 0
 
-                    idx = 0
+                # Use idx to index each test with parameters
+                for entry in module:
+                    grid = None
 
-                    # Use idx to index each test with parameters
-                    for entry in module:
-                        grid = None
+                    # Grid and args cannot both be defined
+                    if "args" in entry and "grid" in entry:
+                        bot.exit(f"{name} has defined both a grid and args.")
 
-                        # Grid and args cannot both be defined
-                        if "args" in entry and "grid" in entry:
-                            bot.exit(f"{name} has defined both a grid and args.")
+                    # If we find a grid, it has to reference an existing grid
+                    if "grid" in entry and entry["grid"] not in self.grids:
+                        bot.exit(
+                            f"{name} needs grid {entry['grid']} but not found in grids."
+                        )
 
-                        # If we find a grid, it has to reference an existing grid
-                        if "grid" in entry and entry["grid"] not in self.grids:
-                            bot.exit(
-                                f"{name} needs grid {entry['grid']} but not found in grids."
+                    # If we find a grid, it has to reference an existing grid
+                    if "grid" in entry and entry["grid"] in self.grids:
+                        grid = self.grids[entry["grid"]]
+
+                    # A class function is tested over it's instance grid
+                    instance_grid = [{}]
+
+                    # If entry is defined without a grid, we need to generate it
+                    if not grid:
+                        grid = Grid(name=name, params=entry, filename=filename)
+
+                        # If the grid has an instance, add the correct args to it
+                        if "self" in grid.args and "grid" in grid.args["self"]:
+                            instance_grid = self.grids.get(
+                                grid.args["self"]["grid"], [{}]
                             )
 
-                        # If we find a grid, it has to reference an existing grid
-                        if "grid" in entry and entry["grid"] in self.grids:
-                            grid = self.grids[entry["grid"]]
+                    # If the grid is cached, we already have parameter sets
+                    argsets = grid
+                    if grid.cache:
+                        argsets = grid.argsets
 
-                        # If entry is defined without a grid, we need to generate it
-                        if not grid:
-                            grid = Grid(name=name, params=entry, filename=filename)
-
-                        # If the grid is cached, we already have parameter sets
-                        argsets = grid
-                        if grid.cache:
-                            argsets = grid.argsets
-
-                        # iterate over argsets for a grid, get overlapping args
+                    # iterate over argsets for a grid, get overlapping args
+                    for extra_args in instance_grid:
                         for argset in argsets:
                             updated = deepcopy(grid.params)
+
+                            # Add instance args, if needed
                             updated["args"] = argset
+                            if extra_args:
+                                updated["args"]["self"] = extra_args
+
                             tests["%s.%s" % (name, idx)] = GridTest(
                                 module=parent,
                                 name=name,
