@@ -21,34 +21,10 @@ mygrids:
 
     # A grid that will generate each cross of x and y (total of 9)
     generate_matrix:
-      grid:
+      args:
         x: [1, 2, 3] 
         y: [1, 2, 3] 
 ```
-
-And we can also define grids intended for one variable under a "variables"
-section:
-
-```yaml
-schrodinger:
-  filename: /home/vanessa/Desktop/Code/pySchrodinger/schrodinger.py
-
-  # Variables can be used for grids or tests. The namespace is shared, variables looked for first.
-  variables:
-
-    generate_m:
-      min: 0.1
-      max: 2.1
-      by: 0.1
-
-    generate_n:
-      min: 0.1
-      max: 2.1
-      by: 0.1
-```
-
-This documentation will discuss how to interact with and customize your grids 
-and variables.
 
 ## Loading via a GridRunner
 
@@ -65,119 +41,131 @@ We can easily generate the grids as follows:
 
 ```python
 runner.get_grids()
-{'generate_pids': ['645',
-  '393',
-  '511',
-  '481',
-  '142',
-  '709',
-  '344',
-  '496',
-  '820',
-  '725'],
- 'generate_empty': [{}, {}, {}, {}, {}, {}, {}, {}, {}, {}],
- 'generate_matrix': [{'x': 1, 'y': 1},
-  {'x': 1, 'y': 2},
-  {'x': 1, 'y': 3},
-  {'x': 2, 'y': 1},
-  {'x': 2, 'y': 2},
-  {'x': 2, 'y': 3},
-  {'x': 3, 'y': 1},
-  {'x': 3, 'y': 2},
-  {'x': 3, 'y': 3}],
- 'generate_lists_matrix': [{'x': [1, 2, 3], 'y': [1, 2, 3]},
-  {'x': [1, 2, 3], 'y': [4, 5, 6]},
-  {'x': [4, 5, 6], 'y': [1, 2, 3]},
-  {'x': [4, 5, 6], 'y': [4, 5, 6]}],
- 'generate_by_min_max': [{'x': 0}, {'x': 2}, {'x': 4}, {'x': 6}, {'x': 8}],
- 'generate_by_min_max_twovars': [{'x': 0, 'y': 10},
-  {'x': 0, 'y': 12},
-  {'x': 0, 'y': 14},
-  {'x': 0, 'y': 16},
-  {'x': 0, 'y': 18},
-  {'x': 2, 'y': 10},
-  {'x': 2, 'y': 12},
-  {'x': 2, 'y': 14},
-  {'x': 2, 'y': 16},
-  {'x': 2, 'y': 18},
-  {'x': 4, 'y': 10},
-  {'x': 4, 'y': 12},
-  {'x': 4, 'y': 14},
-  {'x': 4, 'y': 16},
-  {'x': 4, 'y': 18},
-  {'x': 6, 'y': 10},
-  {'x': 6, 'y': 12},
-  {'x': 6, 'y': 14},
-  {'x': 6, 'y': 16},
-  {'x': 6, 'y': 18},
-  {'x': 8, 'y': 10},
-  {'x': 8, 'y': 12},
-  {'x': 8, 'y': 14},
-  {'x': 8, 'y': 16},
-  {'x': 8, 'y': 18}]}
+{'generate_empty': [grid|generate_empty],
+ 'generate_matrix': [grid|generate_matrix],
+ 'generate_lists_matrix': [grid|generate_lists_matrix],
+ 'generate_by_min_max': [grid|generate_by_min_max],
+ 'generate_by_min_max_twovars': [grid|generate_by_min_max_twovars]}
 ```
 
-Notice how some of the grids above are named parameter sets (dictionaries with
-values to indicate arguments and matching values) and others are flat lists of
-values. For the latter, this means that we have run those same variables
-through a function, which will be discussed later. You can equivalently
-easily get lists of variables as follows:
+## Loading as a Grid
 
-```bash
-runner.get_variables()                                                                                                            
-Out[4]: 
-{'generate_m': [0.1,
-  0.2,
-  0.3,
-  0.4,
-  0.5,
-  0.6,
-  0.7,
-  0.8,
-  0.9,
-  1.0,
-  1.1,
-  1.2,
-  1.3,
-  1.4,
-  1.5,
-  1.6,
-  1.7,
-  1.8,
-  1.9,
-  2.0],
- 'generate_n': [0.1,
-  0.2,
-  0.3,
-  0.4,
-  0.5,
-  0.6,
-  0.7,
-  0.8,
-  0.9,
-  1.0,
-  1.1,
-  1.2,
-  1.3,
-  1.4,
-  1.5,
-  1.6,
-  1.7,
-  1.8,
-  1.9,
-  2.0]}
+A Grid is a first class citizen, so you can also generate without
+the GridRunner, either via a json object or yaml you've loaded:
+
+```python
+from gridtest.main.grids import Grid
+
+grid = Grid(name="mygrid", params={"args": {"one": [1, 11, 111], "two": 2}})
+[grid|mygrid]
 ```
 
-Variables will also be discussed in more detail.
+### Cached Loading
 
-<a id="viewing-on-the-command-line">
+By default, grids are generated on demand, meaning that the argument sets (optionally
+derived by functions you have provided under params) are generated at this point in time.
+For example:
+
+```
+for argset in grid:
+    print(argset)
+
+{'one': 1, 'two': 2}
+{'one': 11, 'two': 2}
+{'one': 111, 'two': 2}
+```
+
+This also means that, by default, your grid.argsets will be empty when you
+instantiate it.
+
+```python
+grid = Grid(name="mygrid", params={"args": {"one": [1, 11, 111], "two": 2}})
+grid.argsets
+[]
+```
+
+This is done intentionally because it can sometimes take a lot of memory to store
+a long list of argument sets. However, if you want to generate the argument sets
+on init, just set "cache" to True in your params:
+
+```python
+grid = Grid(name="mygrid", params={"cache": True, "args": {"one": [1, 11, 111], "two": 2}})
+```
+
+You should then be able to see the argsets ready for your use!
+
+```python
+grid.argsets
+[{'one': 1, 'two': 2}, {'one': 11, 'two': 2}, {'one': 111, 'two': 2}]
+```
+
+### Grid Functions
+
+What if you want to generate a long list of items for an argument, and it would
+be crazy to type them out? This is what the functions specification for a grid
+is for. You would provide your functions, each associated with an argument, under
+the "functions" section. As an example, let's say we want to run random.choice,
+and select from a list defined under the argument "choices":
+
+```python
+import random
+grid = Grid(name="mygrid", params={"functions": {"pid": random.choice}, "args": {"seq": [[1,2,3,4,5,6,7]]}})
+```
+
+The above would look like this in yaml:
+
+```yaml
+grids:
+  mygrid:
+    args:
+      seq: [[1,2,3,4,5,6,7]]
+    functions:
+      pid: random.choice
+```
+
+And we would generate our argument sets:
+
+```python
+list(grid)
+[{'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 2}]
+```
+
+This also points out another important point - if you were to provide a list for an
+argument, it would be parameterized. If you want the entire list treated as one variable,
+then define it within another list as shown above. The above grid says "generate the argument
+pid by using random.choice to select from seq." How does the grid know to match seq to random.choice?
+It's a known keyword argument! Another insight here is that although we define a sequence argument, we don't actually
+need it, we really only care about the result (pid). But let's say we want to generate
+10 x a pid, how do we do that? We add a count to the params:
+
+```python
+grid = Grid(name="mygrid", params={"count": 10, "functions": {"pid": random.choice}, "args": {"seq": [[1,2,3,4,5,6,7]]}})
+list(grid)
+
+[{'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 5},
+ {'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 1},
+ {'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 3},
+ {'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 7},
+ {'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 5},
+ {'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 7},
+ {'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 1},
+ {'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 4},
+ {'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 1},
+ {'seq': [1, 2, 3, 4, 5, 6, 7], 'pid': 3}]
+```
+
+These values are being generated by an iterator and not saved to any single list in memory,
+so although it seems very rundant to see the same list more than once, it shouldn't
+serve significant issues with respect to memory.
+
+
 ## Viewing on the Command Line
 
-You can also preview the grids generated from the command line. Here is how
-to list the names for the grids and variables found in a file:
+You can also preview the grids generated from the command line. First you might
+want to list all grids defined in a file:
 
 ```bash
-$ gridtest gridview grids.yml --list
+$ gridtest gridview grids.yml
 generate_empty
 generate_matrix
 generate_lists_matrix
@@ -185,53 +173,57 @@ generate_by_min_max
 generate_by_min_max_twovars
 ```
 
-Here is how to print all grids:
-
-```bash
-gridtest gridview grids.yml
-```
-
-or a specific named grid that we found with `--list`:
+and then inspect a specific named grid:
 
 ```bash
 $ gridtest gridview grids.yml generate_empty
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+```
+
+If you want to export your entire grid to json, possibly to read in as-is
+later and use, add --export:
+
+```bash
+$  gridtest gridview grids.yml generate_by_min_max --export exported.json 
+```
+```bash
+cat exported.json
 [
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {},
-    {}
+    {
+        "x": 0.0
+    },
+    {
+        "x": 2.0
+    },
+    {
+        "x": 4.0
+    },
+    {
+        "x": 6.0
+    },
+    {
+        "x": 8.0
+    }
 ]
 ```
 
-You can also opt for a more compact view:
+That's not a really interesting grid, but you get the gist.
+Each of the grids listed above will be explained below in more detail.
 
-```bash
-$ gridtest gridview grids.yml generate_empty --compact
-[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
-```
-
-or even just count the number generated:
-
-```bash
-$ gridtest gridview grids.yml generate_empty --count
-10 lists produced.
-```
-
-Each of the grids above will be explained below in more detail.
-
-<a id="writing-grids">
 ## Writing Grids
 
 Let's start with the most basic of grids, which are those that don't import any
 special functions. 
 
-<a id="header">
 ### Header
 
 The header should have a named section for the grids that you want to define
@@ -260,7 +252,6 @@ example here. Each example grid is discussed below. For each example,
 you can preview the grid in the terminal with `gridtest gridview` or
 obtain the grid by instantiating the `GridRunner` as shown above.
 
-<a id="empty">
 ### Empty
 
 It could be that you need to generate empty lists of arguments for a function,
@@ -275,11 +266,19 @@ generate_empty:
 The result comes out to be:
 
 ```bash
-$ gridtest gridview grids.yml generate_empty --compact
-[{}, {}, {}, {}, {}, {}, {}, {}, {}, {}]
+$ gridtest gridview grids.yml generate_empty
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
+{}
 ```
 
-<a id="parameterize-variables">
 ### Parameterize Variables
 
 Let's say that we have two variables, x and y, and we want to generate a grid
@@ -287,7 +286,7 @@ of all possible combinations for a listing of each. That would look like this:
 
 ```yaml
     generate_matrix:
-      grid:
+      args:
         x: [1, 2, 3] 
         y: [1, 2, 3]
 ```
@@ -295,11 +294,18 @@ of all possible combinations for a listing of each. That would look like this:
 And the resulting grid will have 3x3 or 9 total combinations of x and y:
 
 ```bash
-$ gridtest gridview grids.yml generate_matrix --compact
-[{'x': 1, 'y': 1}, {'x': 1, 'y': 2}, {'x': 1, 'y': 3}, {'x': 2, 'y': 1}, {'x': 2, 'y': 2}, {'x': 2, 'y': 3}, {'x': 3, 'y': 1}, {'x': 3, 'y': 2}, {'x': 3, 'y': 3}]
+$ gridtest gridview grids.yml generate_matrix
+{'x': 1, 'y': 1}
+{'x': 1, 'y': 2}
+{'x': 1, 'y': 3}
+{'x': 2, 'y': 1}
+{'x': 2, 'y': 2}
+{'x': 2, 'y': 3}
+{'x': 3, 'y': 1}
+{'x': 3, 'y': 2}
+{'x': 3, 'y': 3}
 ```
 
-<a id="parameterize-lists">
 ### Parameterize Lists
 
 If you want to do similar but instead have a list of values be paramaterized, just 
@@ -307,7 +313,7 @@ specify a list of lists instead.
 
 ```yaml
     generate_lists_matrix:
-      grid:
+      args:
         x: [[1, 2, 3], [4, 5, 6]] 
         y: [[1, 2, 3], [4, 5, 6]] 
 ```
@@ -315,18 +321,20 @@ specify a list of lists instead.
 The result will have 2x2 or 4 entries:
 
 ```bash
-$ gridtest gridview grids.yml generate_lists_matrix --compact
-[{'x': [1, 2, 3], 'y': [1, 2, 3]}, {'x': [1, 2, 3], 'y': [4, 5, 6]}, {'x': [4, 5, 6], 'y': [1, 2, 3]}, {'x': [4, 5, 6], 'y': [4, 5, 6]}]
+$ gridtest gridview grids.yml generate_lists_matrix
+{'x': [1, 2, 3], 'y': [1, 2, 3]}
+{'x': [1, 2, 3], 'y': [4, 5, 6]}
+{'x': [4, 5, 6], 'y': [1, 2, 3]}
+{'x': [4, 5, 6], 'y': [4, 5, 6]}
 ```
 
 Here is an easier way to check the count:
 
 ```bash
 $ gridtest gridview grids.yml generate_lists_matrix --count
-4 lists produced.
+4 argument sets produced.
 ```
 
-<a id="range-of-values">
 ### Range of Values
 
 For most use cases, you'll want to generate a list of values over a range. You
@@ -334,7 +342,7 @@ can do that with **min** and **max** and (optionally) **by** that defaults to 1.
 
 ```yaml
     generate_by_min_max:
-      grid:
+      args:
         x:
           min: 0
           max: 10
@@ -342,15 +350,19 @@ can do that with **min** and **max** and (optionally) **by** that defaults to 1.
 ```
 
 ```bash
-$ gridtest gridview grids.yml generate_by_min_max --compact
-[{'x': 0}, {'x': 2}, {'x': 4}, {'x': 6}, {'x': 8}]
+$ gridtest gridview grids.yml generate_by_min_max
+{'x': 0.0}
+{'x': 2.0}
+{'x': 4.0}
+{'x': 6.0}
+{'x': 8.0
 ```
 
 Here is an example with two variables:
 
 ```yaml
     generate_by_min_max_twovars:
-      grid:
+      args:
         x:
           min: 0
           max: 10
@@ -362,75 +374,129 @@ Here is an example with two variables:
 ```
 
 ```bash
-$ gridtest gridview grids.yml generate_by_min_max_twovars --compact
-[{'x': 0, 'y': 10}, {'x': 0, 'y': 12}, {'x': 0, 'y': 14}, {'x': 0, 'y': 16}, {'x': 0, 'y': 18}, {'x': 2, 'y': 10}, {'x': 2, 'y': 12}, {'x': 2, 'y': 14}, {'x': 2, 'y': 16}, {'x': 2, 'y': 18}, {'x': 4, 'y': 10}, {'x': 4, 'y': 12}, {'x': 4, 'y': 14}, {'x': 4, 'y': 16}, {'x': 4, 'y': 18}, {'x': 6, 'y': 10}, {'x': 6, 'y': 12}, {'x': 6, 'y': 14}, {'x': 6, 'y': 16}, {'x': 6, 'y': 18}, {'x': 8, 'y': 10}, {'x': 8, 'y': 12}, {'x': 8, 'y': 14}, {'x': 8, 'y': 16}, {'x': 8, 'y': 18}]
+$ gridtest gridview grids.yml generate_by_min_max_twovars 
+{'x': 0.0, 'y': 10.0}
+{'x': 0.0, 'y': 12.0}
+{'x': 0.0, 'y': 14.0}
+{'x': 0.0, 'y': 16.0}
+{'x': 0.0, 'y': 18.0}
+{'x': 2.0, 'y': 10.0}
+{'x': 2.0, 'y': 12.0}
+{'x': 2.0, 'y': 14.0}
+{'x': 2.0, 'y': 16.0}
+{'x': 2.0, 'y': 18.0}
+{'x': 4.0, 'y': 10.0}
+{'x': 4.0, 'y': 12.0}
+{'x': 4.0, 'y': 14.0}
+{'x': 4.0, 'y': 16.0}
+{'x': 4.0, 'y': 18.0}
+{'x': 6.0, 'y': 10.0}
+{'x': 6.0, 'y': 12.0}
+{'x': 6.0, 'y': 14.0}
+{'x': 6.0, 'y': 16.0}
+{'x': 6.0, 'y': 18.0}
+{'x': 8.0, 'y': 10.0}
+{'x': 8.0, 'y': 12.0}
+{'x': 8.0, 'y': 14.0}
+{'x': 8.0, 'y': 16.0}
+{'x': 8.0, 'y': 18.0}
 ```
 
 Logically there are the previous number of tests, but squared.
 
 ```bash
 $ gridtest gridview grids.yml generate_by_min_max_twovars --count
-25 lists produced.
+25 argument sets produced.
 ```
-<a id="grids-with-functions">
+
 ## Grids with Functions
 
-> What does it mean to use a function?
+## What does it mean to use a function?
 
-When you add a function to a grid, meaning the `func` key that maps
-to a custom or system installed module and function (e.g. `random.choice`)
-you are generating the same grid of parameters, but at the end passing them through
-the function. This means that we get a list of results instead of a list of 
-arguments.
-
-> How do I use a function?
-
-If you want to use functions that are importable (installed in your system python
-or site-packages) then you can add the `func` variable. For example, the grid
-below will call `random.choice` ten times across the sequence of values `[1, 2, 3]`.
+You can map functions to parametrs in a grid, meaning that the values for
+the parameters will be generated by the function. For example,
+let's use the function `random.choice` to dynamically generic a grid of parameters.
+The grid below will call `random.choice` ten times (count is set to 10) 
+across the sequence of values `[1, 2, 3]`, which is an input key word argument
+to random choice.
 
 ```yaml
+...
+  grids:
     random_choice:
-      func: random.choice
       count: 10
-      grid:
+      functions: 
+        pid: random.choice
+      args:
          seq: [[1, 2, 3]]
 ```
 
-However, notice that we are no longer returning function inputs (e.g., dictionaries with
-arguments) but rather the result of running the function specified with the arguments.
-This is the main difference between having a function vs. not - provide a function
-adds an extra step of running the arguments through it, and returning the result.
+Notice that the sequence argument input is a list of lists, and this is because we want the entire list to be treated as an argument. If we run this from it's respective file, we get a result with 10
+argument sets:
 
-<a id="grids-with-custom-functions">
+```bash
+$ gridtest gridview grids-with-function.yml random_choice
+{'seq': [1, 2, 3], 'pid': 2}
+{'seq': [1, 2, 3], 'pid': 2}
+{'seq': [1, 2, 3], 'pid': 2}
+{'seq': [1, 2, 3], 'pid': 1}
+{'seq': [1, 2, 3], 'pid': 3}
+{'seq': [1, 2, 3], 'pid': 1}
+{'seq': [1, 2, 3], 'pid': 3}
+{'seq': [1, 2, 3], 'pid': 3}
+{'seq': [1, 2, 3], 'pid': 2}
+{'seq': [1, 2, 3], 'pid': 3}
+```
+
+
 ## Grids with Custom Functions
 
 If you are using a script for any of your grids that isn't a system installed
 module, then (akin to a standard gridtest) it needs to be included under a section 
 header that is named by the relevant module, and that includes the filename to import.
-For example, the file `script.py` in the present working directory has
+For example, the file [script.py](script.py) in the present working directory has
 a function, `get_pokemon_id` that I want to use. Here is how I'd write the recipe:
 
 script:
   filename: script.py 
   grids:
 
-    # A grid that will generate 10 random values using a function
+    # A grid that will generate 10 random values using a custom function
     generate_pids:
-      func: script.get_pokemon_id
+      functions: 
+        pid: script.get_pokemon_id
       count: 10
 ```
 
 Now let's run it!
 
 ```bash
-$ gridtest gridview grids-with-function.yml generate_pids --compact
-['296', '722', '490', '538', '71', '332', '869', '537', '222', '369']
+$ gridtest gridview grids-with-function.yml generate_pids
+{'pid': '125'}
+{'pid': '780'}
+{'pid': '508'}
+{'pid': '566'}
+{'pid': '803'}
+{'pid': '513'}
+{'pid': '854'}
+{'pid': '405'}
+{'pid': '639'}
+{'pid': '353'}
 ```
 
 Akin to the previous example, since we've provided a function to pass our grid
 arguments into, the results are returned. This is how gridtest can
 use a grid specified under a test to generate a list of values for an argument.
 
+## What to do with Grids?
+
+You might just be using grids inline to go with your [tests](../testing/). However,
+grids are useful to many things:
+
+ - create input spaces to test different machine learning models
+ - keep parameterizations under version control
+ - create a parameter space to export to json to use for a non-Python use case
+ - and of course testing to create a parameter space
+
 Next you might want to read about how gridtest grids can be 
-[used in tests](https://vsoch.github.io/gridtest/getting-started/metrics/#adding-a-grid).
+[used in tests](https://vsoch.github.io/gridtest/getting-started/metrics/#adding-arguments).

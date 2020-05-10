@@ -4,11 +4,9 @@ script:
     script.multiply_sentence:
     - metrics:
       - '@script.countwords'
-      grid:
-        count:
-          list: [1, 5, 10]
+      args:
+        count: [1, 5, 10]
         sentence:
-          list:
-            - "He ran for the hills."
-            - "Skiddery-a rinky dinky dinky, skittery rinky doo."
-            - "You are my sunshine, my only sunshine."
+          - "He ran for the hills."
+          - "Skiddery-a rinky dinky dinky, skittery rinky doo."
+          - "You are my sunshine, my only sunshine."

@@ -22,10 +22,10 @@ from gridtest.main.generate import (
     get_function_typing,
     extract_modulename,
 )
-from gridtest.main.grids import get_grids, get_variables
+from gridtest.main.grids import Grid
 from gridtest.main.helpers import test_basic
 from gridtest.main.workers import Workers
-from gridtest.main.substitute import substitute_func, substitute_args, expand_args, iter_expand_args
+from gridtest.main.substitute import substitute_func, substitute_args
 from copy import deepcopy
 
 import itertools
@@ -425,7 +425,6 @@ class GridRunner:
         self._fill_classes()
         self.show_progress = True
         self.grids = {}
-        self.variables = {}
 
     def load(self, input_file):
         """load a testing gridtest file.
@@ -711,31 +710,11 @@ class GridRunner:
            or just generated to have combinations. If a count variable is
            included, we multiply by that many times.
         """
-        # Grids require variables.
-        self.get_variables()
-
         for parent, section in self.config.items():
             filename = extract_modulename(section.get("filename", ""), self.input_dir)
-            self.grids.update(
-                get_grids(
-                    section.get("grids", {}),
-                    filename=filename,
-                    variables=self.variables,
-                )
-            )
+            for name, grid in section.get("grids", {}).items():
+                self.grids[name] = Grid(name=name, params=grid, filename=filename)
         return self.grids
-
-    def get_variables(self):
-        """variables is a specification under "variables" that allows the user
-           to globlly define (equialent) sets of arguments to be parameterized.
-           Instead of returning a kwargs item, we return just the listing.
-        """
-        for parent, section in self.config.items():
-            filename = extract_modulename(section.get("filename", ""), self.input_dir)
-            self.variables.update(
-                get_variables(section.get("variables", {}), filename=filename)
-            )
-        return self.variables
 
     def get_tests(self, regexp=None, verbose=False, cleanup=True):
         """get tests based on a regular expression.
@@ -747,6 +726,7 @@ class GridRunner:
 
         for parent, section in self.config.items():
             for name, module in section.get("tests", {}).items():
+
                 if regexp and not re.search(regexp, name):
                     continue
 
@@ -759,24 +739,37 @@ class GridRunner:
                     )
 
                     idx = 0
+
                     # Use idx to index each test with parameters
                     for entry in module:
+                        grid = None
 
-                        # Entry cannot have overlap in grid and args
-                        if set(entry.get("args", {}).keys()).intersection(
-                            set(entry.get("grid", {}).keys())
-                        ):
-                            bot.exit(f"{name} has shared grid and args keys.")
+                        # Grid and args cannot both be defined
+                        if "args" in entry and "grid" in entry:
+                            bot.exit(f"{name} has defined both a grid and args.")
 
-                        # Create a combined lookup, user should not have shared keys
-                        lookup = self.grids.copy()
-                        lookup.update(self.variables)
+                        # If we find a grid, it has to reference an existing grid
+                        if "grid" in entry and entry["grid"] not in self.grids:
+                            bot.exit(
+                                f"{name} needs grid {entry['grid']} but not found in grids."
+                            )
 
-                        # Generate list of args
-                        # Order is column first when expanded [512, 512, 512... 4096, 4096, 4096]
+                        # If we find a grid, it has to reference an existing grid
+                        if "grid" in entry and entry["grid"] in self.grids:
+                            grid = self.grids[entry["grid"]]
 
-                        for argset in iter_expand_args(entry, lookup=lookup):
-                            updated = deepcopy(entry)
+                        # If entry is defined without a grid, we need to generate it
+                        if not grid:
+                            grid = Grid(name=name, params=entry, filename=filename)
+
+                        # If the grid is cached, we already have parameter sets
+                        argsets = grid
+                        if grid.cache:
+                            argsets = grid.argsets
+
+                        # iterate over argsets for a grid, get overlapping args
+                        for argset in argsets:
+                            updated = deepcopy(grid.params)
                             updated["args"] = argset
                             tests["%s.%s" % (name, idx)] = GridTest(
                                 module=parent,

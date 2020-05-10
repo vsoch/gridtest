@@ -145,15 +145,6 @@ def get_parser():
     )
 
     gridview.add_argument(
-        "--compact",
-        "-c",
-        dest="compact",
-        help="pretty compact json",
-        default=False,
-        action="store_true",
-    )
-
-    gridview.add_argument(
         "--count",
         "-n",
         dest="count",
@@ -163,12 +154,11 @@ def get_parser():
     )
 
     gridview.add_argument(
-        "--list",
-        "-ls",
-        dest="list",
-        help="list keys (grid names) found.",
-        default=False,
-        action="store_true",
+        "--export",
+        dest="export",
+        help="export a parameterized grid to json.",
+        type=str,
+        default=None,
     )
 
     # Check (lint) a gridtest

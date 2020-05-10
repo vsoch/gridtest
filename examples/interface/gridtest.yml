@@ -2,7 +2,7 @@ script:
   filename: /home/vanessa/Desktop/Code/gridtest/examples/interface/script.py
   tests:
     script.multiply_sentence:
-    - grid:
+    - args:
         count:
           list: [1, 5, 10]
         sentence:
@@ -14,7 +14,7 @@ script:
       - '@script.countwords'
       - '@script.countletters'
     script.unique_sentence:
-    - grid:
+    - args:
         sentence:
           list:
           - He ran for the hills.

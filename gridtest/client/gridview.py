@@ -9,6 +9,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 
 from gridtest.main.test import GridRunner, GridTest
+from gridtest.utils import write_json
 import os
 import json
 import sys
@@ -27,28 +28,21 @@ def main(args, extra):
     runner = GridRunner(input_file)
     grids = runner.get_grids()
 
-    # Update with variables
-    grids.update(runner.variables)
-
-    # If no name specified, print all grids
+    # If no name specified, print grid listing
     if args.input:
         name = args.input[0]
         if name in grids:
-            content = grids[name]
+            grid = grids[name]
         else:
             sys.exit(f"{name} is not a valid grid name in {input_file}")
-    else:
-        content = grids
 
-    if args.count:
-        print(f"{len(content)} lists produced.")
-    elif args.list:
-        print("\n".join(grids.keys()))
-    else:
-        if args.compact:
-            print(content)
+        if args.count:
+            print(f"{len(list(grid))} argument sets produced.")
+        elif args.export:
+            grids = list(grid)
+            write_json(grids, args.export)
         else:
-            try:
-                print(json.dumps(content, indent=4))
-            except:
-                print(content)
+            for argset in grid:
+                print(argset)
+    else:
+        print("\n".join(list(grids.keys())))

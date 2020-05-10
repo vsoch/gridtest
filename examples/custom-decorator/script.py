@@ -4,7 +4,6 @@
 def multiply_sentence(sentence, count):
     return sentence * count
 
-
 def countwords(func):
     """this is a simple example of a custom decorator - the idea would be that
        the function we are decorating returns some texty value, and we split

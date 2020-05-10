@@ -2,16 +2,18 @@ script:
   filename: script.py
   grids:
 
-    # A grid that will generate 10 random values using a function
+    # A grid that will generate 10 random values using a custom function
     generate_pids:
-      func: script.get_pokemon_id
+      functions: 
+        pid: script.get_pokemon_id
       count: 10
 
     # A grid that will generate values with an installed module
     random_choice:
-      func: random.choice
       count: 10
-      grid:
+      functions: 
+        pid: random.choice
+      args:
          seq: [[1, 2, 3]]
 
     # A grid that will generate 10 empty set of arguments

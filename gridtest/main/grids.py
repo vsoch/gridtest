@@ -8,119 +8,127 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-from gridtest.utils import read_yaml, write_yaml, write_json
 from gridtest.main.generate import import_module
-from gridtest.main.substitute import expand_args
-from copy import deepcopy
+from gridtest.main.expand import expand_args
 from gridtest.logger import bot
 
+from copy import deepcopy
 import itertools
+import inspect
 import re
-import shutil
 import sys
 import os
 
 
 class Grid:
+    def __init__(self, name, params, filename=""):
+        """A Grid is a defined parameterization over a set of arguments, for
+           any use case (testing, measuring metrics from models, etc.)
 
-    def __init__(self, name, params):
+           Arguments:
+             - name (str) : the name of the grid, an identifier
+             - params (dict) : the args and functions
+             - filename (str) : if relevant, a filename to import modules from
 
+           If argument sets are reasonably sized, you should be able to 
+           set yield_args to False and interact with self.paramsets. Otherwise,
+           you can instantiate the Grid and iterate through it at the same time.
+        """
         # The key in the yaml grids section
         self.name = name
 
         # A grid includes variables and functions
-        self.variables = params.get('variables', {})
-        self.functions = params.get('functions', {})
-       
-        # Parsing means generating parameter sets
-        self.paramsets = {}
+        self.params = params
+        self.args = expand_args(params.get("args", {}))
+        self.functions = params.get("functions", {})
 
-    def parse(self):
-        """Given input variables, parse into parameter sets
+        # Cache set to True will pre-calculate grid
+        self.cache = params.get("cache", False)
+        self.filename = filename
+
+        # Run grid of tests an arbitrary number of times
+        self.count = self.params.get("count", 1)
+
+        # Parameter sets are generated when needed unless asked for cache
+        self.argsets = []
+        if self.cache:
+            self.argsets = list(self)
+
+    def __iter__(self):
+        """Given input variables, parse into parameter sets. If a variable
+           is not provided as a list, we put into list. If a list is desired
+           as the variable, it would be provided as a list of lists.
         """
-        keys, values = zip(*self.variables.items())
+        # If a function has no arguments, won't return values
+        try:
+            keys, values = zip(*self.args.items())
+        except:
+            keys = []
+            values = []
+
         values = [[v] if not isinstance(v, list) else v for v in values]
 
-        
-        for v in itertools.product(*values):
-            for fun in self.functions.items():    
-                self.paramsets[dict(zip(keys, v))] = None
+        # Generate parameter sets
 
+        for count in range(self.count):
+            for v in itertools.product(*values):
+                args = dict(zip(keys, v))
+                for varname, funcname in self.functions.items():
+                    args[varname] = self.apply_function(funcname, args)
+                yield args
 
-    def __repr__(self):
-        return "[grid|%s]" % self.name
+    # Functions
 
-    def __str__(self):
-        return "[grid|%s]" % self.name
+    def apply_function(self, funcname, args):
+        """Given a function (a name, or a dictionary to derive name and other
+           options from) run some set of input variables (that are taken by
+           the function) through it to derive a result. The result returned
+           is used to set another variable. If a count is defined, we
+           run the function (count) times and return a list. Otherwise, we
+           run it once.
 
+           Arguments:
+            - funcname (str or dict) : the function name or definition
+            - args (dict) : lookup of arguments for the function
+        """
+        # Default count is 1, args == args piped into function
+        count = 1
+        args = deepcopy(args or {})
 
-def get_grids(items, filename="", variables=None):
-    """given a loaded items (a grids section from a GridRunner). return 
-       the parameterized grids. Provide a lookup to derive other variables
-       from, if appropriate.
-    """
-    grids = {}
+        # If funcname is a dictionary, derive values from it
+        if isinstance(funcname, dict):
 
-    for name, grid in items.items():
+            # If there is a count, we need to multiple it by that
+            if "count" in funcname:
+                count = funcname["count"]
 
-        # Create temporary lookup of grids and lookup provided
-        if variables:
-            lookup = variables.copy()
-            lookup.update(grids)
-        else:
-            lookup = grids
+            # The user wants to map some defined arg to a different argument
+            if "args" in funcname:
+                for oldkey, newkey in funcname["args"].items():
+                    if oldkey in args:
+                        args[newkey] = args[oldkey]
 
-        # Unwrap list of arguments (even if empty)
-        args = expand_args(
-            entry={"grid": grid.get("grid", {}), "args": grid.get("args", {})},
-            lookup=lookup,
+            # The function name is required
+            if "func" not in funcname:
+                bot.exit(f"{funcname} is missing func key with function name.")
+            funcname = funcname["func"]
+
+        # Get function and args that are allowed for the function
+        func = (
+            funcname if not isinstance(funcname, str) else self.get_function(funcname)
         )
+        funcargs = intersect_args(func, args)
 
-        grids[name] = update_gridargs(grid, args, filename)
+        # Run the args through the function
+        if count == 1:
+            return func(**funcargs)
+        return [func(**funcargs) for c in range(count)]
 
-    return grids
-
-
-def get_variables(lookup, filename=""):
-    """given a loaded lookup (a variables section from a GridRunner). return 
-       the parameterized variables.
-    """
-    variables = {}
-    lookup = lookup or {}
-
-    for name, grid in lookup.items():
-
-
-        # If a value is given directly, use it
-        if not isinstance(grid, (dict, list)):
-            variables[name] = grid
-
-        # Unwrap list of arguments (even if empty)
-        else:
-            args = expand_args(
-                entry={"grid": {"arg": grid}, "args": {}},
-                lookup=variables,
-            )
-
-            # Flatten into list
-            args = [x["arg"] for x in args]
-            variables[name] = update_gridargs(grid, args, filename)
-
-    return variables
-
-
-def update_gridargs(grid, args, filename):
-    """Given a grid lookup (e.g. {"min": 1, "max":2, "count": 10})
-       apply advanced modifiers with functions and counts.
-    """
-    # If there is a count, we need to multiple it by that
-    if "count" in grid:
-        args = args * grid["count"]
-
-    # If a function is provided, import and run args through it
-    if "func" in grid:
-        sys.path.insert(0, os.path.dirname(filename))
-        funcname = grid.get("func")
+    def get_function(self, funcname):
+        """Given a function name, return it. Exit on error if not found.
+        """
+        # Import the function
+        sys.path.insert(0, os.path.dirname(self.filename))
         module = ".".join(funcname.split(".")[:-1])
         funcname = funcname.split(".")[-1]
         try:
@@ -131,6 +139,28 @@ def update_gridargs(grid, args, filename):
         except:
             bot.exit(f"Cannot import grid function {funcname}")
 
-        # Run the args through the function
-        args = [func(**k) for k in args]
-    return args
+        return func
+
+    def __repr__(self):
+        return "[grid|%s]" % self.name
+
+    def __str__(self):
+        return "[grid|%s]" % self.name
+
+
+# Arguments
+
+
+def intersect_args(func, args):
+    """Given a loaded function and a dictionary of args, return the
+       overlapping set (those that are allowed to be given to the 
+       function
+    """
+    argspec = inspect.getfullargspec(func)
+    allowed_args = set(argspec.args).intersection(set(args))
+    kwargs = {}
+    for allowed_arg in allowed_args:
+        if allowed_arg in args:
+            kwargs[allowed_arg] = args[allowed_arg]
+
+    return kwargs

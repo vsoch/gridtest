@@ -56,7 +56,7 @@ the decorator defined under metrics. E.g., if we changed `script.countwords` to 
 `countwords` the result wouldn't be properly parsed, because gridtest is looking
 for the the first.
 
-#### Generate your Template
+### Generate your Template
 
 Let's generate a simple template that we can fill in to include a grid. We can
 first preview it:
@@ -90,8 +90,7 @@ script:
         sentence: null
 ```
 
-Next, let's add a grid. As a reminder, a grid is akin to an args section, but we can
-define lists and ranges (with min, max, by) to generate parameter matrices over.
+Next, let's better refine our arguments.
 
 ```yaml
 script:
@@ -100,18 +99,61 @@ script:
     script.multiply_sentence:
     - metrics:
       - '@script.countwords'
-      grid:
-        count:
-          list: [1, 5, 10]
+      args:
+        count: [1, 5, 10]
         sentence:
-          list:
-            - "He ran for the hills."
-            - "Skiddery-a rinky dinky dinky, skittery rinky doo."
-            - "You are my sunshine, my only sunshine."
+          - "He ran for the hills."
+          - "Skiddery-a rinky dinky dinky, skittery rinky doo."
+          - "You are my sunshine, my only sunshine."
 ```
 
-This means that for each sentence under the list of sentences, we will run the function
+Just for your FYI - if you had wanted to have some set of arguments shared
+between tests, you could have defined them as a named grid:
+
+```yaml
+grids:
+  script_inputs:
+    args:
+      count: [1, 5, 10]
+      sentence:
+        - "He ran for the hills."
+        - "Skiddery-a rinky dinky dinky, skittery rinky doo."
+        - "You are my sunshine, my only sunshine."
+```
+
+and then instead pointed to it for your test:
+
+```yaml
+script:
+  filename: /home/vanessa/Desktop/Code/gridtest/examples/custom-decorator/script.py
+  tests:
+    script.multiply_sentence:
+    - metrics:
+      - '@script.countwords'
+      grid: script_inputs
+```
+
+By default, a grid is generated at the test creation time. However, if you have 
+a grid shared by many functions that you want to calculate once and cache,
+just set the cache variable to true:
+
+
+```yaml
+grids:
+  script_inputs:
+    cache: true
+    args:
+      count: [1, 5, 10]
+      sentence:
+        - "He ran for the hills."
+        - "Skiddery-a rinky dinky dinky, skittery rinky doo."
+        - "You are my sunshine, my only sunshine."
+```
+
+Regardless of how we specify our grid (globally or inline) the grid says that
+for each sentence under the list of sentences, we will run the function
 `multiply_sentence` with counts of 1,5, and 10. This would come down to 3x3 or 9 total tests.
+
 
 #### Running Tests
 
