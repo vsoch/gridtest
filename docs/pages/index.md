@@ -17,9 +17,12 @@ I need when I write tests."
 
 > How might I use gridtest?
 
-You might use GridTest for...
+GridTest has use cases well beyond testing, because parameterization is used
+widely across data science, and version control for reproducibility of those
+parameterization is essential for reproducible, sustainable science.
+This means that you might use GridTest for...
 
-## Testing
+### Testing
 
 A **gridtest**: is one that is run over a grid of parameter settings. Each test
 can include a set of argument specifications, and optionally mapping these arguments
