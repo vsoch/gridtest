@@ -105,8 +105,12 @@ $ gridtest gridview grids.yml
 or just print a specific grid we found with `--list`.
 
 ```bash
-$ gridtest gridview grids.yml generate_by_min_max --compact
-[{'x': 0}, {'x': 2}, {'x': 4}, {'x': 6}, {'x': 8}]
+$ gridtest gridview grids.yml generate_by_min_max
+{'x': 0.0}
+{'x': 2.0}
+{'x': 4.0}
+{'x': 6.0}
+{'x': 8.0}
 ```
 
 For larger grids, it's nice to be able to get a count. The "twovars"

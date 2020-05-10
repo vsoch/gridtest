@@ -162,6 +162,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">gridtest.main.generate</span> <span class="k">import</span> <span class="n">import_module</span><span class="p">,</span> <span class="n">get_function_typing</span>
+<span class="kn">from</span> <span class="nn">gridtest.main.grids</span> <span class="k">import</span> <span class="n">intersect_args</span>
 <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -307,6 +308,8 @@
         <span class="n">err</span> <span class="o">=</span> <span class="p">[</span><span class="n">f</span><span class="s2">&quot;Cannot find function </span><span class="si">{funcname}</span><span class="s2">&quot;</span><span class="p">]</span>
 
     <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Subset arguments down to those allowed</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">intersect_args</span><span class="p">(</span><span class="n">originalfunc</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
         <span class="n">passed</span><span class="p">,</span> <span class="n">error</span> <span class="o">=</span> <span class="n">test_types</span><span class="p">(</span><span class="n">originalfunc</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">returns</span><span class="p">)</span>
         <span class="n">err</span> <span class="o">+=</span> <span class="n">error</span>
 

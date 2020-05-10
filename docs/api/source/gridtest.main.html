@@ -95,6 +95,7 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">gridtest.main package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.check">gridtest.main.check module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.expand">gridtest.main.expand module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.generate">gridtest.main.generate module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.grids">gridtest.main.grids module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#module-gridtest.main.helpers">gridtest.main.helpers module</a></li>
@@ -231,6 +232,41 @@ to pass if a user has written all tests to correpond with their module
 </dd></dl>
 
 </div>
+<div class="section" id="module-gridtest.main.expand">
+<span id="gridtest-main-expand-module"></span><h2>gridtest.main.expand module<a class="headerlink" href="#module-gridtest.main.expand" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2020 Vanessa Sochat.</p>
+<p>This Source Code Form is subject to the terms of the
+Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
+with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
+<dl class="function">
+<dt id="gridtest.main.expand.custom_range">
+<code class="sig-prename descclassname">gridtest.main.expand.</code><code class="sig-name descname">custom_range</code><span class="sig-paren">(</span><em class="sig-param">start</em>, <em class="sig-param">stop</em>, <em class="sig-param">by=1.0</em>, <em class="sig-param">precision=2</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/expand.html#custom_range"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.expand.custom_range" title="Permalink to this definition">¶</a></dt>
+<dd><p>the range function only accepts integers, and user’s will likely
+want to provide float. Thus we use custom_range to provide this</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><ul class="simple">
+<li><p>start (int or float) : the starting value</p></li>
+<li><p>stop (int or float) : go up to this value</p></li>
+<li><p>by (float or int) : increment by this value (default 1.0)</p></li>
+<li><p>precision (int) : decimals to round to (default 2)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="gridtest.main.expand.expand_args">
+<code class="sig-prename descclassname">gridtest.main.expand.</code><code class="sig-name descname">expand_args</code><span class="sig-paren">(</span><em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/expand.html#expand_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.expand.expand_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a grid of arguments, expand special cases into longer lists
+of arguments.
+E.g., convert an entry with these keys:</p>
+<p>into:</p>
+<p>In the case that a grid has a string identifier to point to a key
+in the lookup, we use that listing of values instead that should
+already be calculated.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-gridtest.main.generate">
 <span id="gridtest-main-generate-module"></span><h2>gridtest.main.generate module<a class="headerlink" href="#module-gridtest.main.generate" title="Permalink to this headline">¶</a></h2>
 <p>Copyright (C) 2020 Vanessa Sochat.</p>
@@ -360,11 +396,42 @@ Returns True for yes, False otherwise.</p>
 <p>This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
+<dl class="class">
+<dt id="gridtest.main.grids.Grid">
+<em class="property">class </em><code class="sig-prename descclassname">gridtest.main.grids.</code><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">params</em>, <em class="sig-param">filename=''</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#Grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.Grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="method">
+<dt id="gridtest.main.grids.Grid.apply_function">
+<code class="sig-name descname">apply_function</code><span class="sig-paren">(</span><em class="sig-param">funcname</em>, <em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#Grid.apply_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.Grid.apply_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a function (a name, or a dictionary to derive name and other
+options from) run some set of input variables (that are taken by
+the function) through it to derive a result. The result returned
+is used to set another variable. If a count is defined, we
+run the function (count) times and return a list. Otherwise, we
+run it once.</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><ul class="simple">
+<li><p>funcname (str or dict) : the function name or definition</p></li>
+<li><p>args (dict) : lookup of arguments for the function</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridtest.main.grids.Grid.get_function">
+<code class="sig-name descname">get_function</code><span class="sig-paren">(</span><em class="sig-param">funcname</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#Grid.get_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.Grid.get_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a function name, return it. Exit on error if not found.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="function">
-<dt id="gridtest.main.grids.get_grids">
-<code class="sig-prename descclassname">gridtest.main.grids.</code><code class="sig-name descname">get_grids</code><span class="sig-paren">(</span><em class="sig-param">lookup</em>, <em class="sig-param">filename=''</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#get_grids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.get_grids" title="Permalink to this definition">¶</a></dt>
-<dd><p>given a loaded items (a grids section from a GridRunner). return
-the parameterized grids.</p>
+<dt id="gridtest.main.grids.intersect_args">
+<code class="sig-prename descclassname">gridtest.main.grids.</code><code class="sig-name descname">intersect_args</code><span class="sig-paren">(</span><em class="sig-param">func</em>, <em class="sig-param">args</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#intersect_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.intersect_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a loaded function and a dictionary of args, return the
+overlapping set (those that are allowed to be given to the
+function</p>
 </dd></dl>
 
 </div>
@@ -454,31 +521,6 @@ correct. Returns a boolean to indicate correct/ passing (True)</p>
 <p>This Source Code Form is subject to the terms of the
 Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
-<dl class="function">
-<dt id="gridtest.main.substitute.expand_args">
-<code class="sig-prename descclassname">gridtest.main.substitute.</code><code class="sig-name descname">expand_args</code><span class="sig-paren">(</span><em class="sig-param">entry</em>, <em class="sig-param">lookup=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/substitute.html#expand_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.substitute.expand_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a test yaml entry, convert the grid specifications and
-arguments into a longer list of arguments to each run as a test.
-E.g., convert an entry with these keys:</p>
-<p>‘grid’: {‘one’: {‘min’: 0, ‘max’: 5, ‘list’: [10, 15]}},
-‘args’: {‘two’: 2},</p>
-<p>into:</p>
-<blockquote>
-<div><dl class="simple">
-<dt>[{‘two’: 2, ‘one’: 0},</dt><dd><p>{‘two’: 2, ‘one’: 1},
-{‘two’: 2, ‘one’: 2},
-{‘two’: 2, ‘one’: 3},
-{‘two’: 2, ‘one’: 4},
-{‘two’: 2, ‘one’: 10},
-{‘two’: 2, ‘one’: 15}]</p>
-</dd>
-</dl>
-</div></blockquote>
-<p>In the case that a grid has a string identifier to point to a key
-in the lookup, we use that listing of values instead that should
-already be calculated.</p>
-</dd></dl>
-
 <dl class="function">
 <dt id="gridtest.main.substitute.substitute_args">
 <code class="sig-prename descclassname">gridtest.main.substitute.</code><code class="sig-name descname">substitute_args</code><span class="sig-paren">(</span><em class="sig-param">value</em>, <em class="sig-param">params=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/substitute.html#substitute_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.substitute.substitute_args" title="Permalink to this definition">¶</a></dt>

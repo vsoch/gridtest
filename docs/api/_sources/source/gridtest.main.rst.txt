@@ -12,6 +12,14 @@ gridtest.main.check module
    :undoc-members:
    :show-inheritance:
 
+gridtest.main.expand module
+---------------------------
+
+.. automodule:: gridtest.main.expand
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 gridtest.main.generate module
 -----------------------------
 
