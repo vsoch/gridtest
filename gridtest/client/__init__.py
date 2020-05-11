@@ -215,6 +215,17 @@ def get_parser():
         type=str,
     )
 
+    # Check (lint) a gridtest
+    view = subparsers.add_parser(
+        "view", help="view results in an interactive interface."
+    )
+
+    view.add_argument(
+        "result",
+        nargs="?",
+        help="json export to view in interface.",
+    )
+
     # Both generate and check groups have --include-private
     for group in [generate, check, update]:
         group.add_argument(
@@ -275,12 +286,14 @@ def main():
         from .shell import main
     elif args.command == "check":
         from .check import main
+    elif args.command == "view":
+        from .view import main
     elif args.command == "update":
         from .update import main
 
     # Pass on to the correct parser
     return_code = 0
-    # try:
+    #try:
     main(args=args, extra=extra)
     sys.exit(return_code)
     # except UnboundLocalError:

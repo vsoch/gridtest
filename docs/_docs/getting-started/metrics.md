@@ -13,6 +13,9 @@ test yaml files in order to measure a benchmark or metric.  These include:
 | Name   | Description                            | Usage    |
 |--------|----------------------------------------|----------|
 | timeit | print time (ms) for function execution | @timeit  |
+| result | print function result as a metric | @result  |
+| length | calculate length of a result, None if not relevant | @length  |
+
 
 This namespace of decorators will be looked for in the `gridtest.decorators`
 module and you don't need to specify this path. If you define a custom decorator, 

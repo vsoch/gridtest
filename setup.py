@@ -63,6 +63,8 @@ with open("README.md") as filey:
 if __name__ == "__main__":
 
     INSTALL_REQUIRES = get_reqs(lookup)
+    ALL_REQUIRES = get_reqs(lookup, "ALL_REQUIRES")
+    DASH_REQUIRES = get_reqs(lookup, "DASH_REQUIRES")
     TESTS_REQUIRES = get_reqs(lookup, "TESTS_REQUIRES")
 
     setup(
@@ -84,7 +86,10 @@ if __name__ == "__main__":
         setup_requires=["pytest-runner"],
         install_requires=INSTALL_REQUIRES,
         tests_require=TESTS_REQUIRES,
-        extras_require={},
+        extras_require={
+          "all": ALL_REQUIRES,
+          "dash": DASH_REQUIRES
+        },
         classifiers=[
             "Intended Audience :: Science/Research",
             "Intended Audience :: Developers",
