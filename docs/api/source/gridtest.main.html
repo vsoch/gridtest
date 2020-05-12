@@ -398,7 +398,7 @@ Mozilla Public License, v. 2.0. If a copy of the MPL was not distributed
 with this file, You can obtain one at <a class="reference external" href="http://mozilla.org/MPL/2.0/">http://mozilla.org/MPL/2.0/</a>.</p>
 <dl class="class">
 <dt id="gridtest.main.grids.Grid">
-<em class="property">class </em><code class="sig-prename descclassname">gridtest.main.grids.</code><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">params</em>, <em class="sig-param">filename=''</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#Grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.Grid" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">gridtest.main.grids.</code><code class="sig-name descname">Grid</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">params</em>, <em class="sig-param">filename=''</em>, <em class="sig-param">refs=None</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#Grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.Grid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.8)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <dl class="method">
 <dt id="gridtest.main.grids.Grid.apply_function">
@@ -419,9 +419,23 @@ run it once.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="gridtest.main.grids.Grid.generate_references">
+<code class="sig-name descname">generate_references</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#Grid.generate_references"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.Grid.generate_references" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a loaded set of references from other grids (self.refs)
+load them into the current args space.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="gridtest.main.grids.Grid.get_function">
 <code class="sig-name descname">get_function</code><span class="sig-paren">(</span><em class="sig-param">funcname</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#Grid.get_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.Grid.get_function" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given a function name, return it. Exit on error if not found.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gridtest.main.grids.Grid.unwrap_functions">
+<code class="sig-name descname">unwrap_functions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/grids.html#Grid.unwrap_functions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.grids.Grid.unwrap_functions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given that a function is to be unwrapped, this means that we
+evaluate it first to generate a list that is used to updated args.</p>
 </dd></dl>
 
 </dd></dl>
@@ -601,7 +615,7 @@ and non-success is in red.</p>
 
 <dl class="method">
 <dt id="gridtest.main.test.GridRunner.run">
-<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">regexp=None</em>, <em class="sig-param">parallel=True</em>, <em class="sig-param">nproc=None</em>, <em class="sig-param">show_progress=True</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">name=None</em>, <em class="sig-param">cleanup=True</em>, <em class="sig-param">save=None</em>, <em class="sig-param">save_report=None</em>, <em class="sig-param">save_compact=False</em>, <em class="sig-param">report_template='report'</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.run" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run</code><span class="sig-paren">(</span><em class="sig-param">regexp=None</em>, <em class="sig-param">parallel=True</em>, <em class="sig-param">nproc=None</em>, <em class="sig-param">show_progress=True</em>, <em class="sig-param">verbose=False</em>, <em class="sig-param">interactive=False</em>, <em class="sig-param">name=None</em>, <em class="sig-param">cleanup=True</em>, <em class="sig-param">save=None</em>, <em class="sig-param">save_report=None</em>, <em class="sig-param">save_compact=False</em>, <em class="sig-param">save_metrics=None</em>, <em class="sig-param">report_template='report'</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.run" title="Permalink to this definition">¶</a></dt>
 <dd><p>run the grid runner, meaning that we turn each function and set of
 tests into a single test, and then run with multiprocessing.
 This is the function called by the user that also does filtering
@@ -649,6 +663,21 @@ not available for parallel jobs.</p></li>
 </dd></dl>
 
 <dl class="method">
+<dt id="gridtest.main.test.GridRunner.save_metrics">
+<code class="sig-name descname">save_metrics</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">tests</em>, <em class="sig-param">save_compact=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.save_metrics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.save_metrics" title="Permalink to this definition">¶</a></dt>
+<dd><p>save metrics to file. This is the same data as a general results
+export, but without the results, and without the params.</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><ul class="simple">
+<li><p>filename (str) : the json file to save to (must end in json)</p></li>
+<li><p>tests (gridtest.main.test.GridTest) : the gridtest object</p></li>
+<li><p>save_compact (bool) : don’t pretty print</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
 <dt id="gridtest.main.test.GridRunner.save_report">
 <code class="sig-name descname">save_report</code><span class="sig-paren">(</span><em class="sig-param">report_dir</em>, <em class="sig-param">report_template</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.save_report"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.save_report" title="Permalink to this definition">¶</a></dt>
 <dd><p>save a runner results to file.</p>
@@ -656,8 +685,16 @@ not available for parallel jobs.</p></li>
 
 <dl class="method">
 <dt id="gridtest.main.test.GridRunner.save_results">
-<code class="sig-name descname">save_results</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">tests</em>, <em class="sig-param">save_compact</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.save_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.save_results" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">save_results</code><span class="sig-paren">(</span><em class="sig-param">filename</em>, <em class="sig-param">tests</em>, <em class="sig-param">save_compact=False</em><span class="sig-paren">)</span><a class="reference internal" href="../modules/gridtest/main/test.html#GridRunner.save_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gridtest.main.test.GridRunner.save_results" title="Permalink to this definition">¶</a></dt>
 <dd><p>save a runner results to file.</p>
+<dl class="simple">
+<dt>Arguments:</dt><dd><ul class="simple">
+<li><p>filename (str) : the json file to save to (must end in json)</p></li>
+<li><p>tests (gridtest.main.test.GridTest) : the gridtest object</p></li>
+<li><p>save_compact (bool) : don’t pretty print</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
