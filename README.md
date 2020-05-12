@@ -33,7 +33,7 @@ can use across many different kinds of machine learning models, likely to run me
 
 ### Metrics
 
-A **metric** is a Pytho decorator that is paired with a test that will measure some
+A **metric** is a Python decorator that is paired with a test that will measure some
 attribute of a test. For example:
    - you might run a function across a grid of arguments, and then measure the time that each combination takes (the metric), and generate a report for inspection.
    - you might be doing text processing and having functions to parse text. Each function might be run over a grid of sentences and counts, and for each result, we want to count the number of unique words, and total words (metrics). This is the [interface example](examples/interface).
