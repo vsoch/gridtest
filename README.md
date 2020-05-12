@@ -1,6 +1,7 @@
 # GridTest
 
 [![PyPI version](https://badge.fury.io/py/gridtest.svg)](https://badge.fury.io/py/gridtest)
+[![DOI](https://zenodo.org/badge/256346804.svg)](https://zenodo.org/badge/latestdoi/256346804)
 
 Simple grid parameterization and testing setup for Python functions and modules.
 
