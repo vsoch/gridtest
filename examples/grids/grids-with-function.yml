@@ -8,6 +8,19 @@ script:
         pid: script.get_pokemon_id
       count: 10
 
+    # Generate a list of lists, intended to be unwrapped and used for another grid
+    unwrapped_grid:
+      functions:
+        numbers: 
+          func: script.generate_numbers
+          unwrap: true
+
+    sum_unwrapped_numbers:
+      ref:
+        numbers: unwrapped_grid.numbers
+      functions: 
+        total: script.dosum
+
     # A grid that will generate values with an installed module
     random_choice:
       count: 10

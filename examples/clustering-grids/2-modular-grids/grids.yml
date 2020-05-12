@@ -1,0 +1,30 @@
+analysis:
+  grids:
+    # This is just a grid to generate a list of datasets
+    generate_datasets:
+      functions:
+        datasets:
+           func: analysis.generate_datasets
+           unwrap: true
+
+    # This is just a grid to generate a list of algorithms across parameters
+    generate_algorithms:
+      args:
+        n_clusters: [2, 5]
+      functions:
+        algorithms: 
+          func: analysis.generate_algorithms
+          unwrap: true
+
+    # This grid parameterizes the algorithms and datasets...
+    generate_inputs:
+      ref:
+        algorithm: generate_algorithms.algorithms
+        dataset: generate_datasets.datasets
+
+  tests:
+
+    # To be used in this test.
+    analysis.generate_plot:
+      - grid: generate_inputs
+        metrics: ["@timeit"]

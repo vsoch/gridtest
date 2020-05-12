@@ -21,7 +21,7 @@ import os
 
 
 class Grid:
-    def __init__(self, name, params, filename=""):
+    def __init__(self, name, params, filename="", refs=None):
         """A Grid is a defined parameterization over a set of arguments, for
            any use case (testing, measuring metrics from models, etc.)
 
@@ -41,6 +41,7 @@ class Grid:
         self.params = params
         self.args = expand_args(params.get("args", {}))
         self.functions = params.get("functions", {})
+        self.refs = refs or {}
 
         # Cache set to True will pre-calculate grid
         self.cache = params.get("cache", False)
@@ -48,6 +49,9 @@ class Grid:
 
         # Run grid of tests an arbitrary number of times
         self.count = self.params.get("count", 1)
+
+        # Unwrapped functions go into params for later use
+        self.unwrap_functions()
 
         # Parameter sets are generated when needed unless asked for cache
         self.argsets = []
@@ -59,7 +63,8 @@ class Grid:
            is not provided as a list, we put into list. If a list is desired
            as the variable, it would be provided as a list of lists.
         """
-        # If a function has no arguments, won't return values
+        self.generate_references()
+
         try:
             keys, values = zip(*self.args.items())
         except:
@@ -69,7 +74,6 @@ class Grid:
         values = [[v] if not isinstance(v, list) else v for v in values]
 
         # Generate parameter sets
-
         for count in range(self.count):
             for v in itertools.product(*values):
                 args = dict(zip(keys, v))
@@ -78,6 +82,50 @@ class Grid:
                 yield args
 
     # Functions
+
+    def unwrap_functions(self):
+        """Given that a function is to be unwrapped, this means that we 
+           evaluate it first to generate a list that is used to updated args.
+        """
+        # If a function has no arguments, won't return values
+        try:
+            keys, values = zip(*self.args.items())
+        except:
+            keys = []
+            values = []
+
+        values = [[v] if not isinstance(v, list) else v for v in values]
+
+        # Unwrapped functions are not used again
+        to_remove = set()
+
+        # First round, pre-computed functions get added to args
+        for varname, funcname in self.functions.items():
+            if isinstance(funcname, dict) and "unwrap" in funcname:
+                unwrapped = []
+                for v in itertools.product(*values):
+                    args = dict(zip(keys, v))
+                    result = self.apply_function(funcname, args)
+                    result = [
+                        [v] if not isinstance(v, (list, tuple)) else v for v in result
+                    ]
+                    unwrapped += result
+                    to_remove.add(varname)
+                self.args[varname] = unwrapped
+
+        # Remove functions we've seen
+        for varname in to_remove:
+            del self.functions[varname]
+
+    def generate_references(self):
+        """Given a loaded set of references from other grids (self.refs)
+           load them into the current args space.
+        """
+        for name, ref in self.params.get("ref", {}).items():
+            grid, ref = ref.split(".", 1)
+            if grid in self.refs:
+                if ref in self.refs[grid].args:
+                    self.args[name] = self.refs[grid].args[ref]
 
     def apply_function(self, funcname, args):
         """Given a function (a name, or a dictionary to derive name and other

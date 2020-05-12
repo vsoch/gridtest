@@ -1,0 +1,470 @@
+[
+    {
+        "name": "analysis.generate_plot.0",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5643.95 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.1",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5611.62 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.2",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "4084.20 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.3",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5628.49 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.4",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "3553.24 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.5",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5630.45 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.6",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5279.41 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.7",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "4199.62 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.8",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "4178.60 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.9",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5672.82 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.10",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5917.69 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.11",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5668.40 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.12",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5660.78 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.13",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5617.82 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.14",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5665.70 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.15",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5723.72 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.16",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "5750.57 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.17",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "2190.07 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.18",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "2440.23 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.19",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1647.93 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.20",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1833.28 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.21",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1197.76 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.22",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "915.91 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.23",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1546.76 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.24",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1512.03 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.25",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "893.70 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.26",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1542.94 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.27",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1534.45 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.28",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1233.14 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.29",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1241.72 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.30",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1462.99 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.31",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1792.91 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.32",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1615.77 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.33",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1376.88 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.34",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1672.49 ms"
+            ]
+        },
+        "module": "analysis"
+    },
+    {
+        "name": "analysis.generate_plot.35",
+        "function": "analysis.generate_plot",
+        "filename": "/home/vanessa/Desktop/Code/gridtest/examples/clustering-grids/2-modular-grids/",
+        "raises": null,
+        "success": true,
+        "metrics": {
+            "@timeit": [
+                "1548.57 ms"
+            ]
+        },
+        "module": "analysis"
+    }
+]

@@ -13,7 +13,7 @@ from gridtest.defaults import (
     GRIDTEST_RETURNTYPES,
 )
 from gridtest.templates import copy_template
-from gridtest.utils import read_yaml, write_yaml, write_json
+from gridtest.utils import read_yaml, write_yaml, write_json, save_pickle
 from gridtest.logger import bot
 from gridtest import __version__
 
@@ -555,6 +555,7 @@ class GridRunner:
         save=None,
         save_report=None,
         save_compact=False,
+        save_metrics=None,
         report_template="report",
     ):
         """run the grid runner, meaning that we turn each function and set of
@@ -602,6 +603,9 @@ class GridRunner:
             report_dir = self.save_report(save_report, report_template)
             save = os.path.join(report_dir, "results.json")
 
+        if save_metrics:
+            self.save_metrics(save_metrics, tests, save_compact)
+
         # Save to file (required for report)
         if save:
             self.save_results(save, tests, save_compact)
@@ -641,25 +645,73 @@ class GridRunner:
             bot.exit(f"Error writing to {dest}.")
         return dest
 
-    def save_results(self, filename, tests, save_compact):
-        """save a runner results to file.
+    def _savepaths_valid(self, filename, allowed=None):
+        """For some file to be written, check that the directory exists, and 
+           a proper extension is used.
         """
-        filename = os.path.abspath(filename)
+        allowed = allowed or [".json", ".pkl"]
+        regexp = "(%s)$" % ("|".join(allowed))
+
         dirname = os.path.dirname(filename)
         if not os.path.exists(dirname):
             bot.exit(f"{dirname} does not exist, skipping save.")
 
-        elif not filename.endswith(".json"):
-            bot.warning(f"{dirname} must be extension .json, skipping save.")
+        elif not re.search(regexp, filename):
+            bot.warning(
+                f"%s must have extensions in %s, skipping save."
+                % (filename, ",".join(allowed))
+            )
+            return False
+        return True
 
-        else:
+    def save_metrics(self, filename, tests, save_compact=False):
+        """save metrics to file. This is the same data as a general results
+           export, but without the results, and without the params.
+
+           Arguments:
+            - filename (str) : the json file to save to (must end in json)
+            - tests (gridtest.main.test.GridTest) : the gridtest object
+            - save_compact (bool) : don't pretty print
+        """
+        filename = os.path.abspath(filename)
+        if self._savepaths_valid(filename, allowed=[".json"]):
             results = []
             for key, test in tests.items():
 
                 if test.params.get("save", True) == False:
                     continue
 
-                # If the result is instance, convert
+                results.append(
+                    {
+                        "name": key,
+                        "function": test.name,
+                        "filename": test.filename,
+                        "raises": test.raises,
+                        "success": test.success,
+                        "metrics": test.metrics,
+                        "module": test.module,
+                    }
+                )
+
+            write_json(results, filename, pretty=not save_compact)
+            return filename
+
+    def save_results(self, filename, tests, save_compact=False):
+        """save a runner results to file.
+
+           Arguments:
+            - filename (str) : the json file to save to (must end in json)
+            - tests (gridtest.main.test.GridTest) : the gridtest object
+            - save_compact (bool) : don't pretty print
+        """
+        filename = os.path.abspath(filename)
+        if self._savepaths_valid(filename):
+            results = []
+            for key, test in tests.items():
+
+                if test.params.get("save", True) == False:
+                    continue
+
                 results.append(
                     {
                         "name": key,
@@ -675,7 +727,15 @@ class GridRunner:
                         "module": test.module,
                     }
                 )
-            write_json(results, filename, pretty=not save_compact)
+
+            if filename.endswith(".json"):
+                try:
+                    write_json(results, filename, pretty=not save_compact)
+                except:
+                    bot.warning(f"Error saving to json, try a .pkl extension instead.")
+
+            elif filename.endswith(".pkl"):
+                save_pickle(results, filename)
             return filename
 
     def print_results(self, tests):
@@ -720,7 +780,9 @@ class GridRunner:
         for parent, section in self.config.items():
             filename = extract_modulename(section.get("filename", ""), self.input_dir)
             for name, grid in section.get("grids", {}).items():
-                self.grids[name] = Grid(name=name, params=grid, filename=filename)
+                self.grids[name] = Grid(
+                    name=name, params=grid, filename=filename, refs=self.grids
+                )
         return self.grids
 
     def get_tests(self, regexp=None, verbose=False, cleanup=True):
@@ -772,7 +834,9 @@ class GridRunner:
 
                     # If entry is defined without a grid, we need to generate it
                     if not grid:
-                        grid = Grid(name=name, params=entry, filename=filename)
+                        grid = Grid(
+                            name=name, params=entry, filename=filename, refs=self.grids
+                        )
 
                         # If the grid has an instance, add the correct args to it
                         if "self" in grid.args and "grid" in grid.args["self"]:

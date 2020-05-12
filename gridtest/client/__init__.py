@@ -73,7 +73,10 @@ def get_parser():
     )
 
     test.add_argument(
-        "--save", dest="save", help="save a json export of test results.", default=None,
+        "--save",
+        dest="save",
+        help="save a json or pickle (pkl) export of test results, determined by extension.",
+        default=None,
     )
 
     test.add_argument(
@@ -82,6 +85,13 @@ def get_parser():
         help="save compact json",
         default=False,
         action="store_true",
+    )
+
+    test.add_argument(
+        "--save-metrics",
+        dest="save_metrics",
+        help="save metrics from tests only",
+        default=None,
     )
 
     test.add_argument(
@@ -159,6 +169,15 @@ def get_parser():
         help="count the number of results that will be produced",
         default=False,
         action="store_true",
+    )
+
+    gridview.add_argument(
+        "-a",
+        "--arg",
+        dest="arg",
+        help="view a single argument from a grid, used optionally with --count",
+        type=str,
+        default=None,
     )
 
     gridview.add_argument(
@@ -280,11 +299,11 @@ def main():
 
     # Pass on to the correct parser
     return_code = 0
-    # try:
-    main(args=args, extra=extra)
-    sys.exit(return_code)
-    # except UnboundLocalError:
-    #    return_code = 1
+    try:
+        main(args=args, extra=extra)
+        sys.exit(return_code)
+    except UnboundLocalError:
+        return_code = 1
 
     help(return_code)
 
