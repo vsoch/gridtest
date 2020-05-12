@@ -25,6 +25,7 @@ and then load a grids.yml file in our Python code to parameterize tests or other
 ## Grids
 
  - [grids](grids): an introduction to generating and using grids.
+ - [sample-grid](sample-grid): using gridtest to generate grids of samples.
  - [clustering-grids](clustering-grids): using GridTest to easily run the [clustering example for scikit-learn](https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html#sphx-glr-auto-examples-cluster-plot-linkage-comparison-py)
 
 Also see the [tutorials](https://vsoch.github.io/gridtest/tutorials/) section of the web documentation for more details.
