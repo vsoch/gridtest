@@ -8,7 +8,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-__version__ = "0.0.13"
+__version__ = "0.0.14"
 AUTHOR = "Vanessa Sochat"
 AUTHOR_EMAIL = "vsochat@stanford.edu"
 NAME = "gridtest"
@@ -23,7 +23,7 @@ LICENSE = "LICENSE"
 
 INSTALL_REQUIRES = (
     ("pyaml", {"min_version": "20.3.1"}),
-    ("json-tricks", {"min_version": None}),
+    ("json-tricks", {"min_version": "3.15.2"}),
 )
 
 TESTS_REQUIRES = (("pytest", {"min_version": "4.6.2"}),)

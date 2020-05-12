@@ -29,5 +29,6 @@ def main(args, extra):
         save_compact=args.save_compact,
         save_report=args.save_report,
         report_template=args.report_template,
+        save_metrics=args.save_metrics,
     )
     sys.exit(return_code)

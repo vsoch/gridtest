@@ -8,7 +8,8 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-from json_tricks import dumps
+from json_tricks import dumps, loads
+import pickle
 import yaml
 import fnmatch
 import json
@@ -79,4 +80,19 @@ def write_json(json_obj, filename, pretty=True):
             filey.writelines(dumps(json_obj, indent=4, separators=(",", ": ")))
         else:
             filey.writelines(dumps(json_obj))
+    return filename
+
+
+def read_json(input_file):
+    """Read json from an input file."""
+    with open(input_file, "r") as filey:
+        data = loads(filey.read())
+    return data
+
+
+def save_pickle(json_obj, filename):
+    """Save a pickle to file
+    """
+    with open(filename, "wb") as fd:
+        pickle.dump(json_obj, fd)
     return filename

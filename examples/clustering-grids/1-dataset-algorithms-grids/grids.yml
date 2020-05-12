@@ -1,0 +1,18 @@
+analysis:
+  grids:
+   
+    generate_datasets:
+      functions:
+        datasets:
+           func: analysis.generate_datasets
+           unwrap: true
+
+    generate_algorithms:
+      ref:
+        dataset: generate_datasets.datasets
+      functions:
+        algorithms: analysis.generate_algorithms
+        
+  tests:
+    analysis.generate_plots:
+      - grid: generate_algorithms

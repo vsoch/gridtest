@@ -36,8 +36,25 @@ def main(args, extra):
         else:
             sys.exit(f"{name} is not a valid grid name in {input_file}")
 
-        if args.count:
+        if args.arg and args.arg not in grid.args:
+            sys.exit(f"{args.arg} is not an argument in grid {grid}.")
+
+        # Print count (length) of a variable, or number o grids
+        if args.count and args.arg:
+            try:
+                print(f"Variable {args.arg} has length {len(grid.args[args.arg])}.")
+            except:
+                print(f"{grid.args[args.arg]}")
+
+        # Just count of global
+        elif args.count:
             print(f"{len(list(grid))} argument sets produced.")
+
+        # Just print the argument
+        elif args.arg:
+            print(grid.args[args.arg])
+
+        # Export data to file
         elif args.export:
             grids = list(grid)
             write_json(grids, args.export)

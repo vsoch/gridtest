@@ -19,4 +19,9 @@ using GridTest.
  - [Package Tutorial](package/): Writing tests for a system package, requests
  - [Decorators Tutorial](decorators/) Run a grid of tests for a gridtest or custom decorator.
 
+## Real World Examples
+
+ - [pySchrodinger](https://github.com/researchapps/pySchrodinger): a walk through of creating a grid to run over a Schrodinger class to generate metrics and results for inspection.
+ - [clustering-grids](https://github.com/vsoch/gridtest/tree/master/examples/clustering-grids): an example of taking a scikit-learn tutorial of algorithms and datasets, and splitting into grids to collect metrics for each.
+
 If you want to request or suggest a tutorial, please [open an issue](https://github.com/{{ site.repo }}/issues).

@@ -14,6 +14,17 @@ and then load a grids.yml file in our Python code to parameterize tests or other
  - [is-true-false](is-true-false): example tests for using the `istrue` and `isfalse` conditions.
  - [package](package): generate for a python package you've already installed
  - [class](class): run grid tests for a car class
+
+## Metric Collection
+
  - [metrics](metrics): use decorators to measure metrics across a grid of tests (eg., timeit)
  - [custom-decorator](custom-decorator): writing a custom decorator to count words over a grid of parameters
  - [grid-function](grid-function) gridtest can derive input parameters from one or more functions.
+
+
+## Grids
+
+ - [grids](grids): an introduction to generating and using grids.
+ - [clustering-grids](clustering-grids): using GridTest to easily run the [clustering example for scikit-learn](https://scikit-learn.org/stable/auto_examples/cluster/plot_linkage_comparison.html#sphx-glr-auto-examples-cluster-plot-linkage-comparison-py)
+
+Also see the [tutorials](https://vsoch.github.io/gridtest/tutorials/) section of the web documentation for more details.
