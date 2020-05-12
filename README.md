@@ -2,9 +2,9 @@
 
 [![PyPI version](https://badge.fury.io/py/gridtest.svg)](https://badge.fury.io/py/gridtest)
 
-Simple grid testing setup for Python functions and modules.
+Simple grid parameterization and testing setup for Python functions and modules.
 
-![docs/assets/img/logo/gridtest.gif](docs/assets/img/logo/gridtest.gif)
+![docs/assets/img/logo/gridtest.gif](https://raw.githubusercontent.com/vsoch/gridtest/master/docs/assets/img/logo/gridtest.gif)
 
 ## Overview 
 
@@ -60,8 +60,3 @@ the average user will assess each of these points. The developer @vsoch has not
 added them yet because she doesn't think them overall useful.
 
  - support for system libraries (e.g., sys) or anything without a filename in site-packages
-
-
-## TODO:
- - tests for variables (float, list, grid types with min/max/by or count) func?
- - interface to visualize results and metrics
