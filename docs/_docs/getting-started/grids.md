@@ -488,6 +488,95 @@ Akin to the previous example, since we've provided a function to pass our grid
 arguments into, the results are returned. This is how gridtest can
 use a grid specified under a test to generate a list of values for an argument.
 
+## Grids with Unwrapped Functions
+
+Let's say that we have some function that produces a list of lists, and we want to
+use that as a list to be parameterized for another grid. First, here is our
+function:
+
+```python
+```
+
+And here is how we might define it in the grid:
+```yaml
+    # Generate a list of lists, intended to be unwrapped and used for another grid
+    unwrapped_grid:
+      functions:
+        numbers: 
+          func: script.generate_numbers
+          unwrap: true
+```
+
+The "unwrap" serves to take the list, and unwrap it so that each result can
+be used separately. If we generate the grid, the parameterization is done with
+any additional arguments. Since we don't have any, we get a list of 10 inputs, 
+each of length 10
+
+```bash
+$ gridtest gridview grids-with-function.yml unwrapped_grid 
+{'numbers': [82, 82, 82, 82, 82, 82, 82, 82, 82, 82]}
+{'numbers': [52, 52, 52, 52, 52, 52, 52, 52, 52, 52]}
+{'numbers': [41, 41, 41, 41, 41, 41, 41, 41, 41, 41]}
+{'numbers': [25, 25, 25, 25, 25, 25, 25, 25, 25, 25]}
+{'numbers': [43, 43, 43, 43, 43, 43, 43, 43, 43, 43]}
+{'numbers': [64, 64, 64, 64, 64, 64, 64, 64, 64, 64]}
+{'numbers': [43, 43, 43, 43, 43, 43, 43, 43, 43, 43]}
+{'numbers': [39, 39, 39, 39, 39, 39, 39, 39, 39, 39]}
+{'numbers': [27, 27, 27, 27, 27, 27, 27, 27, 27, 27]}
+{'numbers': [64, 64, 64, 64, 64, 64, 64, 64, 64, 64]}
+```
+
+We can also ask to just look at the numbers parameter, as it was defined
+before we produced the parameter matrix above (it's a list of lists)
+
+```bash
+$ gridtest gridview grids-with-function.yml unwrapped_grid --arg numbers --count
+Variable numbers has length 10.
+
+$ gridtest gridview grids-with-function.yml unwrapped_grid --arg numbers
+[[32, 32, 32, 32, 32, 32, 32, 32, 32, 32], [70, 70, 70, 70, 70, 70, 70, 70, 70, 70], [75, 75, 75, 75, 75, 75, 75, 75, 75, 75], [86, 86, 86, 86, 86, 86, 86, 86, 86, 86], [86, 86, 86, 86, 86, 86, 86, 86, 86, 86], [50, 50, 50, 50, 50, 50, 50, 50, 50, 50], [92, 92, 92, 92, 92, 92, 92, 92, 92, 92], [1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [80, 80, 80, 80, 80, 80, 80, 80, 80, 80], [35, 35, 35, 35, 35, 35, 35, 35, 35, 35]]
+```
+
+We can also add another parameter (e.g., defining two for length doubles the results)
+
+```yaml
+    # Generate a list of lists, intended to be unwrapped and used for another grid
+    unwrapped_grid:
+      args:
+        length: [10, 20]
+      functions:
+        numbers: 
+          func: script.generate_numbers
+          unwrap: true
+```
+
+Regardless, we could then reference this variable with `ref` for another grid.  For
+example, here we want to 
+
+```yaml
+    sum_unwrapped_numbers:
+      ref:
+        numbers: unwrapped_grid.numbers
+      functions: 
+        total: script.dosum
+```
+
+And then we generate a grid with the result.
+
+```bash
+$ gridtest gridview grids-with-function.yml sum_unwrapped_numbers
+{'numbers': [90, 90, 90, 90, 90, 90, 90, 90, 90, 90], 'total': 900}
+{'numbers': [72, 72, 72, 72, 72, 72, 72, 72, 72, 72], 'total': 720}
+{'numbers': [88, 88, 88, 88, 88, 88, 88, 88, 88, 88], 'total': 880}
+{'numbers': [21, 21, 21, 21, 21, 21, 21, 21, 21, 21], 'total': 210}
+{'numbers': [37, 37, 37, 37, 37, 37, 37, 37, 37, 37], 'total': 370}
+{'numbers': [96, 96, 96, 96, 96, 96, 96, 96, 96, 96], 'total': 960}
+{'numbers': [40, 40, 40, 40, 40, 40, 40, 40, 40, 40], 'total': 400}
+{'numbers': [37, 37, 37, 37, 37, 37, 37, 37, 37, 37], 'total': 370}
+{'numbers': [26, 26, 26, 26, 26, 26, 26, 26, 26, 26], 'total': 260}
+{'numbers': [2, 2, 2, 2, 2, 2, 2, 2, 2, 2], 'total': 20}
+```
+
 ## What to do with Grids?
 
 You might just be using grids inline to go with your [tests](../testing/). However,
