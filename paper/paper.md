@@ -11,7 +11,7 @@ authors:
 affiliations:
  - name: Stanford University Research Computing
    index: 1
-date: 06 May 2020
+date: 12 May 2020
 bibliography: paper.bib
 ---
 
