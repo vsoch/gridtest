@@ -19,6 +19,10 @@ using GridTest.
  - [Package Tutorial](package/): Writing tests for a system package, requests
  - [Decorators Tutorial](decorators/) Run a grid of tests for a gridtest or custom decorator.
 
+## Grids
+
+ - [Sample Grid](samplegrid/): creating grids by selecting randomly via separate functions.
+
 ## Real World Examples
 
  - [pySchrodinger](https://github.com/researchapps/pySchrodinger): a walk through of creating a grid to run over a Schrodinger class to generate metrics and results for inspection.

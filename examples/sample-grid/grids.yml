@@ -1,0 +1,34 @@
+script:
+  grids:
+
+    # Each grid below generates one randomly selected value
+    select_colors:
+      functions:
+        colors:
+          func: script.generate_rgb_colors
+          unwrap: true
+
+    select_shapes:
+      functions:
+        shapes: 
+          func: script.generate_shapes
+          unwrap: true
+
+    select_animals:
+      functions:
+        animals:
+          func: script.generate_animals
+          unwrap: true
+
+    select_ages:
+      functions:
+        ages:
+          func: script.generate_ages
+          unwrap: true
+
+    generate_cohort:
+      ref:
+        age: select_ages.ages
+        animal: select_animals.animals
+        shape: select_shapes.shapes
+        color: select_colors.colors
