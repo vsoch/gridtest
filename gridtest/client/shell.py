@@ -8,7 +8,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-from gridtest.main.test import GridRunner, GridTest
+from gridtest.main.test import GridRunner
 import os
 import sys
 
@@ -71,8 +71,6 @@ def print_runner(runner, testfile):
 def ipython(args):
     """give the user an ipython shell, optionally with an endpoint of choice.
     """
-    from gridtest.main.test import GridRunner, GridTest
-
     testfile = args.input
     runner = get_runner(args)
     print_runner(runner, testfile)
@@ -82,7 +80,6 @@ def ipython(args):
 
 
 def bpython(args):
-    from gridtest.main.test import GridRunner, GridTest
     import bpython
 
     runner = get_runner(args)
@@ -91,7 +88,6 @@ def bpython(args):
 
 
 def python(args):
-    from gridtest.main.test import GridRunner, GridTest
     import code
 
     runner = get_runner(args)

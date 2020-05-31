@@ -15,7 +15,6 @@ it will work to reference the function here.
 """
 
 import tempfile
-import sys
 import os
 
 

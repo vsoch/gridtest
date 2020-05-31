@@ -91,20 +91,6 @@ def test_broken_func():
     assert len(test.err) >= 1
 
 
-def test_broken_func():
-    """Run a test for a broken function"""
-    from gridtest.main.test import GridTestFunc
-
-    def broken():
-        print(1 + "string")
-
-    test = GridTestFunc(broken)
-    assert not test.success
-    test.run()
-    assert not test.success
-    assert len(test.err) >= 1
-
-
 def test_return_type():
     """test that a function with typing honors returning that type
     """

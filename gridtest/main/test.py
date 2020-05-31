@@ -19,7 +19,6 @@ from gridtest import __version__
 
 from gridtest.main.generate import (
     import_module,
-    get_function_typing,
     extract_modulename,
 )
 from gridtest.main.grids import Grid
@@ -28,7 +27,6 @@ from gridtest.main.workers import Workers
 from gridtest.main.substitute import substitute_func, substitute_args
 from copy import deepcopy
 
-import itertools
 import re
 import shutil
 import sys
@@ -181,7 +179,7 @@ class GridTest:
             - cleanup (bool) : remove any temporary directories or files (True)
         """
         if not self.show_progress:
-            bot.info(f"Running test {name}")
+            bot.info(f"Running test {self.name}")
 
         # Should we clean up temporary files produced?
         if cleanup is not None:
@@ -658,7 +656,7 @@ class GridRunner:
 
         elif not re.search(regexp, filename):
             bot.warning(
-                f"%s must have extensions in %s, skipping save."
+                "%s must have extensions in %s, skipping save."
                 % (filename, ",".join(allowed))
             )
             return False
@@ -732,7 +730,7 @@ class GridRunner:
                 try:
                     write_json(results, filename, pretty=not save_compact)
                 except:
-                    bot.warning(f"Error saving to json, try a .pkl extension instead.")
+                    bot.warning("Error saving to json, try a .pkl extension instead.")
 
             elif filename.endswith(".pkl"):
                 save_pickle(results, filename)

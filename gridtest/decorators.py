@@ -16,8 +16,6 @@ it will work to reference the function here.
 
 
 import time
-import sys
-import os
 
 
 def timeit(func):

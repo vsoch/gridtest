@@ -8,10 +8,9 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-from gridtest.main.test import GridRunner, GridTest
+from gridtest.main.test import GridRunner
 from gridtest.utils import write_json
 import os
-import json
 import sys
 
 

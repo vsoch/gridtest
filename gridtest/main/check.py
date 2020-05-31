@@ -53,7 +53,6 @@ def get_missing_tests(
 
     # Keep track of new sections seen
     sections = []
-    spec = dict()
 
     # Regular expression for existing takes into account different import paths
     regex = "(%s)$" % "|".join(list(existing) + skip_patterns)

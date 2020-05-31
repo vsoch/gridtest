@@ -12,7 +12,6 @@ from json_tricks import dumps, loads
 import pickle
 import yaml
 import fnmatch
-import json
 import os
 
 

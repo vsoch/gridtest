@@ -10,10 +10,9 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from gridtest.logger import bot
 from gridtest.defaults import GRIDTEST_WORKERS
-from gridtest.main.helpers import test_types, test_basic, Capturing
+from gridtest.main.helpers import test_basic
 import multiprocessing
 import itertools
-from io import StringIO
 import time
 import signal
 import sys
@@ -55,7 +54,6 @@ class Workers(object):
             return
 
         results = []
-        to_cleanup = []
 
         try:
             prefix = "[%s/%s]" % (progress, total)
