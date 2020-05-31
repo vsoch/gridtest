@@ -8,7 +8,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-
+from gridtest.logger import bot
 import multiprocessing
 import os
 import sys

@@ -15,7 +15,6 @@ from gridtest.logger import bot
 from copy import deepcopy
 import itertools
 import inspect
-import re
 import sys
 import os
 

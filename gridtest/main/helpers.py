@@ -13,7 +13,6 @@ from gridtest.main.grids import intersect_args
 from io import StringIO
 import re
 import sys
-import time
 import os
 
 
@@ -53,7 +52,7 @@ def print_interactive(**kwargs):
     """A helper function to print locals that are relevant to test_basic for 
        the user.
     """
-    print(f"\n\nGridtest interactive mode! Press Control+D to cycle to next test.")
+    print("\n\nGridtest interactive mode! Press Control+D to cycle to next test.")
     print("\n\033[1mVariables\033[0m")
     print(f"   func: {kwargs['func']}")
     print(f" module: {kwargs['module']}")

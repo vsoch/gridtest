@@ -10,7 +10,6 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from gridtest.logger import bot
 from gridtest.defaults import GRIDTEST_GRIDEXPANDERS
-import os
 
 
 def custom_range(start, stop, by=1.0, precision=2):

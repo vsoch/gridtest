@@ -8,7 +8,7 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 """
 
-from gridtest.utils import recursive_find, write_yaml, read_yaml
+from gridtest.utils import recursive_find, write_yaml
 import importlib
 import inspect
 import os

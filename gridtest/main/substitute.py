@@ -9,11 +9,8 @@ with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 """
 
 from gridtest.main.generate import import_module
-from gridtest.defaults import GRIDTEST_FUNCS, GRIDTEST_GRIDEXPANDERS
+from gridtest.defaults import GRIDTEST_FUNCS
 
-from gridtest.logger import bot
-import itertools
-import os
 import re
 import sys
 
