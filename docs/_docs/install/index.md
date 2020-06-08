@@ -5,7 +5,7 @@ permalink: /install/index.html
 order: 1
 ---
 
-
+<a id="install">
 ## Install
 
 GridTest can be installed natively (python 3 recommended) with pip:
@@ -65,5 +65,20 @@ actions:
     test                run a grid test.
     generate            generate a grid test yaml file.
 ```
+
+<a id="running-tests">
+## Running Tests
+
+Once you've installed gridtest, you can run the test suite with pytest, and
+install a dependency for testing, the pokemon library:
+
+```bash
+pip install pokemon
+pytest -sv tests/*py
+```
+
+The test suite is also run during continuous integration for GitHub actions,
+and will run on pull requests if you don't want to run these commands locally.
+
 
 If you have any questions or issues, please [open an issue]({{ site.repo }}/issues).
