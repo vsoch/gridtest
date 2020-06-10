@@ -11,48 +11,27 @@ Simple grid parameterization and testing setup for Python functions and modules.
 
 GridTest is a library that specializes in generating parameter grids. The grids
 are most obviously used for testing, but can extend to other use cases.
-GridTest can read in one or more python scripts or modules, and generate a 
-yaml template file that can be used to run tests, or just to define grids
-to programatically use elsewhere. 
+In the context of testing, GridTest makes it easy to discover functions,
+classes, and arguments for your python scripts or modules, and then generate
+a template for you to easily populate. Outside of testing, you can define
+grids that are version controlled, programatically defined with functions,
+and easy to interact with from the command line or Python interpreter.
+You might be interested in GridTest if you need:
 
-## Use Cases
+   - low overhead tests for Python scripts and small packages
+   - to generate input data for reproducible computations
 
-### Testing
-
-A **gridtest**: is one that is run over a grid of parameter settings. Each test
-can include an inline grid to define arguments, and optionally functions to run
-to generate arguments. A grid can be inline to the test (if not used elsewhere)
-or defined globally and shared.
-
-### Parameterization
-
-GridTest makes parameter definitions first class citizens!
-A **grid** is a global definition of a parameter matrix. You can define arguments,
-and optionally functions to run to derive arguments. Grids do not have to be used in
-testing! You might share a repository that only defines grids that people
-can use across many different kinds of machine learning models, likely to run metrics.
-
-### Metrics
-
-A **metric** is a Python decorator that is paired with a test that will measure some
-attribute of a test. For example:
-   - you might run a function across a grid of arguments, and then measure the time that each combination takes (the metric), and generate a report for inspection.
-   - you might be doing text processing and having functions to parse text. Each function might be run over a grid of sentences and counts, and for each result, we want to count the number of unique words, and total words (metrics). This is the [interface example](examples/interface).
-
-Take a look at the [examples](examples) folder or the [documentation](https://vsoch.github.io/gridtest) for getting started. An example report is available to view [here](https://vsoch.github.io/gridtest/templates/report/),
-and as we get more real world use cases, the report templates and data export options will be expanded
-to use and visualize them beautifully. Please [open an issue](https://github.com/vsoch/gridtest/issues) 
-if you have a use case that @vsoch can help with!
-
-## Who is this software for?
-
-Gridtest is intended for definition and saving of grids for any need that you might have,
-or even for quick generation of running tests. It is not intended
-to be a robust testing library like pytest or even unittest, but rather a quick
-way to write tests for an entire module or set of files, and then have them
-run on some CI service.
+To learn more, it's recommended to reference the [documentation](https://vsoch.github.io/gridtest/),
+take a look at the [getting started](https://vsoch.github.io/gridtest/getting-started/index.html) pages,
+or browse one of the many [tutorials](https://vsoch.github.io/gridtest/tutorials/index.html) available.
 
  * Free software: MPL 2.0 License
+
+## Support
+
+If you have any questions or requests for examples or tutorials, please don't hesitate
+to [open an issue](https://github.com/vsoch/gridtest/issues).
+
 
 ## Known Issues 
 
