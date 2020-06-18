@@ -4,10 +4,9 @@
 [![DOI](https://zenodo.org/badge/256346804.svg)](https://zenodo.org/badge/latestdoi/256346804)
 
 Simple grid parameterization and testing setup for Python functions and modules.
+See [Documentation](https://vsoch.github.io/gridtest/) to get started.
 
 ![docs/assets/img/logo/gridtest.gif](https://raw.githubusercontent.com/vsoch/gridtest/master/docs/assets/img/logo/gridtest.gif)
-
- - [Documentation](https://vsoch.github.io/gridtest/)
 
 ## Overview 
 
