@@ -32,6 +32,11 @@ or browse one of the many [tutorials](https://vsoch.github.io/gridtest/tutorials
 If you have any questions or requests for examples or tutorials, please don't hesitate
 to [open an issue](https://github.com/vsoch/gridtest/issues).
 
+## Contributing
+
+Please see the [documentation contributing guide](https://vsoch.github.io/gridtest/contributing/index.html)
+for details on how to contribute to documentation or code, or the GitHub [CONTRIBUTING.md](.github/CONTRIBUTING.md) 
+for a list of checks when opening a pull request.
 
 ## Known Issues 
 
