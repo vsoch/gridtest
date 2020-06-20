@@ -21,6 +21,7 @@ def getenv(variable_key, default=None, required=False, silent=True):
         Arguments:
 
          - variable_key (str) : the variable name
+         - default (str) : default value if variable_key does not exist
          - required (bool) : exit with error if not found
          - silent (bool) : Do not print debugging information
     """

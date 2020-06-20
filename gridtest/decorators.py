@@ -19,7 +19,7 @@ import time
 
 
 def timeit(func):
-    """timeit is a well known Python decorator that will time the total executio
+    """timeit is a well known Python decorator that will time the total execution
        time for a function. Any output to return to the calling function should
        be printed to stdout, and prefixed with the name of the objective (e.g.,
        @timeit).
@@ -36,7 +36,7 @@ def timeit(func):
 
 
 def length(func):
-    """calculate the length of a result, None if doesn't have length
+    """calculate the length of a result, None if it doesn't have length
     """
 
     def wrapper(*args, **kwargs):
