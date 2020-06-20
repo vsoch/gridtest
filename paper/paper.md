@@ -66,7 +66,7 @@ another? By way of allowing you to specify one or more metrics alongside tests,
 you can easily capture metrics (Python decorators to your functions to test)
 to output in an interactive report. For example, if we write a test that runs
 a machine learning algorithm across a grid of datasets and algorithms, we can easily
-add a metric to record the time that each takes, and save this result to file.
+add a metric to record the time that each takes, and save this result to a file.
 GridTest provides a standard set of [decorators](https://vsoch.github.io/gridtest/tutorials/decorators/index.html) for
 ease of use, and the user is also free to write their own functions to collect
 metrics.
@@ -74,10 +74,10 @@ metrics.
 ### 3. Generating Reports
 
 If you need to save results to a data file (e.g., results.json) or generate
-an interactive report for GitHub pages, this is easy to do do with running
-Gridtest with the `--save` or `--save-web` flags. An example web report is
+an interactive report for GitHub pages, this is easy to do with running
+GridTest with the `--save` or `--save-web` flags. An example web report is
 shown in Figure 1. Any grid can also be exported
-to json for archive in a repository or extension to other custom visualizations. 
+to json for archiving in a repository or extension to other custom visualizations.
 
 ![Figure 1. An example GridTest web report](report.png)
 
@@ -92,7 +92,7 @@ shell, import what you need, and try to reproduce, or you can turn up verbosity
 and add a bunch of print statements to figure out what is going on. GridTest makes
 this much easier with it's `--interactive` mode, which will let you simply
 shell into an interpreter right before the function is run, and let you debug 
-away. A detalied walkthrough of debugging is provided [here](https://vsoch.github.io/gridtest/getting-started/debugging/).
+away. A detailed walkthrough of debugging is provided [here](https://vsoch.github.io/gridtest/getting-started/debugging/).
 
 ### 5. Running Reproducible Tests
 
@@ -104,7 +104,7 @@ different combinations.
 ### 6. Knowing the tests to write
 
 Whether you write as you go or at the end, you have to look back at your files
-to know the functions names and arguments that need to be tested. GridTest solves
+to know the function names and arguments that need to be tested. GridTest solves
 this problem by way of discovery - give it a module name, a file name, or
 an entire directory with Python files, and it will generate a template for you
 to easily fill in that already includes arguments and functions.  
@@ -152,14 +152,14 @@ attribute of a test. For example:
    - you might be doing text processing and having functions to parse text. Each function might be run over a grid of sentences and counts, and for each result, we want to count the number of unique words, and total words (metrics).
 
 Metrics are fully described in the [metrics](https://vsoch.github.io/gridtest/getting-started/metrics/) section
-of the documentation,
+of the documentation.
 
 ## Conclusion
 
 GridTest aims to be a general tool for data scientists and research software engineers
 alike. If there is need to create a collection of grids, regardless of being used
 for testing or another use case, GridTest can solve this problem. By way of saving
-to json, Gridtest can generate grids that are used for analyses without the extra
+to json, GridTest can generate grids that are used for analyses without the extra
 dependency of needing GridTest. By way of providing json export with interactive web
 reports, GridTest can be used in a continuous integration setup to generate a report
 for some tests or metrics of interest. The author had amazing fun creating this library,
