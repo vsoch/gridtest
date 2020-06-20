@@ -47,7 +47,7 @@ Parameters always come as a second thought when writing tests, and this is
 why they are commonly applied as decorators. The author of this software
 realized that she might want to define just sets of parameters that expand
 into matrices that can be useful across many use cases. This makes
-the grids "first class citizens". For example, instead of a top to bottom
+the grids "first class citizens." For example, instead of a top to bottom
 script that loops over some set of datasets, parameters, and algorithms, 
 you could define grids to generate each in a modular fashion. This
 is explained in detail for the [clustering grids](https://github.com/vsoch/gridtest/tree/master/examples/clustering-grids) example derived from scikit-learn. As another example, you might
