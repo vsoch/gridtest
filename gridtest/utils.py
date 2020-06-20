@@ -21,7 +21,7 @@ def recursive_find(base, pattern="*.py"):
 
        Arguments:
          - base (str) : the base directory to search
-         - pattern: a pattern to match, defaults to *.py
+         - pattern (str) : a pattern to match, defaults to *.py
     """
     for root, _, filenames in os.walk(base):
         for filename in fnmatch.filter(filenames, pattern):
@@ -60,7 +60,6 @@ def write_yaml(yaml_dict, filename):
        Arguments:
         - yaml_dict (dict) : the dict to print to yaml
         - filename (str) : the output file to write to
-        - pretty_print (bool): if True, will use nicer formatting
     """
     with open(filename, "w") as filey:
         filey.writelines(yaml.dump(yaml_dict))
@@ -70,9 +69,10 @@ def write_yaml(yaml_dict, filename):
 def write_json(json_obj, filename, pretty=True):
     """write_json will write a json object to file, pretty printed
 
-       Arguents:
+       Arguments:
         - json_obj (dict) : the dict to print to json
         - filename (str) : the output file to write to
+        - pretty (bool): if True, will use nicer formatting
     """
     with open(filename, "w") as filey:
         if pretty:
@@ -83,7 +83,11 @@ def write_json(json_obj, filename, pretty=True):
 
 
 def read_json(input_file):
-    """Read json from an input file."""
+    """Read json from an input file.
+
+       Arguments:
+        - input_file (str) : file to read from
+    """
     with open(input_file, "r") as filey:
         data = loads(filey.read())
     return data
@@ -91,6 +95,10 @@ def read_json(input_file):
 
 def save_pickle(json_obj, filename):
     """Save a pickle to file
+
+       Arguments:
+        - json_obj (dict) : the dict to save
+        - filename : file to save to
     """
     with open(filename, "wb") as fd:
         pickle.dump(json_obj, fd)

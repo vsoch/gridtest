@@ -19,7 +19,7 @@ import os
 
 
 def tmp_path(requested_tmpdir=None, prefix="", create=False, ext=""):
-    """get a temporary file with an optional prefix. By default will be
+    """get a temporary file with an optional prefix. By default it will be
        created in /tmp, and the file is closed (and just a name returned).
 
        Arguments:
