@@ -130,6 +130,7 @@ walk through basic examples.
 <a id="#concepts">
 ### What are gridtest concepts
 
+<a id="gridtest">
 #### GridTest
 
 A gridtest is a yaml file that is executed using the software described here,
@@ -143,6 +144,7 @@ each with a set of results from the function itself and decorators.
 GridTest also will make it easy to run over a grid of different environments,
 although this is not developed yet.
 
+<a id="gridtest.yml">
 #### gridtest.yml
 
 GridTest's main convention is that  it will look for a yaml file, `gridtest.yml` to run tests by default. This means
@@ -161,6 +163,7 @@ mymodule/
 You can easily run `gridtest test` in the root of that folder to discover the
 file. This is similar to a Dockerfile, or Singularity recipe file.
 
+<a id="grids">
 #### grids
 
 Gridtest does parameterization by way of grids, which is a section of the gridtest.yml

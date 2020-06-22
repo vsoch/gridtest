@@ -22,6 +22,7 @@ widely across data science, and version control for reproducibility of those
 parameterization is essential for reproducible, sustainable science.
 This means that you might use GridTest for...
 
+<a id="testing">
 ### Testing
 
 A **gridtest**: is one that is run over a grid of parameter settings. Each test
@@ -29,6 +30,7 @@ can include a set of argument specifications, and optionally mapping these argum
 to functions so they can be programatically defined. 
 A grid can be inline to the test (if not used elsewhere) or defined globally and shared.
 
+<a id="grids">
 ### Parameterization
 
 A **grid** is a global definition of a parameter matrix. You can define arguments,
@@ -38,6 +40,7 @@ optimal to use because we don't save any single, large list to memory.
 Grids do not have to be used in testing! You might share a repository that only defines grids that people
 can use across many different kinds of machine learning models, likely to run metrics.
 
+<a id="metrics">
 ### Metrics
 
 A **metric** is a Python decorator that is paired with a test that will measure some
@@ -50,6 +53,7 @@ and as we get more real world use cases, the report templates and data export op
 to use and visualize them beautifully. Please [open an issue](https://github.com/vsoch/gridtest/issues) 
 if you have a use case that @vsoch can help with!
 
+<a id="kind-of-projects">
 
 > What kind of projects is GridTest for?
 
@@ -61,6 +65,7 @@ Python projects that don't have the bandwidth to invest time into writing tests,
 makes it easy to generate and fill in a template to run tests,
 and run them during continuous integration.
 
+<a id="just-for-testing">
 > Is gridtest just for testing?
 
 As mentioned above, one of the powerful features of GridTest is the 
@@ -74,6 +79,7 @@ The result can be an expanded list of arguments, or of results.
 GridTest nicely manages small annoyances for writing tests, or generating grids of parameters.
 The author has listed these in the order that she finds interesting:
 
+<a id="grids-as-first-class-citizens">
 ### 1. Grids as First Class Citizens
 
 Parameters always come as a second thought when writing tests, and this is
@@ -82,6 +88,7 @@ realized that she might want to define just sets of parameters that expand
 into matrices that can be useful across many use cases. This makes
 the grids first class citizens.
 
+<a id="capturing-metrics">
 ### 2. Capturing Metrics
 
 How long does your function take when you provide parameter X as one value, versus
@@ -89,6 +96,7 @@ another? By way of allowing you to specify one or more metrics alongside tests,
 you can easily capture metrics (Python decorators to your functions to test)
 to output in an interactive report.
 
+<a id="generating-reports">
 ### 3. Generating Reports
 
 If you need to save results to a data file (e.g., results.json) or generate
@@ -98,6 +106,7 @@ available to view [here](https://vsoch.github.io/gridtest/templates/report/),
 and as we get more real world use cases, the report templates and data export 
 options can be expanded to use and visualize them beautifully. Please [open an issue](https://github.com/vsoch/gridtest/issues) if you have a use case that @vsoch can help with!
 
+<a id="debugging">
 ### 4. Debugging
 
 What programmer hasn't been in the scenario of running a group of tests,
@@ -108,6 +117,7 @@ this much easier with it's `--interactive` mode, which will let you simply
 shell into an interpreter right before the function is run, and let you debug 
 away.
 
+<a id="reproducible-tests">
 ### 5. Running Reproducible Tests
 
 When you write tests for a file, local, or system module, you store them in
@@ -115,6 +125,7 @@ a yaml file that is stored alongside the code, and can be tested with CI.
 The yaml file can have grids of parameters defined so you can easily test many
 different combinations.
 
+<a id="knowing-tests">
 ### 6. Knowing the tests to write
 
 Whether you write as you go or at the end, you have to look back at your files
@@ -123,6 +134,7 @@ this problem by way of discovery - give it a module name, a file name, or
 an entire directory with Python files, and it will generate a template for you
 to easily fill in that already includes arguments and functions. 
 
+<a id="knowing-new-tests">
 ### 7. Knowing new tests to write
 
 Okay great, so you've already written your tests. What if you add a function,
