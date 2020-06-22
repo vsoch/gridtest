@@ -127,7 +127,7 @@ You should look at [tutorials]({{ site.baseurl }}/tutorials/)
 if you have never done this before, and would like to
 walk through basic examples.
 
-<a id="#concepts">
+<a id="concepts">
 ### What are gridtest concepts
 
 <a id="gridtest">
