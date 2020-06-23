@@ -33,10 +33,19 @@ A grid can be inline to the test (if not used elsewhere) or defined globally and
 <a id="grids">
 ### Parameterization
 
-A **grid** is a global definition of a parameter matrix. You can define arguments,
-and optionally functions to run to be mapped to arguments. Grids are generated
-on demand, meaning when you iterate over a grid object so that they are more
+A **grid** is a global definition of a parameter matrix. While you are probably familiar
+with a [traditional](https://scikit-learn.org/stable/modules/generated/sklearn.model_selection.ParameterGrid.html) definition of a grid, GridTest extends the idea and functionality of grids to include:
+
+ - [generating random samples](https://vsoch.github.io/gridtest/tutorials/samplegrid/)
+ - [loading grids via a GridRunner](https://vsoch.github.io/gridtest/getting-started/grids/index.html#loading-via-a-gridrunner) class separate from any Python code.
+ - generating grids as you go (meaning as an iterator)
+ - previewing grids on the command line before you use them
+ - generating content of grids via external functions, and optionally unwrapping list values
+
+Grids are generated on demand, meaning when you iterate over a grid object so that they are more
 optimal to use because we don't save any single, large list to memory.
+You can generally extend a grid to any use case that requires some combination of define arguments, 
+and optionally functions to run to be mapped to arguments.
 Grids do not have to be used in testing! You might share a repository that only defines grids that people
 can use across many different kinds of machine learning models, likely to run metrics.
 

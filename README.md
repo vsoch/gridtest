@@ -10,8 +10,7 @@ See [Documentation](https://vsoch.github.io/gridtest/) to get started.
 
 ## Overview 
 
-GridTest is a library that specializes in generating parameter grids. The grids
-are most obviously used for testing, but can extend to other use cases.
+GridTest is a library that specializes in generating [parameter grids](https://vsoch.github.io/gridtest/#parameterization). The grids are most obviously used for testing, but can extend to other use cases.
 In the context of testing, GridTest makes it easy to discover functions,
 classes, and arguments for your python scripts or modules, and then generate
 a template for you to easily populate. Outside of testing, you can define
