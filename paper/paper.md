@@ -77,7 +77,7 @@ set of examples are good use cases.
 
 ### 1. Parameter Grids
 
-A **grid** is a global definition of a parameter matrix. GridTest extends the traditional definition [sklearn-tutorial] of a grid to to include:
+A **grid** is a global definition of a parameter matrix. GridTest extends the traditional definition [@sklearn-tutorial] of a grid to to include:
 
  - [generating random samples](https://vsoch.github.io/gridtest/tutorials/samplegrid/)
  - [loading grids via a GridRunner](https://vsoch.github.io/gridtest/getting-started/grids/index.html#loading-via-a-gridrunner) class separate from any Python code.
