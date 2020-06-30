@@ -36,14 +36,14 @@ and provided metrics (Python decorators) that can assist with research.
 
 ## Background
 
-While several scientific libraries [@sklearn, @grid_regular] make it possible to
+While several scientific libraries [@sklearn; @gridregular] make it possible to
 generate parameter grids within code, they require a substantial list of
 numerical library dependencies that might be overkill for the user's needs,
 and further, they don't allow for representation of grids outside of the code.
 Additionally, these libraries do not natively allow for interactive debugging,
 collection of metrics around grids, or report generation. Another subset
 of grid generation libraries are specifically intended for hyperparameter tuning
-[@keras, @h2o, @Willkoehrsen2018-hm], and are thus packaged
+[@keras; @h2o; @Willkoehrsen2018-hm], and are thus packaged
 alongside machine learning libraries. While these libraries are rich and hugely
 useful for their intended purposes, none of them present a domain-agnostic,
 simple grid definition that can be defined outside of the programming language (e.g., R, Python)
