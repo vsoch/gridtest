@@ -52,14 +52,7 @@ code, and can define them without needing it. GridTest offers this ability,
 and further, introduces a new paradigm that grids might be shared between
 code bases as their own entity, and are not required to be embedded within it.
 
-## Use Cases
-
-GridTest has use cases well beyond testing, because parameterization is used
-widely across data science, and version control for reproducibility of those
-parameters is essential for reproducible, sustainable science. The following
-set of examples are good use cases.
-
-### 1. Grids as First Class Citizens
+### Grids as First Class Citizens
 
 Parameters always come as a second thought when writing tests, and this is
 why they are commonly applied as decorators. The author of this software
@@ -70,12 +63,33 @@ script that loops over some set of datasets, parameters, and algorithms,
 you could define grids to generate each in a modular fashion. This
 is explained in detail for the [clustering grids](https://github.com/vsoch/gridtest/tree/master/examples/clustering-grids) example derived from scikit-learn. As another example, you might
 just want to parameterize some set of inputs to randomly generate a cohort.
-This example is detailed [here](https://vsoch.github.io/gridtest/tutorials/samplegrid/).
-The overall idea is simple. The current practice is generally to write parameterizations
-alongside code, whether that means nested for loops or decorators for testing.
+This example is detailed [in another tutorial here](https://vsoch.github.io/gridtest/tutorials/samplegrid/). The overall idea is simple. The current practice is generally to write parameterizations alongside code, whether that means nested for loops or decorators for testing.
 GridTest allows for this same kind of functionality, but storing the parameterization
 alongside the code and not embedded with it. This makes it easy to change grids
 or tests without touching the code.
+
+## Use Cases
+
+GridTest has use cases well beyond testing, because parameterization is used
+widely across data science, and version control for reproducibility of those
+parameters is essential for reproducible, sustainable science. The following
+set of examples are good use cases.
+
+### 1. Parameter Grids
+
+A **grid** is a global definition of a parameter matrix. GridTest extends the traditional definition [sklearn-tutorial] of a grid to to include:
+
+ - [generating random samples](https://vsoch.github.io/gridtest/tutorials/samplegrid/)
+ - [loading grids via a GridRunner](https://vsoch.github.io/gridtest/getting-started/grids/index.html#loading-via-a-gridrunner) class separate from any Python code.
+ - generating grids as you go (meaning as an iterator)
+ - previewing grids on the command line before you use them
+ - generating content of grids via external functions, and optionally unwrapping list values
+
+Grids are generated on demand, meaning when you iterate over a grid object so that they are more
+optimal to use because we don't save any single, large list to memory.
+You can generally extend a grid to any use case that requires some combination of define arguments, and optionally functions to run to be mapped to arguments.
+Grids do not have to be used in testing! You might share a repository that only defines grids that people can use across many different kinds of machine learning models, likely to run metrics.
+
 
 ### 2. Capturing Metrics
 
