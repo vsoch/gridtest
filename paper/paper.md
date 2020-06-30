@@ -68,6 +68,39 @@ GridTest allows for this same kind of functionality, but storing the parameteriz
 alongside the code and not embedded with it. This makes it easy to change grids
 or tests without touching the code.
 
+## Concepts
+
+### Testing
+
+A **gridtest**: is one that is run over a grid of parameter settings. Each test
+can include a set of argument specifications, and optionally mapping these arguments
+to functions so they can be programatically defined. 
+A grid can be inline to the test (if not used elsewhere) or defined globally and shared.
+For an example of command line usage, the reader is directed to the ["How does it work"](https://vsoch.github.io/gridtest/getting-started/index.html#how-does-it-work) section in the Getting Started guide.
+
+
+### Parameterization
+
+A **grid** is a global definition of a parameter matrix. You can define arguments,
+and optionally functions to run to be mapped to arguments. Grids are generated
+on demand, meaning when you iterate over a grid object so that they are more
+optimal to use because we don't save any single, large list to memory.
+Grids do not have to be used in testing! You might share a repository that only defines grids that people
+can use across many different kinds of machine learning models, likely to collect metrics
+and compare different analysis strategies being used. An introduction to grids
+is available [here](https://vsoch.github.io/gridtest/getting-started/grids/).
+
+### Metrics
+
+A **metric** is a Python decorator that is paired with a test that will measure some
+attribute of a test. For example:
+   - you might run a function across a grid of arguments, and then measure the time that each combination takes (the metric), and generate a report for inspection.
+   - you might be doing text processing and having functions to parse text. Each function might be run over a grid of sentences and counts, and for each result, we want to count the number of unique words, and total words (metrics).
+
+Metrics are fully described in the [metrics](https://vsoch.github.io/gridtest/getting-started/metrics/) section
+of the documentation.
+
+
 ## Use Cases
 
 GridTest has use cases well beyond testing, because parameterization is used
@@ -77,7 +110,7 @@ set of examples are good use cases.
 
 ### 1. Parameter Grids
 
-A **grid** is a global definition of a parameter matrix. GridTest extends the traditional definition [@sklearn-tutorial] of a grid to to include:
+GridTest extends the traditional definition [@sklearn-tutorial] of a grid to to include:
 
  - [generating random samples](https://vsoch.github.io/gridtest/tutorials/samplegrid/)
  - [loading grids via a GridRunner](https://vsoch.github.io/gridtest/getting-started/grids/index.html#loading-via-a-gridrunner) class separate from any Python code.
@@ -85,7 +118,7 @@ A **grid** is a global definition of a parameter matrix. GridTest extends the tr
  - previewing grids on the command line before you use them
  - generating content of grids via external functions, and optionally unwrapping list values
 
-Grids are generated on demand for more efficient memory allocation, and can be extended to any use case that requires some combination of arguments, and optionally functions to run to be mapped to arguments. See the section on the concept of a [grid](#grid) for more detail. 
+Grids are generated on demand for more efficient memory allocation, and can be extended to any use case that requires some combination of arguments, and optionally functions to run to be mapped to arguments. See the section on the concept of a grid for more detail. 
 
 
 ### 2. Capturing Metrics
@@ -151,39 +184,6 @@ In summary, GridTest:
  5. Provides an easy way to interactively debug
  6. Helps you to discover the tests that you need to write, and creates a template to fill in
  7. Makes it easy to define and interact with expanded parameter grids
-
-## Concepts
-
-### Testing
-
-A **gridtest**: is one that is run over a grid of parameter settings. Each test
-can include a set of argument specifications, and optionally mapping these arguments
-to functions so they can be programatically defined. 
-A grid can be inline to the test (if not used elsewhere) or defined globally and shared.
-For an example of command line usage, the reader is directed to the ["How does it work"](https://vsoch.github.io/gridtest/getting-started/index.html#how-does-it-work) section in the Getting Started guide.
-
-
-### Parameterization
-
-<a id="grid">
-A **grid** is a global definition of a parameter matrix. You can define arguments,
-and optionally functions to run to be mapped to arguments. Grids are generated
-on demand, meaning when you iterate over a grid object so that they are more
-optimal to use because we don't save any single, large list to memory.
-Grids do not have to be used in testing! You might share a repository that only defines grids that people
-can use across many different kinds of machine learning models, likely to collect metrics
-and compare different analysis strategies being used. An introduction to grids
-is available [here](https://vsoch.github.io/gridtest/getting-started/grids/).
-
-### Metrics
-
-A **metric** is a Python decorator that is paired with a test that will measure some
-attribute of a test. For example:
-   - you might run a function across a grid of arguments, and then measure the time that each combination takes (the metric), and generate a report for inspection.
-   - you might be doing text processing and having functions to parse text. Each function might be run over a grid of sentences and counts, and for each result, we want to count the number of unique words, and total words (metrics).
-
-Metrics are fully described in the [metrics](https://vsoch.github.io/gridtest/getting-started/metrics/) section
-of the documentation.
 
 ## Conclusion
 
