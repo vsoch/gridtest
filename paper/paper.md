@@ -85,10 +85,7 @@ A **grid** is a global definition of a parameter matrix. GridTest extends the tr
  - previewing grids on the command line before you use them
  - generating content of grids via external functions, and optionally unwrapping list values
 
-Grids are generated on demand, meaning when you iterate over a grid object so that they are more
-optimal to use because we don't save any single, large list to memory.
-You can generally extend a grid to any use case that requires some combination of define arguments, and optionally functions to run to be mapped to arguments.
-Grids do not have to be used in testing! You might share a repository that only defines grids that people can use across many different kinds of machine learning models, likely to run metrics.
+Grids are generated on demand for more efficient memory allocation, and can be extended to any use case that requires some combination of arguments, and optionally functions to run to be mapped to arguments. See the section on the concept of a [grid](#grid) for more detail. 
 
 
 ### 2. Capturing Metrics
@@ -165,8 +162,10 @@ to functions so they can be programatically defined.
 A grid can be inline to the test (if not used elsewhere) or defined globally and shared.
 For an example of command line usage, the reader is directed to the ["How does it work"](https://vsoch.github.io/gridtest/getting-started/index.html#how-does-it-work) section in the Getting Started guide.
 
+
 ### Parameterization
 
+<a id="grid">
 A **grid** is a global definition of a parameter matrix. You can define arguments,
 and optionally functions to run to be mapped to arguments. Grids are generated
 on demand, meaning when you iterate over a grid object so that they are more
