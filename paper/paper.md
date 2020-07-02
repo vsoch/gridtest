@@ -165,7 +165,7 @@ different combinations.
 
 ### 6. Knowing the tests to write
 
-Whether you write as you go or at the end, you have to look back at your files
+Whether you write tests as you go or at the end, you have to look back at your files
 to know the function names and arguments that need to be tested. GridTest solves
 this problem by way of discovery - give it a module name, a file name, or
 an entire directory with Python files, and it will generate a template for you
