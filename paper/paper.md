@@ -30,7 +30,7 @@ that are version controlled, programatically defined with functions,
 and easy to interact with from the command line or Python interpreter.
 Grids can be used with tests that can further be parameterized
 and configured to collect metrics for each case run. Both grid and test 
-specifications are stored in a simple yaml configuration that the library helps to generate,
+specifications are stored in a simple YAML configuration that the library helps to generate,
 and features include interactive debugging, interactive report generation,
 and provided metrics (Python decorators) that can assist with research.
 
@@ -94,8 +94,8 @@ is available [here](https://vsoch.github.io/gridtest/getting-started/grids/).
 
 A **metric** is a Python decorator that is paired with a test that will measure some
 attribute of a test. For example:
-   - you might run a function across a grid of arguments, and then measure the time that each combination takes (the metric), and generate a report for inspection.
-   - you might be doing text processing and having functions to parse text. Each function might be run over a grid of sentences and counts, and for each result, we want to count the number of unique words, and total words (metrics).
+ - you might run a function across a grid of arguments, and then measure the time that each combination takes (the metric), and generate a report for inspection.
+ - you might be doing text processing and having functions to parse text. Each function might be run over a grid of sentences and counts, and for each result, we want to count the number of unique words, and total words (metrics).
 
 Metrics are fully described in the [metrics](https://vsoch.github.io/gridtest/getting-started/metrics/) section
 of the documentation.
@@ -139,7 +139,7 @@ If you need to save results to a data file (e.g., results.json) or generate
 an interactive report for GitHub pages, this is easy to do with running
 GridTest with the `--save` or `--save-web` flags. An example web report is
 shown in Figure 1. Any grid can also be exported
-to json for archiving in a repository or extension to other custom visualizations.
+to JSON for archiving in a repository or extension to other custom visualizations.
 
 ![Figure 1. An example GridTest web report](report.png)
 
@@ -159,13 +159,13 @@ away. A detailed walkthrough of debugging is provided [here](https://vsoch.githu
 ### 5. Running Reproducible Tests
 
 When you write tests for a file, local, or system module, you store them in
-a yaml file that is stored alongside the code, and can be tested with CI.
-The yaml file can have grids of parameters defined so you can easily test many
+a YAML file that is stored alongside the code, and can be tested with CI.
+The YAML file can have grids of parameters defined so you can easily test many
 different combinations.
 
 ### 6. Knowing the tests to write
 
-Whether you write as you go or at the end, you have to look back at your files
+Whether you write tests as you go or at the end, you have to look back at your files
 to know the function names and arguments that need to be tested. GridTest solves
 this problem by way of discovery - give it a module name, a file name, or
 an entire directory with Python files, and it will generate a template for you
@@ -179,7 +179,7 @@ In summary, GridTest:
 
  1. Lets you define grids to be generated programatically, version controlled, and used for multiple purposes
  2. Allows measuring metrics alongside tests
- 3. Stores tests in a yaml file that can be stored in version control
+ 3. Stores tests in a YAML file that can be stored in version control
  4. Generates data exports and interactive reports for results
  5. Provides an easy way to interactively debug
  6. Helps you to discover the tests that you need to write, and creates a template to fill in
@@ -190,8 +190,8 @@ In summary, GridTest:
 GridTest aims to be a general tool for data scientists and research software engineers
 alike. If there is a need to create a collection of grids, regardless of being used
 for testing or another use case, GridTest can solve this problem. By way of saving
-to yaml, GridTest can represent grids separately from code.
-By way of providing json export with interactive web
+to YAML, GridTest can represent grids separately from code.
+By way of providing JSON export with interactive web
 reports, GridTest can be used in a continuous integration setup to generate a report
 for some tests or metrics of interest. The author had amazing fun creating this library,
 and is excited for its potential generalizability to support many different kinds
