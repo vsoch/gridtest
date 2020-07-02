@@ -190,7 +190,7 @@ In summary, GridTest:
 GridTest aims to be a general tool for data scientists and research software engineers
 alike. If there is a need to create a collection of grids, regardless of being used
 for testing or another use case, GridTest can solve this problem. By way of saving
-to json, GridTest can generate grids without adding itself as a dependency to your code.
+to json, GridTest can represent grids separately from code.
 By way of providing json export with interactive web
 reports, GridTest can be used in a continuous integration setup to generate a report
 for some tests or metrics of interest. The author had amazing fun creating this library,
