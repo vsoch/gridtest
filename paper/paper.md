@@ -83,9 +83,9 @@ For an example of command line usage, the reader is directed to the ["How does i
 
 A **grid** is a global definition of a parameter matrix. You can define arguments,
 and optionally functions to run to be mapped to arguments. Grids are generated
-on demand, meaning when you iterate over a grid object so that they are more
-optimal to use because we don't save any single, large list to memory.
-Grids do not have to be used in testing! You might share a repository that only defines grids that people
+on demand, meaning when you iterate over a grid object, so that they are more
+efficient to use because we don't store a large list in memory.
+Grids can be put to many uses. You might share a repository that only defines grids that people
 can use across many different kinds of machine learning models, likely to collect metrics
 and compare different analysis strategies being used. An introduction to grids
 is available [here](https://vsoch.github.io/gridtest/getting-started/grids/).
@@ -110,10 +110,10 @@ set of examples are good use cases.
 
 ### 1. Parameter Grids
 
-GridTest extends the traditional definition [@sklearn-tutorial] of a grid to to include:
+GridTest extends the traditional definition [@sklearn-tutorial] of a grid to include:
 
  - [generating random samples](https://vsoch.github.io/gridtest/tutorials/samplegrid/)
- - [loading grids via a GridRunner](https://vsoch.github.io/gridtest/getting-started/grids/index.html#loading-via-a-gridrunner) class separate from any Python code.
+ - [loading grids via a GridRunner](https://vsoch.github.io/gridtest/getting-started/grids/index.html#loading-via-a-gridrunner) class separate from the application's Python code.
  - generating grids as you go (meaning as an iterator)
  - previewing grids on the command line before you use them
  - generating content of grids via external functions, and optionally unwrapping list values
@@ -170,15 +170,15 @@ to know the function names and arguments that need to be tested. GridTest solves
 this problem by way of discovery - give it a module name, a file name, or
 an entire directory with Python files, and it will generate a template for you
 to easily fill in that already includes arguments and functions.  
-Once you've already written your tests, if you add a function GridTest can tell you this too with it's
-`--check` feature. For more details about creating, checking, and updating
+Once you've written your tests, you can run GridTest with the `--check` feature
+to find newly added functions in your code. For more details about creating, checking, and updating
 tests, see the [testing](https://vsoch.github.io/gridtest/getting-started/testing/index.html)
 documentation.
 
 In summary, GridTest:
 
- 1. Let's you define grids to be generated programatically, version controlled, and used for multiple purposes
- 2. Allows measuring of metrics alongside tests
+ 1. Lets you define grids to be generated programatically, version controlled, and used for multiple purposes
+ 2. Allows measuring metrics alongside tests
  3. Stores tests in a yaml file that can be stored in version control
  4. Generates data exports and interactive reports for results
  5. Provides an easy way to interactively debug
@@ -188,13 +188,13 @@ In summary, GridTest:
 ## Conclusion
 
 GridTest aims to be a general tool for data scientists and research software engineers
-alike. If there is need to create a collection of grids, regardless of being used
+alike. If there is a need to create a collection of grids, regardless of being used
 for testing or another use case, GridTest can solve this problem. By way of saving
-to json, GridTest can generate grids that are used for analyses without the extra
-dependency of needing GridTest. By way of providing json export with interactive web
+to yaml, GridTest can represent grids separately from code.
+By way of providing json export with interactive web
 reports, GridTest can be used in a continuous integration setup to generate a report
 for some tests or metrics of interest. The author had amazing fun creating this library,
-and is excited for it's potential generalizability to support many different kinds
+and is excited for its potential generalizability to support many different kinds
 of research tasks. For more examples, tutorials, and details, see the official documentation at https://vsoch.github.io/gridtest [@gridtest-docs].
 
 # References
