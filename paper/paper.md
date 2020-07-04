@@ -76,7 +76,7 @@ A **gridtest**: is one that is run over a grid of parameter settings. Each test
 can include a set of argument specifications, and optionally mapping these arguments
 to functions so they can be programatically defined. 
 A grid can be inline to the test (if not used elsewhere) or defined globally and shared.
-For an example of command line usage, the reader is directed to the ["How does it work"](https://vsoch.github.io/gridtest/getting-started/index.html#how-does-it-work) section in the Getting Started guide.
+For an example of command line usage, the reader is directed to the ["How does it work"](https://vsoch.github.io/gridtest/getting-started/index.html) section in the Getting Started guide.
 
 
 ### Parameterization
@@ -113,7 +113,7 @@ set of examples are good use cases.
 GridTest extends the traditional definition [@sklearn-tutorial] of a grid to include:
 
  - [generating random samples](https://vsoch.github.io/gridtest/tutorials/samplegrid/)
- - [loading grids via a GridRunner](https://vsoch.github.io/gridtest/getting-started/grids/index.html#loading-via-a-gridrunner) class separate from the application's Python code.
+ - [loading grids via a GridRunner](https://vsoch.github.io/gridtest/getting-started/grids/index.html) class separate from the application's Python code.
  - generating grids as you go (meaning as an iterator)
  - previewing grids on the command line before you use them
  - generating content of grids via external functions, and optionally unwrapping list values
