@@ -2,6 +2,7 @@
 
 [![PyPI version](https://badge.fury.io/py/gridtest.svg)](https://badge.fury.io/py/gridtest)
 [![DOI](https://zenodo.org/badge/256346804.svg)](https://zenodo.org/badge/latestdoi/256346804)
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.02284/status.svg)](https://doi.org/10.21105/joss.02284)
 
 Simple grid parameterization and testing setup for Python functions and modules.
 See [Documentation](https://vsoch.github.io/gridtest/) to get started.
