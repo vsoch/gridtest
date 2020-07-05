@@ -150,7 +150,7 @@ What programmer hasn't been in the scenario of running a group of tests,
 and then having some fail? What can be done? The user might start an interactive
 shell, import what is needed, and try to reproduce, or they can turn up verbosity
 and add a bunch of print statements to figure out what is going on. GridTest makes
-this much easier with it's `--interactive` mode, which allows the user to 
+this much easier with its `--interactive` mode, which allows the user to 
 shell into an interactive session right before the function is run to allow for debugging. 
 A detailed walkthrough of debugging is provided [here](https://vsoch.github.io/gridtest/getting-started/debugging/).
 
